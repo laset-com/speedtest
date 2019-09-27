@@ -205,6 +205,7 @@ print_speedtest() {
 	echo "" | tee -a $log
 	printf "## Global Speedtest" | tee -a $log
 	echo "" | tee -a $log
+	echo "" | tee -a $log
 	printf "%-26s%-18s%-20s%-12s\n" " Node Name" "Upload Speed" "Download Speed" "Latency" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net           '
@@ -222,6 +223,7 @@ print_speedtest() {
 print_speedtest_ukraine() {
 	echo "" | tee -a $log
 	printf "## Ukraine Speedtest" | tee -a $log
+	echo "" | tee -a $log
 	echo "" | tee -a $log
 	printf "%-26s%-18s%-20s%-12s\n" " Node Name" "Upload Speed" "Download Speed" "Latency" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -452,6 +454,7 @@ print_io() {
 		echo "" | tee -a $log
 		printf "## dd: sequential write speed ($writemb_size):" | tee -a $log
 		echo "" | tee -a $log
+		echo "" | tee -a $log
 		echo -n " 1st run   : " | tee -a $log
 		io1=$( io_test $writemb )
 		echo -e "$io1" | tee -a $log
@@ -469,7 +472,7 @@ print_io() {
 		[ "`echo $io3 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
 		ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
 		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
-		echo -e " Average I/O Speed    : $ioavg MB/s" | tee -a $log
+		echo -e " Average   : $ioavg MB/s" | tee -a $log
 	else
 		echo -e " Not enough space!"
 	fi
@@ -638,6 +641,7 @@ ukraine_bench(){
 	print_end_time;
 	next;
 	cleanup;
+	sharetest clbin;
 }
 
 
