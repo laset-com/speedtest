@@ -193,7 +193,7 @@ speed_test(){
 
 	        temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
 	        if [[ $(awk -v num1=${temp} -v num2=0 'BEGIN{print(num1>num2)?"1":"0"}') -eq 1 ]]; then
-	        	printf "%-17s%-18s%-20s%-12s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}"
+	        	printf "%-17s%-18s%-20s%-12s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
 			fi
 		else
 	        local cerror="ERROR"
@@ -206,7 +206,7 @@ print_speedtest() {
 	printf "## Global Speedtest" | tee -a $log
 	echo "" | tee -a $log
 	echo "" | tee -a $log
-	printf "%-26s%-18s%-20s%-12s\n" " Location" "Upload Speed" "Download Speed" "Latency" | tee -a $log
+	printf "%-26s%-18s%-20s%-12s\n" " Location" "Upload Speed" "Download Speed" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net           '
 	speed_test '14887' 'Ukraine, Lviv (UARNet)  ' 'http://speedtest.uar.net'
@@ -225,7 +225,7 @@ print_speedtest_ukraine() {
 	printf "## Ukraine Speedtest" | tee -a $log
 	echo "" | tee -a $log
 	echo "" | tee -a $log
-	printf "%-26s%-18s%-20s%-12s\n" " Location" "Upload Speed" "Download Speed" "Latency" | tee -a $log
+	printf "%-26s%-18s%-20s%-12s\n" " Location" "Upload Speed" "Download Speed" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net           '
 	speed_test '14887' 'Ukraine, Lviv (UARNet)  ' 'http://speedtest.uar.net'
@@ -490,6 +490,7 @@ print_system_info() {
 	echo -e " Uptime               : $up" | tee -a $log
 	echo -e " Load Average         : $load" | tee -a $log
 	#echo -e " TCP CC               : $tcpctrl" | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 }
 
 print_end_time() {
@@ -510,6 +511,7 @@ print_end_time() {
 	echo " Timestamp    : $utc_time UTC" | tee -a $log
 	#echo " Finished!"
 	echo " Results      : $log"
+	echo "" | tee -a $log
 }
 
 get_system_info() {
@@ -594,9 +596,9 @@ pingtest() {
 
 	# get download speed and print
 	if [[ $ping_ms == "" ]]; then
-		printf "ping error!"  | tee -a $log
+		printf "ping error!"
 	else
-		printf "%3i.%s ms" "${ping_ms%.*}" "${ping_ms#*.}"  | tee -a $log
+		printf "%3i.%s ms" "${ping_ms%.*}" "${ping_ms#*.}"
 	fi
 }
 
@@ -629,7 +631,6 @@ bench_all(){
 ukraine_bench(){
 	region_name="Ukraine"
 	print_intro;
-	next;
 	benchinit;
 	clear
 	next;
