@@ -212,7 +212,7 @@ speed_test(){
 
 print_speedtest() {
 	echo "" | tee -a $log
-	echostyle "## North America Speedtest"
+	echostyle "## Global Speedtest"
 	echo "" | tee -a $log
 	printf "%-26s%-18s%-20s%-12s\n" " Node Name" "Upload Speed" "Download Speed" "Latency" | tee -a $log
         speed_test '' 'Speedtest.net           '
@@ -228,6 +228,10 @@ print_speedtest() {
 }
 
 print_speedtest_ukraine() {
+	echo "" | tee -a $log
+	echostyle "## Ukraine Speedtest"
+	echo "" | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	printf "%-26s%-18s%-20s%-12s\n" " Node Name" "Upload Speed" "Download Speed" "Latency" | tee -a $log
         speed_test '' 'Speedtest.net           '
 	speed_test '14887' 'Ukraine, Lviv (UARNet)  ' 'http://speedtest.uar.net'
@@ -453,6 +457,9 @@ print_io() {
 	fi
 
 	if [[ $writemb != "1" ]]; then
+		echo "" | tee -a $log
+		echostyle "## IO Test"
+		echo "" | tee -a $log
 		echo -n " I/O Speed( $writemb_size )   : " | tee -a $log
 		io1=$( io_test $writemb )
 		echo -e "$io1" | tee -a $log
@@ -634,8 +641,6 @@ ukraine_bench(){
 	ip_info4;
 	next;
 	print_io;
-	iotest;
-	next;
 	print_speedtest_ukraine;
 	next;
 	print_end_time;
