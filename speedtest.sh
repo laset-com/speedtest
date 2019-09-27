@@ -6,7 +6,7 @@ about() {
 	echo " \                      Bench.Monster                    / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                  v1.1.8 (27 Sep 2019)                 / "
+	echo " \                  v1.1.9 (27 Sep 2019)                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -183,7 +183,7 @@ speed_test(){
 		if [[ ${is_down} ]]; then
 	        local REDownload=$(echo "$temp" | awk -F ':' '/Download/{print $2}')
 	        local reupload=$(echo "$temp" | awk -F ':' '/Upload/{print $2}')
-	        local relatency=$(echo "$temp" | awk -F ':' '/Hosted/{print $2}')
+	        #local relatency=$(echo "$temp" | awk -F ':' '/Hosted/{print $2}')
 	        local relatency=$(pingtest $3)
 	        #temp=$(echo "$relatency" | awk -F '.' '{print $1}')
         	#if [[ ${temp} -gt 1000 ]]; then
@@ -472,6 +472,7 @@ print_io() {
 		[ "`echo $io3 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
 		ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
 		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
+		printf "%-24s\n" "-" | sed 's/\s/-/g' | tee -a $log
 		echo -e " Average   : $ioavg MB/s" | tee -a $log
 	else
 		echo -e " Not enough space!"
@@ -492,6 +493,7 @@ print_system_info() {
 }
 
 print_end_time() {
+	echo "" | tee -a $log
 	end=$(date +%s) 
 	time=$(( $end - $start ))
 	if [[ $time -gt 60 ]]; then
@@ -544,7 +546,7 @@ get_system_info() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	printf ' Speedtest Monster v.1.1.7 \n' | tee -a $log
+	printf ' Speedtest Monster v.1.1.9 beta (28 Sep 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
@@ -620,7 +622,6 @@ bench_all(){
 	print_speedtest;
 	next;
 	print_end_time;
-	next;
 	cleanup;
 	sharetest clbin;
 }
@@ -640,7 +641,6 @@ ukraine_bench(){
 	print_speedtest_ukraine;
 	next;
 	print_end_time;
-	next;
 	cleanup;
 	sharetest clbin;
 }
