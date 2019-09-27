@@ -206,7 +206,7 @@ print_speedtest() {
 	printf "## Global Speedtest" | tee -a $log
 	echo "" | tee -a $log
 	echo "" | tee -a $log
-	printf "%-26s%-18s%-20s%-12s\n" " Node Name" "Upload Speed" "Download Speed" "Latency" | tee -a $log
+	printf "%-26s%-18s%-20s%-12s\n" " Location" "Upload Speed" "Download Speed" "Latency" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net           '
 	speed_test '14887' 'Ukraine, Lviv (UARNet)  ' 'http://speedtest.uar.net'
@@ -225,7 +225,7 @@ print_speedtest_ukraine() {
 	printf "## Ukraine Speedtest" | tee -a $log
 	echo "" | tee -a $log
 	echo "" | tee -a $log
-	printf "%-26s%-18s%-20s%-12s\n" " Node Name" "Upload Speed" "Download Speed" "Latency" | tee -a $log
+	printf "%-26s%-18s%-20s%-12s\n" " Location" "Upload Speed" "Download Speed" "Latency" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net           '
 	speed_test '14887' 'Ukraine, Lviv (UARNet)  ' 'http://speedtest.uar.net'
@@ -543,9 +543,11 @@ get_system_info() {
 }
 
 print_intro() {
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	printf ' Speedtest Monster v.1.1.7 \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
+	echo "" | tee -a $log
 }
 
 sharetest() {
@@ -606,7 +608,6 @@ cleanup() {
 bench_all(){
 	mode_name="Standard"
 	print_intro;
-	next;
 	benchinit;
 	clear
 	next;
