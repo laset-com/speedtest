@@ -528,6 +528,22 @@ get_system_info() {
 	virt_check
 }
 
+freedisk() {
+	# check free space
+	freespace=$( df -m . | awk 'NR==2 {print $4}' )
+	if [[ $freespace -ge 1024 ]]; then
+		printf "%s" $((1024*2))
+	elif [[ $freespace -ge 512 ]]; then
+		printf "%s" $((512*2))
+	elif [[ $freespace -ge 256 ]]; then
+		printf "%s" $((256*2))
+	elif [[ $freespace -ge 128 ]]; then
+		printf "%s" $((128*2))
+	else
+		printf 1
+	fi
+}
+
 averageio() {
 	ioraw1=$( echo $1 | awk 'NR==1 {print $1}' )
 		[ "$(echo $1 | awk 'NR==1 {print $2}')" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
