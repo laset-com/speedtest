@@ -150,15 +150,6 @@ get_opsy() {
     [ -f /etc/lsb-release ] && awk -F'[="]+' '/DESCRIPTION/{print $2}' /etc/lsb-release && return
 }
 
-echostyle(){
-	if hash tput 2>$NULL; then
-		echo " $(tput setaf 6)$1$(tput sgr0)"
-		echo " $1" >> $log
-	else
-		echo " $1" | tee -a $log
-	fi
-}
-
 next() {
     printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 }
@@ -212,9 +203,10 @@ speed_test(){
 
 print_speedtest() {
 	echo "" | tee -a $log
-	echostyle "## Global Speedtest"
+	printf "## Global Speedtest" | tee -a $log
 	echo "" | tee -a $log
 	printf "%-26s%-18s%-20s%-12s\n" " Node Name" "Upload Speed" "Download Speed" "Latency" | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net           '
 	speed_test '14887' 'Ukraine, Lviv (UARNet)  ' 'http://speedtest.uar.net'
 	speed_test '2445' 'Ukraine, Lviv (KOMiTEX) ' 'http://speedtest.komitex.net'
@@ -229,10 +221,10 @@ print_speedtest() {
 
 print_speedtest_ukraine() {
 	echo "" | tee -a $log
-	echostyle "## Ukraine Speedtest"
+	printf "## Ukraine Speedtest" | tee -a $log
 	echo "" | tee -a $log
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	printf "%-26s%-18s%-20s%-12s\n" " Node Name" "Upload Speed" "Download Speed" "Latency" | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net           '
 	speed_test '14887' 'Ukraine, Lviv (UARNet)  ' 'http://speedtest.uar.net'
 	speed_test '2445' 'Ukraine, Lviv (KOMiTEX) ' 'http://speedtest.komitex.net'
@@ -458,15 +450,15 @@ print_io() {
 
 	if [[ $writemb != "1" ]]; then
 		echo "" | tee -a $log
-		echostyle "## IO Test"
+		printf "## dd: sequential write speed ($writemb_size):" | tee -a $log
 		echo "" | tee -a $log
-		echo -n " I/O Speed( $writemb_size )   : " | tee -a $log
+		echo -n " 1st run   : " | tee -a $log
 		io1=$( io_test $writemb )
 		echo -e "$io1" | tee -a $log
-		echo -n " I/O Speed( $writemb_size )   : " | tee -a $log
+		echo -n " 2dn run   : " | tee -a $log
 		io2=$( io_test $writemb )
 		echo -e "$io2" | tee -a $log
-		echo -n " I/O Speed( $writemb_size )   : " | tee -a $log
+		echo -n " 3rd run   : " | tee -a $log
 		io3=$( io_test $writemb )
 		echo -e "$io3" | tee -a $log
 		ioraw1=$( echo $io1 | awk 'NR==1 {print $1}' )
