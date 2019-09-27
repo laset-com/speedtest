@@ -6,7 +6,7 @@ about() {
 	echo " \                      Bench.Monster                    / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                  v1.1.7 (27 Sep 2019)                 / "
+	echo " \                  v1.1.8 (27 Sep 2019)                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -150,6 +150,15 @@ get_opsy() {
     [ -f /etc/lsb-release ] && awk -F'[="]+' '/DESCRIPTION/{print $2}' /etc/lsb-release && return
 }
 
+echostyle(){
+	if hash tput 2>$NULL; then
+		echo " $(tput setaf 6)$1$(tput sgr0)"
+		echo " $1" >> $log
+	else
+		echo " $1" | tee -a $log
+	fi
+}
+
 next() {
     printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 }
@@ -202,6 +211,9 @@ speed_test(){
 }
 
 print_speedtest() {
+	echo "" | tee -a $log
+	echostyle "## North America Speedtest"
+	echo "" | tee -a $log
 	printf "%-26s%-18s%-20s%-12s\n" " Node Name" "Upload Speed" "Download Speed" "Latency" | tee -a $log
         speed_test '' 'Speedtest.net           '
 	speed_test '14887' 'Ukraine, Lviv (UARNet)  ' 'http://speedtest.uar.net'
@@ -526,125 +538,6 @@ get_system_info() {
 	#disk_used_size=$(echo $tmp | sed s/G//)
 
 	virt_check
-}
-
-freedisk() {
-	# check free space
-	freespace=$( df -m . | awk 'NR==2 {print $4}' )
-	if [[ $freespace -ge 1024 ]]; then
-		printf "%s" $((1024*2))
-	elif [[ $freespace -ge 512 ]]; then
-		printf "%s" $((512*2))
-	elif [[ $freespace -ge 256 ]]; then
-		printf "%s" $((256*2))
-	elif [[ $freespace -ge 128 ]]; then
-		printf "%s" $((128*2))
-	else
-		printf 1
-	fi
-}
-
-averageio() {
-	ioraw1=$( echo $1 | awk 'NR==1 {print $1}' )
-		[ "$(echo $1 | awk 'NR==1 {print $2}')" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
-	ioraw2=$( echo $2 | awk 'NR==1 {print $1}' )
-		[ "$(echo $2 | awk 'NR==1 {print $2}')" == "GB/s" ] && ioraw2=$( awk 'BEGIN{print '$ioraw2' * 1024}' )
-	ioraw3=$( echo $3 | awk 'NR==1 {print $1}' )
-		[ "$(echo $3 | awk 'NR==1 {print $2}')" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
-	iorawall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
-	iorawavg=$( awk 'BEGIN{printf "%.1f", '$iorawall' / 3}' )
-	printf "%s" "$iorawavg"
-}
-
-cpubench() {
-	if hash $1 2>$NULL; then
-		io=$( ( dd if=/dev/zero bs=512K count=$2 | $1 ) 2>&1 | grep 'copied' | awk -F, '{io=$NF} END { print io}' )
-		if [[ $io != *"."* ]]; then
-			printf "  %4i %s" "${io% *}" "${io##* }"
-		else
-			printf "%4i.%s" "${io%.*}" "${io#*.}"
-		fi
-	else
-		printf " %s not found on system." "$1"
-	fi
-}
-
-iotest () {
-	echo "" | tee -a $log
-	echostyle "## IO Test"
-	echo "" | tee -a $log
-
-	# start testing
-	writemb=$(freedisk)
-	if [[ $writemb -gt 512 ]]; then
-		writemb_size="$(( writemb / 2 / 2 ))MB"
-		writemb_cpu="$(( writemb / 2 ))"
-	else
-		writemb_size="$writemb"MB
-		writemb_cpu=$writemb
-	fi
-
-	# CPU Speed test
-	printf " CPU Speed:\n" | tee -a $log
-	printf "    bzip2 %s -" "$writemb_size" | tee -a $log
-	printf "%s\n" "$( cpubench bzip2 $writemb_cpu )" | tee -a $log 
-	printf "   sha256 %s -" "$writemb_size" | tee -a $log
-	printf "%s\n" "$( cpubench sha256sum $writemb_cpu )" | tee -a $log
-	printf "   md5sum %s -" "$writemb_size" | tee -a $log
-	printf "%s\n\n" "$( cpubench md5sum $writemb_cpu )" | tee -a $log
-
-	# Disk test
-	echo " Disk Speed ($writemb_size):" | tee -a $log
-	if [[ $writemb != "1" ]]; then
-		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-		echo "   I/O Speed  -$io" | tee -a $log
-
-		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test oflag=dsync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-		echo "   I/O Direct -$io" | tee -a $log
-	else
-		echo "   Not enough space to test." | tee -a $log
-	fi
-	echo "" | tee -a $log
-	
-	# Disk test
-	echo " dd: sequential write speed:" | tee -a $log
-	if [[ $writemb != "1" ]]; then
-		io=$( ( dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-		echo "   1st run: $io" | tee -a $log
-		io=$( ( dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-		echo "   2nd run: $io" | tee -a $log
-		io=$( ( dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-		echo "   3rd run: $io" | tee -a $log
-	else
-		echo "   Not enough space to test." | tee -a $log
-	fi
-	echo "" | tee -a $log
-
-	# RAM Speed test
-	# set ram allocation for mount
-	tram_mb="$( free -m | grep Mem | awk 'NR=1 {print $2}' )"
-	if [[ tram_mb -gt 1900 ]]; then
-		sbram=1024M
-		sbcount=2048
-	else
-		sbram=$(( tram_mb / 2 ))M
-		sbcount=$tram_mb
-	fi
-	[[ -d $benchram ]] || mkdir $benchram
-	mount -t tmpfs -o size=$sbram tmpfs $benchram/
-	printf " RAM Speed (%sB):\n" "$sbram" | tee -a $log
-	iow1=$( ( dd if=/dev/zero of=$benchram/zero bs=512K count=$sbcount ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-	ior1=$( ( dd if=$benchram/zero of=$NULL bs=512K count=$sbcount; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-	iow2=$( ( dd if=/dev/zero of=$benchram/zero bs=512K count=$sbcount ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-	ior2=$( ( dd if=$benchram/zero of=$NULL bs=512K count=$sbcount; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-	iow3=$( ( dd if=/dev/zero of=$benchram/zero bs=512K count=$sbcount ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-	ior3=$( ( dd if=$benchram/zero of=$NULL bs=512K count=$sbcount; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-	echo "   Avg. write - $(averageio "$iow1" "$iow2" "$iow3") MB/s" | tee -a $log
-	echo "   Avg. read  - $(averageio "$ior1" "$ior2" "$ior3") MB/s" | tee -a $log
-	rm $benchram/zero
-	umount $benchram
-	rm -rf $benchram
-	echo "" | tee -a $log
 }
 
 print_intro() {
