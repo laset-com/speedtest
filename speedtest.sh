@@ -193,7 +193,7 @@ speed_test(){
 
 	        temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
 	        if [[ $(awk -v num1=${temp} -v num2=0 'BEGIN{print(num1>num2)?"1":"0"}') -eq 1 ]]; then
-	        	printf "%-17s%-18s%-20s%-12s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
+	        	printf "%-17s%-18s%-20s%-12s\n" 1" ${nodeName}" 2"${reupload}" 3"${REDownload}" 4"${relatency}" | tee -a $log
 			fi
 		else
 	        local cerror="ERROR"
@@ -472,7 +472,7 @@ print_io() {
 		[ "`echo $io3 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
 		ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
 		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
-		printf "%-24s\n" "-" | sed 's/\s/-/g' | tee -a $log
+		printf "%-23s\n" "-" | sed 's/\s/-/g' | tee -a $log
 		echo -e " Average   : $ioavg MB/s" | tee -a $log
 	else
 		echo -e " Not enough space!"
