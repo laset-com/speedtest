@@ -193,7 +193,7 @@ speed_test(){
 
 	        temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
 	        if [[ $(awk -v num1=${temp} -v num2=0 'BEGIN{print(num1>num2)?"1":"0"}') -eq 1 ]]; then
-	        	printf "%-17s%-18s%-20s%-12s\n" 1" ${nodeName}" 2"${reupload}" 3"${REDownload}" 4"${relatency}" | tee -a $log
+	        	printf "%-17s%-18s%-20s%-12s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}"
 			fi
 		else
 	        local cerror="ERROR"
