@@ -6,7 +6,7 @@ about() {
 	echo " \                      Bench.Monster                    / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                  v1.2.2 (28 Sep 2019)                 / "
+	echo " \                  v1.2.3 (28 Sep 2019)                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -209,13 +209,24 @@ print_speedtest() {
 	printf "%-26s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net           '
-	speed_test '14887' 'Ukraine, Lviv (UARNet)  ' 'http://speedtest.uar.net'
-	speed_test '2445' 'Ukraine, Lviv (KOMiTEX) ' 'http://speedtest.komitex.net'
-	speed_test '12786' 'Ukraine, Lviv (ASTRA)   ' 'http://speedtest.astra.in.ua'
-	speed_test '17398' 'Ukraine, Lviv (Kopiyka) ' 'http://speedtest.kopiyka.org'
-	speed_test '6225' 'Ukraine, Lviv (ZNet)    ' 'http://178.212.102.70'
-	speed_test '1204' 'Ukraine, Lviv (Network) ' 'http://speedtest.network.lviv.ua'
-	speed_test '21900' 'Ukraine, Lviv (LimNet)  ' 'http://speedtest.limnet.com.ua'
+	speed_test '5029' 'USA, New York (AT&T)               ' 'http://nyc.speedtest.sbcglobal.net'
+	speed_test '17384' 'USA, Chicago (Windstream)          ' 'http://chicago02.speedtest.windstream.net'
+	speed_test '12786' 'USA, Dallas (Spectrum)             ' 'http://spt01ftwotx-thd-1.ftwo.tx.charter.com'
+	speed_test '14237' 'USA, Miami (Frontier)              ' 'http://miami.fl.speedtest.frontier.com'
+	speed_test '18531' 'USA, San Francisco (Wave)          ' 'http://Speedtest-200P.wavebroadband.com'
+	speed_test '18189' 'UK, London (Community Fibre)       ' 'http://sp01.ld8.lon.eng.communityfibre.co.uk'
+	speed_test '27852' 'France, Lyon (SFR)                 ' 'http://cor2.speedtest.mire.sfr.net'
+	speed_test '20507' 'Germany, Berlin (DNS:NET)          ' 'http://speedtest01.dns-net.de'
+	speed_test '1680' 'Spain, Madrid (Adamo)              ' 'http://speedtest.mad.adamo.es'
+	speed_test '11842' 'Italy, Rome (Vodafone)             ' 'http://speedtestrm1.vodafone.it'
+	speed_test '3682' 'Russia, Moscow (Rostelecom)        ' 'http://moscow.speedtest2.rt.ru'
+	speed_test '2434' 'Israel, Haifa (013Netvision)       ' 'http://speed2.013.net'
+	speed_test '9214' 'India, New Delhi (ACT)             ' 'http://speedtest-delhi.actcorp.in'
+	speed_test '5935' 'Singapore (MyRepublic)             ' 'http://speedtest2.myrepublic.com.sg'
+	speed_test '24333' 'Japan, Tokyo (Rakuten Mobile)      ' 'http://ookla.mbspeed.net'
+	speed_test '1267' 'Australia, Sydney (Yes Optus)      ' 'http://s1.speedtest.syd.optusnet.com.au'
+	speed_test '6591' 'South Africa, Randburg (Cool Ideas)' 'http://sp2.cisp.co.za'
+	speed_test '23319' 'Brazil, Sao Paulo (Nextel)         ' 'http://speedtestspo.eng.nextel.com.br'
 	 
 	rm -rf speedtest.py
 }
@@ -571,7 +582,7 @@ get_system_info() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.2.2 beta (29 Sep 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.2.3 beta (29 Sep 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
