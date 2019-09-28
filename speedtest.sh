@@ -206,27 +206,27 @@ print_speedtest() {
 	printf "## Global Speedtest" | tee -a $log
 	echo "" | tee -a $log
 	echo "" | tee -a $log
-	printf "%-37s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
+	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-        speed_test '' 'Speedtest.net           '
-	speed_test '5029' 'USA, New York (AT&T)               ' 'http://nyc.speedtest.sbcglobal.net'
-	speed_test '17384' 'USA, Chicago (Windstream)          ' 'http://chicago02.speedtest.windstream.net'
-	speed_test '12786' 'USA, Dallas (Spectrum)             ' 'http://spt01ftwotx-thd-1.ftwo.tx.charter.com'
-	speed_test '14237' 'USA, Miami (Frontier)              ' 'http://miami.fl.speedtest.frontier.com'
-	speed_test '18531' 'USA, San Francisco (Wave)          ' 'http://Speedtest-200P.wavebroadband.com'
-	speed_test '18189' 'UK, London (Community Fibre)       ' 'http://sp01.ld8.lon.eng.communityfibre.co.uk'
-	speed_test '27852' 'France, Lyon (SFR)                 ' 'http://cor2.speedtest.mire.sfr.net'
-	speed_test '20507' 'Germany, Berlin (DNS:NET)          ' 'http://speedtest01.dns-net.de'
-	speed_test '1680' 'Spain, Madrid (Adamo)              ' 'http://speedtest.mad.adamo.es'
-	speed_test '11842' 'Italy, Rome (Vodafone)             ' 'http://speedtestrm1.vodafone.it'
-	speed_test '3682' 'Russia, Moscow (Rostelecom)        ' 'http://moscow.speedtest2.rt.ru'
-	speed_test '2434' 'Israel, Haifa (013Netvision)       ' 'http://speed2.013.net'
-	speed_test '9214' 'India, New Delhi (ACT)             ' 'http://speedtest-delhi.actcorp.in'
-	speed_test '5935' 'Singapore (MyRepublic)             ' 'http://speedtest2.myrepublic.com.sg'
-	speed_test '24333' 'Japan, Tokyo (Rakuten Mobile)      ' 'http://ookla.mbspeed.net'
-	speed_test '1267' 'Australia, Sydney (Yes Optus)      ' 'http://s1.speedtest.syd.optusnet.com.au'
-	speed_test '6591' 'South Africa, Randburg (Cool Ideas)' 'http://sp2.cisp.co.za'
-	speed_test '23319' 'Brazil, Sao Paulo (Nextel)         ' 'http://speedtestspo.eng.nextel.com.br'
+        speed_test '' 'Speedtest.net                 '
+	speed_test '5029' 'USA, New York (AT&T)          ' 'http://nyc.speedtest.sbcglobal.net'
+	speed_test '17384' 'USA, Chicago (Windstream)     ' 'http://chicago02.speedtest.windstream.net'
+	speed_test '1859' 'USA, Dallas (T-Mobile)        ' 'http://dal.speedtest.t-mobile.com'
+	speed_test '14237' 'USA, Miami (Frontier)         ' 'http://miami.fl.speedtest.frontier.com'
+	speed_test '18531' 'USA, San Francisco (Wave)     ' 'http://Speedtest-200P.wavebroadband.com'
+	speed_test '18189' 'UK, London (Community Fibre)  ' 'http://sp01.ld8.lon.eng.communityfibre.co.uk'
+	speed_test '27852' 'France, Lyon (SFR)            ' 'http://cor2.speedtest.mire.sfr.net'
+	speed_test '20507' 'Germany, Berlin (DNS:NET)     ' 'http://speedtest01.dns-net.de'
+	speed_test '1680' 'Spain, Madrid (Adamo)         ' 'http://speedtest.mad.adamo.es'
+	speed_test '11842' 'Italy, Rome (Vodafone)        ' 'http://speedtestrm1.vodafone.it'
+	speed_test '1907' 'Russia, Moscow (MTS)          ' 'http://librarian.comstar.ru'
+	speed_test '2434' 'Israel, Haifa (013Netvision)  ' 'http://speed2.013.net'
+	speed_test '9214' 'India, New Delhi (ACT)        ' 'http://speedtest-delhi.actcorp.in'
+	speed_test '5935' 'Singapore (MyRepublic)        ' 'http://speedtest2.myrepublic.com.sg'
+	speed_test '24333' 'Japan, Tokyo (Rakuten Mobile) ' 'http://ookla.mbspeed.net'
+	speed_test '1267' 'Australia, Sydney (Yes Optus) ' 'http://s1.speedtest.syd.optusnet.com.au'
+	speed_test '6591' 'RSA, Randburg (Cool Ideas)    ' 'http://sp2.cisp.co.za'
+	speed_test '23319' 'Brazil, Sao Paulo (Nextel)    ' 'http://speedtestspo.eng.nextel.com.br'
 	 
 	rm -rf speedtest.py
 }
@@ -655,7 +655,6 @@ bench_all(){
 	ip_info4;
 	next;
 	print_io;
-	next;
 	print_speedtest;
 	next;
 	print_end_time;
