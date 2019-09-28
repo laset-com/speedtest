@@ -6,7 +6,7 @@ about() {
 	echo " \                      Bench.Monster                    / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                  v1.1.9 (27 Sep 2019)                 / "
+	echo " \                  v1.2.1 (28 Sep 2019)                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -223,6 +223,28 @@ print_speedtest() {
 print_speedtest_ukraine() {
 	echo "" | tee -a $log
 	printf "## Ukraine Speedtest" | tee -a $log
+	echo "" | tee -a $log
+	echo "" | tee -a $log
+	printf "%-30s%-18s%-20s%-12s\n" " Location" "Upload Speed" "Download Speed" "Ping" | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+        speed_test '' 'Speedtest.net           '
+	speed_test '12911' 'Ukraine, Kyiv (KyivStar)      ' 'http://speedtest.kyivstar.ua'
+	speed_test '14887' 'Ukraine, Lviv (UARNet)        ' 'http://speedtest.uar.net'
+	speed_test '3022' 'Ukraine, Uzhgorod (TransCom)  ' 'http://speedtest.tcom.uz.ua'
+	speed_test '15333' 'Ukraine, Rivne (UARnet)       ' 'http://strivne.uar.net'
+	speed_test '19332' 'Ukraine, Chernivtsi (C.T.Net) ' 'http://speedtest.ctn.cv.ua'
+	speed_test '5507' 'Ukraine, Chernihiv (UltraNet) ' 'http://speedtest.ultranet.com.ua'
+	speed_test '1732' 'Ukraine, Kharkiv (Triolan)    ' 'http://kharkiv.speedtest.triolan.com.ua'
+	speed_test '3620' 'Ukraine, Dnipro (D-lan)       ' 'http://speedtest.d-lan.dp.ua'
+	speed_test '2796' 'Ukraine, Odesa (Black Sea)    ' 'http://speedtest.blacksea.net.ua'
+	speed_test '26725' 'Ukraine, Mariupol (CityLine)  ' 'http://speedtest.cl.dn.ua'
+	 
+	rm -rf speedtest.py
+}
+
+print_speedtest_lviv() {
+	echo "" | tee -a $log
+	printf "## Lviv Speedtest" | tee -a $log
 	echo "" | tee -a $log
 	echo "" | tee -a $log
 	printf "%-26s%-18s%-20s%-12s\n" " Location" "Upload Speed" "Download Speed" "Ping" | tee -a $log
@@ -500,9 +522,9 @@ print_end_time() {
 	if [[ $time -gt 60 ]]; then
 		min=$(expr $time / 60)
 		sec=$(expr $time % 60)
-		echo -ne " Finished in  : ${min} min ${sec} sec" | tee -a $log
+		echo -ne " Finished in  : ${min} min ${sec} sec"
 	else
-		echo -ne " Finished in  : ${time} sec" | tee -a $log
+		echo -ne " Finished in  : ${time} sec"
 	fi
 	#echo -ne "\n Current time : "
 	#echo $(date +%Y-%m-%d" "%H:%M:%S)
@@ -547,8 +569,8 @@ get_system_info() {
 }
 
 print_intro() {
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	printf ' Speedtest Monster v.1.1.9 beta (28 Sep 2019) \n' | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g'
+	printf ' Speedtest Monster v.1.2.1 beta (29 Sep 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
@@ -605,12 +627,13 @@ pingtest() {
 cleanup() {
 	rm -f test_file_*;
 	rm -f speedtest.py;
+	rm -f speedtest.sh;
 	rm -f tools.py;
 	rm -f ip_json.json
 }
 
 bench_all(){
-	mode_name="Standard"
+	mode_name="Global"
 	print_intro;
 	benchinit;
 	clear
@@ -645,6 +668,23 @@ ukraine_bench(){
 	cleanup;
 	sharetest clbin;
 }
+lviv_bench(){
+	region_name="Lviv"
+	print_intro;
+	benchinit;
+	clear
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	print_io;
+	print_speedtest_lviv;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
 
 
 
@@ -669,6 +709,8 @@ case $1 in
 		about;;
 	'ukraine'|'-ukraine'|'--ukraine'|'-ua'|'--ua'|'-Ukraine'|'--Ukraine' )
 		ukraine_bench;;
+	'lviv'|'-lviv'|'--lviv'|'-Lviv'|'--Lviv' )
+		lviv_bench;;
 	'share'|'-s'|'--s'|'-share'|'--share' )
 		bench_all;
 		is_share="share"
