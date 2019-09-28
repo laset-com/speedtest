@@ -172,7 +172,7 @@ speed_test(){
 
 	        temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
 	        if [[ $(awk -v num1=${temp} -v num2=0 'BEGIN{print(num1>num2)?"1":"0"}') -eq 1 ]]; then
-	        	printf "%-17s%-18s%-18s%-10s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
+	        	printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
 	        fi
 		else
 	        local cerror="ERROR"
@@ -193,7 +193,7 @@ speed_test(){
 
 	        temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
 	        if [[ $(awk -v num1=${temp} -v num2=0 'BEGIN{print(num1>num2)?"1":"0"}') -eq 1 ]]; then
-	        	printf "%-17s%-18s%-18s%-10s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
+	        	printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
 			fi
 		else
 	        local cerror="ERROR"
@@ -206,7 +206,7 @@ print_speedtest() {
 	printf "## Global Speedtest" | tee -a $log
 	echo "" | tee -a $log
 	echo "" | tee -a $log
-	printf "%-26s%-18s%-18s%-10s\n" " Location" "Upload Speed" "Download Speed" "Ping" | tee -a $log
+	printf "%-26s%-17s%-17s%-7s\n" " Location" "Upload Speed" "Download Speed" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net           '
 	speed_test '14887' 'Ukraine, Lviv (UARNet)  ' 'http://speedtest.uar.net'
@@ -225,15 +225,16 @@ print_speedtest_ukraine() {
 	printf "## Ukraine Speedtest" | tee -a $log
 	echo "" | tee -a $log
 	echo "" | tee -a $log
-	printf "%-32s%-18s%-18s%-10s\n" " Location" "Upload Speed" "Download Speed" "Ping" | tee -a $log
+	printf "%-32s%-17s%-17s%-10s\n" " Location" "Upload Speed" "Download Speed" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net                 '
 	speed_test '6446' 'Ukraine, Kyiv (KyivStar)      ' 'http://www.speedtest2.kyivstar.ua'
+	speed_test '2518' 'Ukraine, Kyiv (Volia)         ' 'http://speedtest2.volia.com'
 	speed_test '14887' 'Ukraine, Lviv (UARNet)        ' 'http://speedtest.uar.net'
 	speed_test '3022' 'Ukraine, Uzhgorod (TransCom)  ' 'http://speedtest.tcom.uz.ua'
-	speed_test '3861' 'Ukraine, Zhytomyr (DKS)       ' 'http://speedtest1.dks.com.ua'
 	speed_test '19332' 'Ukraine, Chernivtsi (C.T.Net) ' 'http://speedtest.ctn.cv.ua'
-	speed_test '5507' 'Ukraine, Chernihiv (UltraNet) ' 'http://speedtest.ultranet.com.ua'
+	speed_test '3861' 'Ukraine, Zhytomyr (DKS)       ' 'http://speedtest1.dks.com.ua'
+	speed_test '8633' 'Ukraine, Cherkasy (McLaut)    ' 'http://speedtest2.mclaut.com'
 	speed_test '1732' 'Ukraine, Kharkiv (Triolan)    ' 'http://kharkiv.speedtest.triolan.com.ua'
 	speed_test '23620' 'Ukraine, Dnipro (Fregat)      ' 'http://test.fregat.net'
 	speed_test '2796' 'Ukraine, Odesa (Black Sea)    ' 'http://speedtest.blacksea.net.ua'
@@ -247,7 +248,7 @@ print_speedtest_lviv() {
 	printf "## Lviv Speedtest" | tee -a $log
 	echo "" | tee -a $log
 	echo "" | tee -a $log
-	printf "%-26s%-18s%-18s%-10s\n" " Location" "Upload Speed" "Download Speed" "Ping" | tee -a $log
+	printf "%-26s%-17s%-17s%-7s\n" " Location" "Upload Speed" "Download Speed" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net           '
 	speed_test '14887' 'Ukraine, Lviv (UARNet)  ' 'http://speedtest.uar.net'
