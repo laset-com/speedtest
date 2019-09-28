@@ -6,7 +6,7 @@ about() {
 	echo " \                      Bench.Monster                    / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                  v1.2.1 (28 Sep 2019)                 / "
+	echo " \                  v1.2.2 (28 Sep 2019)                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -206,7 +206,7 @@ print_speedtest() {
 	printf "## Global Speedtest" | tee -a $log
 	echo "" | tee -a $log
 	echo "" | tee -a $log
-	printf "%-26s%-17s%-17s%-7s\n" " Location" "Upload Speed" "Download Speed" "Ping" | tee -a $log
+	printf "%-26s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net           '
 	speed_test '14887' 'Ukraine, Lviv (UARNet)  ' 'http://speedtest.uar.net'
@@ -225,7 +225,7 @@ print_speedtest_ukraine() {
 	printf "## Ukraine Speedtest" | tee -a $log
 	echo "" | tee -a $log
 	echo "" | tee -a $log
-	printf "%-32s%-17s%-17s%-10s\n" " Location" "Upload Speed" "Download Speed" "Ping" | tee -a $log
+	printf "%-32s%-17s%-17s%-10s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net                 '
 	speed_test '6446' 'Ukraine, Kyiv (KyivStar)      ' 'http://www.speedtest2.kyivstar.ua'
@@ -248,7 +248,7 @@ print_speedtest_lviv() {
 	printf "## Lviv Speedtest" | tee -a $log
 	echo "" | tee -a $log
 	echo "" | tee -a $log
-	printf "%-26s%-17s%-17s%-7s\n" " Location" "Upload Speed" "Download Speed" "Ping" | tee -a $log
+	printf "%-26s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net           '
 	speed_test '14887' 'Ukraine, Lviv (UARNet)  ' 'http://speedtest.uar.net'
@@ -571,7 +571,7 @@ get_system_info() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.2.1 beta (29 Sep 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.2.2 beta (29 Sep 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
@@ -584,7 +584,7 @@ sharetest() {
 	case $1 in
 	'ubuntu')
 		share_link=$( curl -v --data-urlencode "content@$log_up" -d "poster=speedtest.sh" -d "syntax=text" "https://paste.ubuntu.com" 2>&1 | \
-			grep "Location" | awk '{print $3}' );;
+			grep "Location" | awk '{print https://paste.ubuntu.com$3}' );;
 	'haste' )
 		share_link=$( curl -X POST -s -d "$(cat $log)" https://hastebin.com/documents | awk -F '"' '{print "https://hastebin.com/"$4}' );;
 	'clbin' )
@@ -704,7 +704,7 @@ case $1 in
 		about;benchinit;next;print_speedtest;next;cleanup;;
 	'ip'|'-ip'|'--ip'|'geoip'|'-geoip'|'--geoip' )
 		about;benchinit;next;ip_info4;next;cleanup;;
-	'bench'|'-a'|'--a'|'-all'|'--all'|'-bench'|'--bench' )
+	'bench'|'-a'|'--a'|'-all'|'--all'|'-bench'|'--bench'|'-Global' )
 		bench_all;;
 	'about'|'-about'|'--about' )
 		about;;
