@@ -206,7 +206,7 @@ print_speedtest() {
 	printf "## Global Speedtest" | tee -a $log
 	echo "" | tee -a $log
 	echo "" | tee -a $log
-	printf "%-26s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
+	printf "%-37s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net           '
 	speed_test '5029' 'USA, New York (AT&T)               ' 'http://nyc.speedtest.sbcglobal.net'
@@ -645,7 +645,7 @@ cleanup() {
 }
 
 bench_all(){
-	mode_name="Global"
+	region_name="Global"
 	print_intro;
 	benchinit;
 	clear
