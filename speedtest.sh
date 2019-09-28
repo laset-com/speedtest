@@ -529,7 +529,7 @@ print_end_time() {
 	fi
 	#echo -ne "\n Current time : "
 	#echo $(date +%Y-%m-%d" "%H:%M:%S)
-	printf '\n' | tee -a $log
+	printf '\n'
 	utc_time=$(date -u '+%F %T')
 	echo " Timestamp    : $utc_time UTC" | tee -a $log
 	#echo " Finished!"
