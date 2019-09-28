@@ -222,7 +222,7 @@ print_speedtest() {
 	speed_test '1907' 'Russia, Moscow (MTS)          ' 'http://librarian.comstar.ru'
 	speed_test '2434' 'Israel, Haifa (013Netvision)  ' 'http://speed2.013.net'
 	speed_test '15028' 'India, New Delhi (Spectra)    ' 'http://speedtest.spectra.co'
-	speed_test '2054' 'Singapore (Viewqwest)         ' 'http://speedtest11.vqbn.com'
+	speed_test '20637' 'Singapore (OVH Cloud)         ' 'http://speedtest-sgp.apac-tools.ovh'
 	speed_test '8407' 'Japan, Tokyo (ATCC)           ' 'http://sp6.atcc-gns.net'
 	speed_test '1267' 'Australia, Sydney (Yes Optus) ' 'http://s1.speedtest.syd.optusnet.com.au'
 	speed_test '6591' 'RSA, Randburg (Cool Ideas)    ' 'http://sp2.cisp.co.za'
