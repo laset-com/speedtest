@@ -264,6 +264,8 @@ print_speedtest_usa() {
 	speed_test '8879' 'USA, Seattle (Sprint)         ' 'http://perftools2.sttlwa.sprintadp.net'
 	speed_test '5026' 'USA, San Francisco (AT&T)     ' 'http://sfo.speedtest.sbcglobal.net'
 	speed_test '16974' 'USA, Los Angeles (Spectrum)   ' 'http://speedtest.west.rr.com'
+	speed_test '980' 'USA, Anchorage (Alaska Com)   ' 'http://speedtest.anc.acsalaska.net'
+	speed_test '16975' 'USA, Mililani, HI (Spectrum)   ' 'http://speedtest.oceanic.com'
 	 
 	rm -rf speedtest.py
 }
