@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                  v1.2.5 (29 Sep 2019)                 / "
+	echo " \                  v1.2.6 (29 Sep 2019)                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -265,7 +265,7 @@ print_speedtest_usa() {
 	speed_test '5026' 'USA, San Francisco (AT&T)     ' 'http://sfo.speedtest.sbcglobal.net'
 	speed_test '16974' 'USA, Los Angeles (Spectrum)   ' 'http://speedtest.west.rr.com'
 	speed_test '980' 'USA, Anchorage (Alaska Com)   ' 'http://speedtest.anc.acsalaska.net'
-	speed_test '16975' 'USA, Mililani, HI (Spectrum)   ' 'http://speedtest.oceanic.com'
+	speed_test '16975' 'USA, Mililani, HI (Spectrum)  ' 'http://speedtest.oceanic.com'
 	 
 	rm -rf speedtest.py
 }
@@ -656,7 +656,7 @@ get_system_info() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.2.5 beta (29 Sep 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.2.6 beta (30 Sep 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
