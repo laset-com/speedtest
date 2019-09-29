@@ -358,7 +358,7 @@ print_speedtest_meast() {
 	speed_test '16595' 'Cyprus, Larnaca (skywisp)   ' 'http://speedtest1.skywisp.com.cy'
 	speed_test '2434' 'Israel, Haifa (013Netvision)' 'http://speed2.013.net'
 	speed_test '1689' 'Egypt, Cairo (Vodafone)     ' 'http://speedtest.vodafone.com.eg'
-	speed_test '9137' 'Lebanon, Tripoli (Be-Wise)  ' 'http://sp2.wise-isp.com'
+	speed_test '12498' 'Lebanon, Tripoli (BItarNet) ' 'http://speedtest.bitarnet.net'
 	speed_test '17398' 'UAE, Dubai (Orixcom)        ' 'http://speedtest.orixcom.net'
 	speed_test '14888' 'Qatar, Doha (Vodafone)      ' 'http://speedtest01.vodafone.com.qa'
 	speed_test '608' 'SA, Riyadh (Saudi Telecom)  ' 'http://speedtest.saudi.net.sa'
