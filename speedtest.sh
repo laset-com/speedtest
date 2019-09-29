@@ -250,7 +250,7 @@ print_speedtest_europe() {
 	speed_test '1680' 'Spain, Madrid (Adamo)           ' 'http://speedtest.mad.adamo.es'
 	speed_test '8160' 'Portugal, Lisbon (Evolute)      ' 'http://speedtest1.evolute.pt'
 	speed_test '11842' 'Italy, Rome (Vodafone)          ' 'http://speedtestrm1.vodafone.it'
-	speed_test '18718' 'Czechia, Prague (T-Mobile)      ' 'http://speedtest3.t-mobile.cz'
+	speed_test '21194' 'Czechia, Prague (365internet)   ' 'http://speedtest.365internet.cz'
 	speed_test '15152' 'Austria, Vienna (Fonira)        ' 'http://speedtest.fonira.at'
 	speed_test '4166' 'Poland, Warsaw (Orange)         ' 'http://war-o2.speedtest.orange.pl'
 	speed_test '691' 'Slovakia, Kosice (ANTIK)        ' 'http://speedtest.antik.sk'
