@@ -249,6 +249,10 @@ print_speedtest_usa() {
 	speed_test '9560' 'USA, Indianapolis (Metronet)  ' 'http://speedtest2.iplwin75.metronetinc.com'
 	speed_test '5111' 'USA, Cleveland (AT&T)         ' 'http://cle.speedtest.sbcglobal.net'
 	speed_test '17384' 'USA, Chicago (Windstream)     ' 'http://chicago02.speedtest.windstream.net'
+	speed_test '5108' 'USA, St. Louis (AT&T)         ' 'http://stl.speedtest.sbcglobal.net'
+	speed_test '2917' 'USA, Minneapolis (US Internet)' 'http://speedtest.usiwireless.com'
+	speed_test '17709' 'USA, Kansas City (UPNfiber)   ' 'http://speedtest.upnfiber.com'
+	speed_test '17751' 'USA, Oklahoma City (OneNet)   ' 'http://okc-speedtest.onenet.net'
 	speed_test '14238' 'USA, Dallas (Frontier)        ' 'http://dallas.tx.speedtest.frontier.com'
 	speed_test '16974' 'USA, Los Angeles (Spectrum)   ' 'http://speedtest.west.rr.com'
 	 
