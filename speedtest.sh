@@ -254,6 +254,15 @@ print_speedtest_usa() {
 	speed_test '17709' 'USA, Kansas City (UPNfiber)   ' 'http://speedtest.upnfiber.com'
 	speed_test '17751' 'USA, Oklahoma City (OneNet)   ' 'http://okc-speedtest.onenet.net'
 	speed_test '14238' 'USA, Dallas (Frontier)        ' 'http://dallas.tx.speedtest.frontier.com'
+	speed_test '5107' 'USA, San Antonio, TX (AT&T)   ' 'http://sat.speedtest.sbcglobal.net'
+	speed_test '19124' 'USA, Denver (Vistabeam)       ' 'http://ookla-denver.vistabeam.com'
+	speed_test '16869' 'USA, Albuquerque (Plateau Tel)' 'http://speedtest4.plateautel.net'
+	speed_test '16613' 'USA, Phoenix (Cox)            ' 'http://speedtest.rd.ph.cox.net'
+	speed_test '2206' 'USA, Salt Lake City (UTOPIA)  ' 'http://speedtest2.utopiafiber.net'
+	speed_test '7878' 'USA, Helena, MT (The Fusion)  ' 'http://helenast2.northcentraltower.com'
+	speed_test '16622' 'USA, Las Vegas (Cox)          ' 'http://speedtest.rd.lv.cox.net'
+	speed_test '8879' 'USA, Seattle (Sprint)         ' 'http://perftools2.sttlwa.sprintadp.net'
+	speed_test '5026' 'USA, San Francisco (AT&T)     ' 'http://sfo.speedtest.sbcglobal.net'
 	speed_test '16974' 'USA, Los Angeles (Spectrum)   ' 'http://speedtest.west.rr.com'
 	 
 	rm -rf speedtest.py
