@@ -244,12 +244,12 @@ print_speedtest_usa() {
 	speed_test '5113' 'USA, Washington, DC (AT&T)    ' 'http://was.speedtest.sbcglobal.net'
 	speed_test '5028' 'USA, Charlotte, NC (AT&T)     ' 'http://clt.speedtest.sbcglobal.net'
 	speed_test '14231' 'USA, Atlanta (Frontier)       ' 'http://atlanta.ga.speedtest.frontier.com'
-	speed_test '15811' 'USA, Jacksonville (SLfiber)   ' 'http://speedtest10g.jax.slfiber.com'
 	speed_test '14237' 'USA, Miami (Frontier)         ' 'http://miami.fl.speedtest.frontier.com'
 	speed_test '15779' 'USA, Nashville (Sprint)       ' 'http://ookla1.nsvltn.sprintadp.net'
+	speed_test '9560' 'USA, Indianapolis (Metronet)  ' 'http://speedtest2.iplwin75.metronetinc.com'
+	speed_test '5111' 'USA, Cleveland (AT&T)         ' 'http://cle.speedtest.sbcglobal.net'
 	speed_test '17384' 'USA, Chicago (Windstream)     ' 'http://chicago02.speedtest.windstream.net'
 	speed_test '14238' 'USA, Dallas (Frontier)        ' 'http://dallas.tx.speedtest.frontier.com'
-	speed_test '14237' 'USA, Miami (Frontier)         ' 'http://miami.fl.speedtest.frontier.com'
 	speed_test '16974' 'USA, Los Angeles (Spectrum)   ' 'http://speedtest.west.rr.com'
 	 
 	rm -rf speedtest.py
