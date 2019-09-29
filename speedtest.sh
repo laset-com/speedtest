@@ -6,7 +6,7 @@ about() {
 	echo " \                      Bench.Monster                    / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                  v1.2.3 (28 Sep 2019)                 / "
+	echo " \                  v1.2.4 (29 Sep 2019)                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -227,6 +227,40 @@ print_speedtest() {
 	speed_test '1267' 'Australia, Sydney (Yes Optus) ' 'http://s1.speedtest.syd.optusnet.com.au'
 	speed_test '6591' 'RSA, Randburg (Cool Ideas)    ' 'http://sp2.cisp.co.za'
 	speed_test '23319' 'Brazil, Sao Paulo (Nextel)    ' 'http://speedtestspo.eng.nextel.com.br'
+	 
+	rm -rf speedtest.py
+}
+
+print_speedtest_europe() {
+	echo "" | tee -a $log
+	printf "## Europe Speedtest" | tee -a $log
+	echo "" | tee -a $log
+	echo "" | tee -a $log
+	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+        speed_test '' 'Speedtest.net                   '
+	speed_test '1041' 'Ireland, Dublin (Digiweb)       ' 'http://speedtest.digiweb.ie'
+	speed_test '18189' 'UK, London (Community Fibre)    ' 'http://sp01.ld8.lon.eng.communityfibre.co.uk'
+	speed_test '20507' 'Germany, Berlin (DNS:NET)       ' 'http://speedtest01.dns-net.de'
+	speed_test '27345' 'Germany, Munich (InterNetX)     ' 'http://speedtest.internetx.de'
+	speed_test '8751' 'Denmark, Copenhagen (Fiberby)   ' 'http://speedtest.internetx.de'
+	speed_test '26852' 'Sweden, Stockholm (SUNET)       ' 'http://fd.sunet.se'
+	speed_test '8018' 'Norway, Oslo (NextGenTel)       ' 'http://sp2.nextgentel.no'
+	speed_test '27852' 'France, Lyon (SFR)              ' 'http://cor2.speedtest.mire.sfr.net'
+	speed_test '1680' 'Spain, Madrid (Adamo)           ' 'http://speedtest.mad.adamo.es'
+	speed_test '8160' 'Portugal, Lisbon (Evolute)      ' 'http://speedtest1.evolute.pt'
+	speed_test '11842' 'Italy, Rome (Vodafone)          ' 'http://speedtestrm1.vodafone.it'
+	speed_test '18718' 'Czechia, Prague (T-Mobile)      ' 'http://speedtest3.t-mobile.cz'
+	speed_test '15152' 'Austria, Vienna (Fonira)        ' 'http://speedtest.fonira.at'
+	speed_test '4166' 'Poland, Warsaw (Orange)         ' 'http://war-o2.speedtest.orange.pl'
+	speed_test '691' 'Slovakia, Kosice (ANTIK)        ' 'http://speedtest.antik.sk'
+	speed_test '6446' 'Ukraine, Kyiv (KyivStar)        ' 'http://www.speedtest2.kyivstar.ua'
+	speed_test '5834' 'Latvia, Riga (Bite)             ' 'http://speedtest2.bite.lv'
+	speed_test '4231' 'Russia, St.Petersburg (Prometey)' 'http://speedtest1.ptspb.net'
+	speed_test '1907' 'Russia, Moscow (MTS)            ' 'http://librarian.comstar.ru'
+	speed_test '4590' 'Romania, Bucharest (Orange)     ' 'http://speedtestbuc.orangero.net'
+	speed_test '1727' 'Greece, Athens (GRNET)          ' 'http://speed-test.gr-ix.gr'
+	speed_test '23316' 'Turkey, Istanbul (Radore)       ' 'http://speedtest.radore.com'
 	 
 	rm -rf speedtest.py
 }
@@ -582,7 +616,7 @@ get_system_info() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.2.3 beta (29 Sep 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.2.4 beta (29 Sep 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
@@ -662,6 +696,24 @@ bench_all(){
 	sharetest clbin;
 }
 
+europe_bench(){
+	region_name="Europe"
+	print_intro;
+	benchinit;
+	clear
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	print_io;
+	print_speedtest_europe;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+
 ukraine_bench(){
 	region_name="Ukraine"
 	print_intro;
@@ -718,7 +770,9 @@ case $1 in
 		bench_all;;
 	'about'|'-about'|'--about' )
 		about;;
-	'ukraine'|'-ukraine'|'--ukraine'|'-ua'|'--ua'|'-Ukraine'|'--Ukraine' )
+	'europe'|'-europe'|'--europe'|'eu'|'-eu'|'--eu'|'Europe'|'-Europe'|'--Europe' )
+		europe_bench;;
+	'ukraine'|'-ukraine'|'--ukraine'|'ua'|'-ua'|'--ua'|'ukr'|'-ukr'|'--ukr'|'Ukraine'|'-Ukraine'|'--Ukraine' )
 		ukraine_bench;;
 	'lviv'|'-lviv'|'--lviv'|'-Lviv'|'--Lviv' )
 		lviv_bench;;
