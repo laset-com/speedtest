@@ -874,7 +874,7 @@ case $1 in
 		ukraine_bench;;
 	'lviv'|'-lviv'|'--lviv'|'-Lviv'|'--Lviv' )
 		lviv_bench;;
-	'M-East'|'-M-East'|'--M-East'|'-m-east'|'--m-east'|'-meast'|'--meast'|'-Middle-East'|'-me'| )
+	'M-East'|'-M-East'|'--M-East'|'-m-east'|'--m-east'|'-meast'|'--meast'|'-Middle-East'|'-me' )
 		meast_bench;;
 	'share'|'-s'|'--s'|'-share'|'--share' )
 		bench_all;
