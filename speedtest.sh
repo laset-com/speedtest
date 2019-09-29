@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                  v1.2.6 (29 Sep 2019)                 / "
+	echo " \                  v1.2.6 (30 Sep 2019)                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -343,6 +343,27 @@ print_speedtest_lviv() {
 	speed_test '6225' 'Ukraine, Lviv (ZNet)    ' 'http://178.212.102.70'
 	speed_test '1204' 'Ukraine, Lviv (Network) ' 'http://speedtest.network.lviv.ua'
 	speed_test '21900' 'Ukraine, Lviv (LimNet)  ' 'http://speedtest.limnet.com.ua'
+	 
+	rm -rf speedtest.py
+}
+
+print_speedtest_meast() {
+	echo "" | tee -a $log
+	printf "## Middle East Speedtest" | tee -a $log
+	echo "" | tee -a $log
+	echo "" | tee -a $log
+	printf "%-30s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+        speed_test '' 'Speedtest.net               '
+	speed_test '16595' 'Cyprus, Larnaca (skywisp)   ' 'http://speedtest1.skywisp.com.cy'
+	speed_test '2434' 'Israel, Haifa (013Netvision)' 'http://speed2.013.net'
+	speed_test '1689' 'Egypt, Cairo (Vodafone)     ' 'http://speedtest.vodafone.com.eg'
+	speed_test '9137' 'Lebanon, Tripoli (Be-Wise)  ' 'http://sp2.wise-isp.com'
+	speed_test '17398' 'UAE, Dubai (Orixcom)        ' 'http://speedtest.orixcom.net'
+	speed_test '14888' 'Qatar, Doha (Vodafone)      ' 'http://speedtest01.vodafone.com.qa'
+	speed_test '608' 'SA, Riyadh (Saudi Telecom)  ' 'http://speedtest.saudi.net.sa'
+	speed_test '17574' 'Bahrain, Manama (Zain)      ' 'http://speedtest.saudi.net.sa'
+	speed_test '13583' 'Iran, Tehran (Fanap Telecom)' 'http://speedtest.fanaptelecom.ir'
 	 
 	rm -rf speedtest.py
 }
@@ -806,6 +827,23 @@ lviv_bench(){
 	cleanup;
 	sharetest clbin;
 }
+meast_bench(){
+	region_name="Middle-East"
+	print_intro;
+	benchinit;
+	clear
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	print_io;
+	print_speedtest_meast;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
 
 
 
@@ -836,6 +874,8 @@ case $1 in
 		ukraine_bench;;
 	'lviv'|'-lviv'|'--lviv'|'-Lviv'|'--Lviv' )
 		lviv_bench;;
+	'M-East'|'-M-East'|'--M-East'|'-m-east'|'--m-east'|'-meast'|'--meast'|'-Middle-East'|'-me'| )
+		meast_bench;;
 	'share'|'-s'|'--s'|'-share'|'--share' )
 		bench_all;
 		is_share="share"
