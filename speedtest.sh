@@ -721,7 +721,7 @@ bench_all(){
 	sharetest clbin;
 }
 
-europe_bench(){
+usa_bench(){
 	region_name="USA"
 	print_intro;
 	benchinit;
