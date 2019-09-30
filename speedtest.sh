@@ -305,6 +305,41 @@ print_speedtest_europe() {
 	rm -rf speedtest.py
 }
 
+print_speedtest_asia() {
+	echo "" | tee -a $log
+	printf "## Asia Speedtest" | tee -a $log
+	echo "" | tee -a $log
+	echo "" | tee -a $log
+	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+        speed_test '' 'Speedtest.net                   '
+	speed_test '1041' 'Ireland, Dublin (Digiweb)       ' 'http://speedtest.digiweb.ie'
+	speed_test '18189' 'UK, London (Community Fibre)    ' 'http://sp01.ld8.lon.eng.communityfibre.co.uk'
+	speed_test '26764' 'Netherlands, Amsterdam (MaxiTEL)' 'http://speedtest.as61349.net'
+	speed_test '20507' 'Germany, Berlin (DNS:NET)       ' 'http://speedtest01.dns-net.de'
+	speed_test '27345' 'Germany, Munich (InterNetX)     ' 'http://speedtest.internetx.de'
+	speed_test '8751' 'Denmark, Copenhagen (Fiberby)   ' 'http://speedtest.internetx.de'
+	speed_test '26852' 'Sweden, Stockholm (SUNET)       ' 'http://fd.sunet.se'
+	speed_test '8018' 'Norway, Oslo (NextGenTel)       ' 'http://sp2.nextgentel.no'
+	speed_test '27852' 'France, Lyon (SFR)              ' 'http://cor2.speedtest.mire.sfr.net'
+	speed_test '1680' 'Spain, Madrid (Adamo)           ' 'http://speedtest.mad.adamo.es'
+	speed_test '8160' 'Portugal, Lisbon (Evolute)      ' 'http://speedtest1.evolute.pt'
+	speed_test '11842' 'Italy, Rome (Vodafone)          ' 'http://speedtestrm1.vodafone.it'
+	speed_test '21194' 'Czechia, Prague (365internet)   ' 'http://speedtest.365internet.cz'
+	speed_test '15152' 'Austria, Vienna (Fonira)        ' 'http://speedtest.fonira.at'
+	speed_test '4166' 'Poland, Warsaw (Orange)         ' 'http://war-o2.speedtest.orange.pl'
+	speed_test '691' 'Slovakia, Kosice (ANTIK)        ' 'http://speedtest.antik.sk'
+	speed_test '6446' 'Ukraine, Kyiv (KyivStar)        ' 'http://www.speedtest2.kyivstar.ua'
+	speed_test '5834' 'Latvia, Riga (Bite)             ' 'http://speedtest2.bite.lv'
+	speed_test '4231' 'Russia, St.Petersburg (Prometey)' 'http://speedtest1.ptspb.net'
+	speed_test '1907' 'Russia, Moscow (MTS)            ' 'http://librarian.comstar.ru'
+	speed_test '4590' 'Romania, Bucharest (Orange)     ' 'http://speedtestbuc.orangero.net'
+	speed_test '1727' 'Greece, Athens (GRNET)          ' 'http://speed-test.gr-ix.gr'
+	speed_test '23316' 'Turkey, Istanbul (Radore)       ' 'http://speedtest.radore.com'
+	 
+	rm -rf speedtest.py
+}
+
 print_speedtest_ukraine() {
 	echo "" | tee -a $log
 	printf "## Ukraine Speedtest" | tee -a $log
@@ -793,6 +828,24 @@ europe_bench(){
 	sharetest clbin;
 }
 
+europe_bench(){
+	region_name="Asia"
+	print_intro;
+	benchinit;
+	clear
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	print_io;
+	print_speedtest_asia;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+
 ukraine_bench(){
 	region_name="Ukraine"
 	print_intro;
@@ -869,6 +922,8 @@ case $1 in
 	'usa'|'-usa'|'--usa'|'us'|'-us'|'--us'|'USA'|'-USA'|'--USA' )
 		usa_bench;;
 	'europe'|'-europe'|'--europe'|'eu'|'-eu'|'--eu'|'Europe'|'-Europe'|'--Europe' )
+		europe_bench;;
+	'asia'|'-asia'|'--asia'|'as'|'-as'|'--as'|'Asia'|'-Asia'|'--Asia' )
 		europe_bench;;
 	'ukraine'|'-ukraine'|'--ukraine'|'ua'|'-ua'|'--ua'|'ukr'|'-ukr'|'--ukr'|'Ukraine'|'-Ukraine'|'--Ukraine' )
 		ukraine_bench;;
