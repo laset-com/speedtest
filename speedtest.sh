@@ -313,9 +313,9 @@ print_speedtest_asia() {
 	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net                   '
-	speed_test '1041' 'Ireland, Dublin (Digiweb)       ' 'http://speedtest.digiweb.ie'
-	speed_test '18189' 'UK, London (Community Fibre)    ' 'http://sp01.ld8.lon.eng.communityfibre.co.uk'
-	speed_test '26764' 'Netherlands, Amsterdam (MaxiTEL)' 'http://speedtest.as61349.net'
+	speed_test '15028' 'India, New Delhi (Spectra)      ' 'http://speedtest.spectra.co'
+	speed_test '14302' 'India, Mumbai (Five Network)    ' 'http://speedtest.fivenetwork.com'
+	speed_test '23722' 'India, Bengaluru (DBroadband)   ' 'http://speedtest.dbroadband.in'
 	speed_test '20507' 'Germany, Berlin (DNS:NET)       ' 'http://speedtest01.dns-net.de'
 	speed_test '27345' 'Germany, Munich (InterNetX)     ' 'http://speedtest.internetx.de'
 	speed_test '8751' 'Denmark, Copenhagen (Fiberby)   ' 'http://speedtest.internetx.de'
