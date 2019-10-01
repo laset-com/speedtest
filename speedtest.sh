@@ -226,7 +226,7 @@ print_speedtest() {
 	speed_test '8407' 'Japan, Tokyo (ATCC)           ' 'http://sp6.atcc-gns.net'
 	speed_test '1267' 'Australia, Sydney (Yes Optus) ' 'http://s1.speedtest.syd.optusnet.com.au'
 	speed_test '6591' 'RSA, Randburg (Cool Ideas)    ' 'http://sp2.cisp.co.za'
-	speed_test '23319' 'Brazil, Sao Paulo (Nextel)    ' 'http://speedtestspo.eng.nextel.com.br'
+	speed_test '11488' 'Brazil, Sao Paulo (Criare)    ' 'http://ookla.spcom.net.br'
 	 
 	rm -rf speedtest.py
 }
