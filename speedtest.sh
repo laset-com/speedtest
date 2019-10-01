@@ -314,10 +314,10 @@ print_speedtest_asia() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net                   '
 	speed_test '15028' 'India, New Delhi (Spectra)      ' 'http://speedtest.spectra.co'
-	speed_test '9049' 'India, Mumbai (I-ON)            ' 'http://sp2.dvois.com/'
+	speed_test '6403' 'India, Mumbai (YOU)             ' 'http://sp2-mum.youbroadband.in'
 	speed_test '23722' 'India, Bengaluru (DBroadband)   ' 'http://speedtest.dbroadband.in'
 	speed_test '1131' 'Sri Lanka, Colombo (Telecom PLC)' 'http://speedtest2.sltnet.lk'
-	speed_test '14414' 'Bangladesh, Dhaka (Bangla Trac) ' 'http://speedtest.btraccl.net'
+	speed_test '7147' 'Bangladesh, Dhaka (Skytel)      ' 'http://speedtest2.skytelbd.com'
 	speed_test '14901' 'Bhutan, Thimphu (Bhutan Telecom)' 'http://speedtest.bt.bt'
 	speed_test '20882' 'Myanmar, Mandalay (Ooredoo)     ' 'http://speedtest.ooredoo.com.mm'
 	speed_test '26845' 'Laos, Vientaine (Mangkone)      ' 'http://speedtest.mangkone.com'
