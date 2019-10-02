@@ -313,7 +313,7 @@ print_speedtest_asia() {
 	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net                   '
-	speed_test '15028' 'India, New Delhi (Spectra)      ' 'http://speedtest.spectra.co'
+	speed_test '5715' 'India, New Delhi (Powernet)     ' 'http://spdel.pcpli.net'
 	speed_test '6746' 'India, Mumbai (SevenStar)       ' 'http://speed2.7starnetworks.com'
 	speed_test '23722' 'India, Bengaluru (DBroadband)   ' 'http://speedtest.dbroadband.in'
 	speed_test '1131' 'Sri Lanka, Colombo (Telecom PLC)' 'http://speedtest2.sltnet.lk'
@@ -331,10 +331,9 @@ print_speedtest_asia() {
 	speed_test '27261' 'Malaysia, Kuala Lumpur (Extreme)' 'http://kl-speedtest.ebb.my'
 	speed_test '7556' 'Singapore (PT FirstMedia)       ' 'http://sg-speedtest.link.net.id'
 	speed_test '17516' 'Indonesia, Jakarta (Desnet)     ' 'http://speedtest.desnet.id'
-	speed_test '20273' 'Philippines, Manila (Globe)     ' 'http://mnl-speedtest.globe.com.ph'
+	speed_test '26048' 'Philippines, Manila (Sky Fiber) ' 'http://mnl-speedtest.globe.com.ph'
 	speed_test '24375' 'Hong Kong (GTT)                 ' 'http://hon.speedtest.gtt.net'
 	speed_test '13506' 'Taiwan, Taipei (TAIFO)          ' 'http://speedtest.taifo.com.tw'
-	speed_test '5249' 'South Korea, Gimhae (Random)    ' 'http://kr12.host.speedtest.net'
 	speed_test '8407' 'Japan, Tokyo (ATCC)             ' 'http://sp6.atcc-gns.net'
 	 
 	rm -rf speedtest.py
