@@ -317,7 +317,7 @@ print_speedtest_asia() {
 	speed_test '6746' 'India, Mumbai (SevenStar)       ' 'http://speed2.7starnetworks.com'
 	speed_test '23722' 'India, Bengaluru (DBroadband)   ' 'http://speedtest.dbroadband.in'
 	speed_test '1131' 'Sri Lanka, Colombo (Telecom PLC)' 'http://speedtest2.sltnet.lk'
-	speed_test '24141' 'Pakistan, Islamabad (Ufone)     ' 'http://uspeedtest01.ufone.com'
+	speed_test '21188' 'Pakistan, Islamabad (Jazz)      ' 'http://speedtest-isb1.jazz.com.pk'
 	speed_test '2802' 'Kazakhstan, Astana (KCell)      ' 'http://ast-st-02.kcell.kz'
 	speed_test '3212' 'Tajikistan, Dushanbe (Babilon-M)' 'http://ispeedtest.babilon-m.tj'
 	speed_test '5792' 'Mongolia, Ulaanbaatar (Mobicom) ' 'http://coverage.mobicom.mn'
