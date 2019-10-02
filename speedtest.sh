@@ -313,7 +313,7 @@ print_speedtest_asia() {
 	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net                   '
-	speed_test '5715' 'India, New Delhi (Powernet)     ' 'http://spdel.pcpli.net'
+	speed_test '9930' 'India, New Delhi (Airtel)       ' 'http://speedtestggn2.airtel.in'
 	speed_test '6746' 'India, Mumbai (SevenStar)       ' 'http://speed2.7starnetworks.com'
 	speed_test '23722' 'India, Bengaluru (DBroadband)   ' 'http://speedtest.dbroadband.in'
 	speed_test '1131' 'Sri Lanka, Colombo (Telecom PLC)' 'http://speedtest2.sltnet.lk'
