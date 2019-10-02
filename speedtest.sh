@@ -334,7 +334,7 @@ print_speedtest_asia() {
 	speed_test '20273' 'Philippines, Manila (Globe)     ' 'http://mnl-speedtest.globe.com.ph'
 	speed_test '24375' 'Hong Kong (GTT)                 ' 'http://hon.speedtest.gtt.net'
 	speed_test '13506' 'Taiwan, Taipei (TAIFO)          ' 'http://speedtest.taifo.com.tw'
-	speed_test '5249' 'South Korea, Seoul (Sejong)     ' 'http://kr12.host.speedtest.net'
+	speed_test '6527' 'South Korea, Seoul (KDC)        ' 'http://koreatest.kdatacenter.com'
 	speed_test '8407' 'Japan, Tokyo (ATCC)             ' 'http://sp6.atcc-gns.net'
 	 
 	rm -rf speedtest.py
