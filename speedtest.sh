@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                  v1.2.6 (30 Sep 2019)                 / "
+	echo " \                  v1.2.7 (2 Oct 2019)                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -328,6 +328,14 @@ print_speedtest_asia() {
 	speed_test '4347' 'Thailand, Bangkok (CAT Telecom) ' 'http://www.catspeedtest.com'
 	speed_test '12545' 'Cambodia, Phnom Penh (Smart)    ' 'http://speedtest.smart.com.kh'
 	speed_test '2552' 'Vietnam, Hanoi (FPT Telecom)    ' 'http://speedtesthn.rad.fpt.net'
+	speed_test '27261' 'Malaysia, Kuala Lumpur (Extreme)' 'http://kl-speedtest.ebb.my'
+	speed_test '7556' 'Singapore (PT FirstMedia)       ' 'http://sg-speedtest.link.net.id'
+	speed_test '17516' 'Indonesia, Jakarta (Desnet)     ' 'http://speedtest.desnet.id'
+	speed_test '20273' 'Philippines, Manila (Globe)     ' 'http://mnl-speedtest.globe.com.ph'
+	speed_test '24375' 'Hong Kong (GTT)                 ' 'http://hon.speedtest.gtt.net'
+	speed_test '13506' 'Taiwan, Taipei (TAIFO)          ' 'http://speedtest.taifo.com.tw'
+	speed_test '5249' 'South Korea, Seoul (Sejong)     ' 'http://kr12.host.speedtest.net'
+	speed_test '8407' 'Japan, Tokyo (ATCC)             ' 'http://sp6.atcc-gns.net'
 	 
 	rm -rf speedtest.py
 }
@@ -704,7 +712,7 @@ get_system_info() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.2.6 beta (30 Sep 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.2.7 beta (2 Oct 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
