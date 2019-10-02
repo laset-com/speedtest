@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                  v1.2.7 (2 Oct 2019)                  / "
+	echo " \                  v1.2.8 (2 Oct 2019)                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -221,9 +221,9 @@ print_speedtest() {
 	speed_test '11842' 'Italy, Rome (Vodafone)        ' 'http://speedtestrm1.vodafone.it'
 	speed_test '1907' 'Russia, Moscow (MTS)          ' 'http://librarian.comstar.ru'
 	speed_test '2434' 'Israel, Haifa (013Netvision)  ' 'http://speed2.013.net'
-	speed_test '15028' 'India, New Delhi (Spectra)    ' 'http://speedtest.spectra.co'
+	speed_test '9930' 'India, New Delhi (Airtel)     ' 'http://speedtestggn2.airtel.in'
 	speed_test '7556' 'Singapore (FirstMedia)        ' 'http://sg-speedtest.link.net.id'
-	speed_test '8407' 'Japan, Tokyo (ATCC)           ' 'http://sp6.atcc-gns.net'
+	speed_test '7139' 'Japan, Tsukuba (SoftEther)    ' 'http://speedtest2.softether.co.jp'
 	speed_test '1267' 'Australia, Sydney (Yes Optus) ' 'http://s1.speedtest.syd.optusnet.com.au'
 	speed_test '6591' 'RSA, Randburg (Cool Ideas)    ' 'http://sp2.cisp.co.za'
 	speed_test '11488' 'Brazil, Sao Paulo (Criare)    ' 'http://ookla.spcom.net.br'
@@ -334,7 +334,7 @@ print_speedtest_asia() {
 	speed_test '26048' 'Philippines, Manila (Sky Fiber) ' 'http://mnl-speedtest.globe.com.ph'
 	speed_test '24375' 'Hong Kong (GTT)                 ' 'http://hon.speedtest.gtt.net'
 	speed_test '13506' 'Taiwan, Taipei (TAIFO)          ' 'http://speedtest.taifo.com.tw'
-	speed_test '8407' 'Japan, Tokyo (ATCC)             ' 'http://sp6.atcc-gns.net'
+	speed_test '7139' 'Japan, Tsukuba (SoftEther)      ' 'http://speedtest2.softether.co.jp'
 	 
 	rm -rf speedtest.py
 }
@@ -711,7 +711,7 @@ get_system_info() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.2.7 beta (2 Oct 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.2.8 beta (2 Oct 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
