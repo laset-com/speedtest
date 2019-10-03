@@ -218,7 +218,7 @@ print_speedtest() {
 	speed_test '27852' 'France, Lyon (SFR)            ' 'http://cor2.speedtest.mire.sfr.net'
 	speed_test '20507' 'Germany, Berlin (DNS:NET)     ' 'http://speedtest01.dns-net.de'
 	speed_test '1680' 'Spain, Madrid (Adamo)         ' 'http://speedtest.mad.adamo.es'
-	speed_test '11842' 'Italy, Rome (Vodafone)        ' 'http://speedtestrm1.vodafone.it'
+	speed_test '395' 'Italy, Rome (Unidata)         ' 'http://speedtest2.unidata.it'
 	speed_test '1907' 'Russia, Moscow (MTS)          ' 'http://librarian.comstar.ru'
 	speed_test '2434' 'Israel, Haifa (013Netvision)  ' 'http://speed2.013.net'
 	speed_test '9930' 'India, New Delhi (Airtel)     ' 'http://speedtestggn2.airtel.in'
