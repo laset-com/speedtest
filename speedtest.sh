@@ -827,7 +827,7 @@ europe_bench(){
 	sharetest clbin;
 }
 
-europe_bench(){
+asia_bench(){
 	region_name="Asia"
 	print_intro;
 	benchinit;
@@ -923,7 +923,7 @@ case $1 in
 	'europe'|'-europe'|'--europe'|'eu'|'-eu'|'--eu'|'Europe'|'-Europe'|'--Europe' )
 		europe_bench;;
 	'asia'|'-asia'|'--asia'|'as'|'-as'|'--as'|'Asia'|'-Asia'|'--Asia' )
-		europe_bench;;
+		asia_bench;;
 	'ukraine'|'-ukraine'|'--ukraine'|'ua'|'-ua'|'--ua'|'ukr'|'-ukr'|'--ukr'|'Ukraine'|'-Ukraine'|'--Ukraine' )
 		ukraine_bench;;
 	'lviv'|'-lviv'|'--lviv'|'-Lviv'|'--Lviv' )
