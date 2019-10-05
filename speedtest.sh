@@ -348,9 +348,15 @@ print_speedtest_sa() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net                       '
 	speed_test '9948' 'Brazil, Sao Paulo (Vogel Telecom)   ' 'http://speedtestsp1.stech.net.br'
+	speed_test '18890' 'Brazil, Fortaleza (Claro)           ' 'http://spd1.claro.com.br'
+	speed_test '25199' 'Colombia, Bogota (Ufinet)           ' 'http://speedtest-bog.ufinet.com.co'
+	speed_test '10511' 'Ecuador, Quito (Iplanet)            ' 'http://sp1.iplanet.ec'
+	speed_test '5272' 'Peru, Lima (Fiberluxperu)           ' 'http://medidor.fiberluxperu.com'
+	speed_test '27563' 'Bolivia, La Paz (Sirio)            ' 'http://speedtest.sirio.com.bo'
 	speed_test '2830' 'Paraguay, Asuncion (Personal)       ' 'http://speedtest1.personal.com.py'
 	speed_test '11508' 'Chile, Santiago (Grupo GTD)         ' 'http://nacional.grupogtd.com'
 	speed_test '6825' 'Argentina, Buenos Aires (Telefonica)' 'http://speedtest2.gics.telefonica.com.ar'
+	speed_test '1546' 'Uruguay, Montevideo (Antel)         ' 'http://speedtest.movistar.com.uy'
 	 
 	rm -rf speedtest.py
 }
@@ -734,8 +740,8 @@ print_intro() {
 }
 
 sharetest() {
-	echo " Share result:" | tee -a $log
-	echo " · $result_speed" | tee -a $log
+	echo " Share result:"
+	echo " - $result_speed"
 	log_preupload
 	case $1 in
 	'ubuntu')
@@ -748,7 +754,7 @@ sharetest() {
 	esac
 
 	# print result info
-	echo " · $share_link" | tee -a $log
+	echo " - $share_link"
 	next
 	echo ""
 	rm -f $log_up
