@@ -166,7 +166,7 @@ speed_test(){
 
 	        temp=$(echo "$relatency" | awk -F '.' '{print $1}')
         	if [[ ${temp} -gt 50 ]]; then
-            	relatency=" (*)"${relatency}
+            	relatency=${relatency}"*"
         	fi
 	        local nodeName=$2
 
@@ -354,7 +354,7 @@ print_speedtest_sa() {
 	speed_test '5272' 'Peru, Lima (Fiberluxperu)           ' 'http://medidor.fiberluxperu.com'
 	speed_test '27563' 'Bolivia, La Paz (Sirio)             ' 'http://speedtest.sirio.com.bo'
 	speed_test '2830' 'Paraguay, Asuncion (Personal)       ' 'http://speedtest1.personal.com.py'
-	speed_test '24622' 'Chile, Santiago (Netglobalis)       ' 'http://speedtest.netglobalis.net'
+	speed_test '21423' 'Chile, Santiago (Pronto IP)         ' 'http://speedserv.prontoip.com'
 	speed_test '6825' 'Argentina, Buenos Aires (Telefonica)' 'http://speedtest2.gics.telefonica.com.ar'
 	speed_test '1546' 'Uruguay, Montevideo (Antel)         ' 'http://speedtest.movistar.com.uy'
 	 
