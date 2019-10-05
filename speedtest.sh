@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                  v1.3.0 (5 Oct 2019)                  / "
+	echo " \                  v1.3.1 (5 Oct 2019)                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -666,9 +666,9 @@ print_io() {
 
 print_system_info() {
 	echo -e " OS                   : $opsy ($lbit Bit)" | tee -a $log
-	echo -e " Kernel               : $virtual / $kern" | tee -a $log
+	echo -e " Virt/Kernel          : $virtual / $kern" | tee -a $log
 	echo -e " CPU Model            : $cname" | tee -a $log
-	echo -e " CPU Cores            : $cores Cores @ $freq MHz $arch $corescache Cache" | tee -a $log
+	echo -e " CPU Cores            : $cores @ $freq MHz $arch $corescache Cache" | tee -a $log
 	echo -e " Load Average         : $load" | tee -a $log
 	echo -e " Total Space          : $disk_used_size GB / $disk_total_size GB " | tee -a $log
 	echo -e " Total RAM            : $uram MB / $tram MB ($bram MB Buff)" | tee -a $log
@@ -709,7 +709,7 @@ get_system_info() {
 	bram=$( free -m | awk '/Mem/ {print $6}' )
 	swap=$( free -m | awk '/Swap/ {print $2}' )
 	uswap=$( free -m | awk '/Swap/ {print $3}' )
-	up=$( awk '{a=$1/86400;b=($1%86400)/3600;c=($1%3600)/60} {printf("%d days %d hour %d min\n",a,b,c)}' /proc/uptime )
+	up=$( awk '{a=$1/86400;b=($1%86400)/3600;c=($1%3600)/60} {printf("%d days %d:%d\n",a,b,c)}' /proc/uptime )
 	load=$( w | head -1 | awk -F'load average:' '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
 	opsy=$( get_opsy )
 	arch=$( uname -m )
@@ -733,7 +733,7 @@ get_system_info() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.3.0 beta (5 Oct 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.3.1 beta (5 Oct 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
