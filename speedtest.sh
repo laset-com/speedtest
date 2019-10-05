@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                  v1.2.8 (2 Oct 2019)                  / "
+	echo " \                  v1.2.9 (5 Oct 2019)                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -335,6 +335,22 @@ print_speedtest_asia() {
 	speed_test '24375' 'Hong Kong (GTT)                 ' 'http://hon.speedtest.gtt.net'
 	speed_test '13506' 'Taiwan, Taipei (TAIFO)          ' 'http://speedtest.taifo.com.tw'
 	speed_test '7139' 'Japan, Tsukuba (SoftEther)      ' 'http://speedtest2.softether.co.jp'
+	 
+	rm -rf speedtest.py
+}
+
+print_speedtest_sa() {
+	echo "" | tee -a $log
+	printf "## South America Speedtest" | tee -a $log
+	echo "" | tee -a $log
+	echo "" | tee -a $log
+	printf "%-38s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+        speed_test '' 'Speedtest.net                       '
+	speed_test '9948' 'Brazil, Sao Paulo (Vogel Telecom)   ' 'http://speedtestsp1.stech.net.br'
+	speed_test '2830' 'Paraguay, Asuncion (Personal)       ' 'http://speedtest1.personal.com.py'
+	speed_test '11508' 'Chile, Santiago (Grupo GTD)         ' 'http://nacional.grupogtd.com'
+	speed_test '6825' 'Argentina, Buenos Aires (Telefonica)' 'http://speedtest2.gics.telefonica.com.ar'
 	 
 	rm -rf speedtest.py
 }
@@ -711,7 +727,7 @@ get_system_info() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.2.8 beta (2 Oct 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.2.9 beta (5 Oct 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
@@ -845,6 +861,24 @@ asia_bench(){
 	sharetest clbin;
 }
 
+sa_bench(){
+	region_name="South-America"
+	print_intro;
+	benchinit;
+	clear
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	print_io;
+	print_speedtest_sa;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+
 ukraine_bench(){
 	region_name="Ukraine"
 	print_intro;
@@ -924,6 +958,8 @@ case $1 in
 		europe_bench;;
 	'asia'|'-asia'|'--asia'|'as'|'-as'|'--as'|'Asia'|'-Asia'|'--Asia' )
 		asia_bench;;
+	'sa'|'-sa'|'--sa'|'-South-America' )
+		sa_bench;;
 	'ukraine'|'-ukraine'|'--ukraine'|'ua'|'-ua'|'--ua'|'ukr'|'-ukr'|'--ukr'|'Ukraine'|'-Ukraine'|'--Ukraine' )
 		ukraine_bench;;
 	'lviv'|'-lviv'|'--lviv'|'-Lviv'|'--Lviv' )
