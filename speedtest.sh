@@ -685,17 +685,17 @@ print_end_time() {
 	if [[ $time -gt 60 ]]; then
 		min=$(expr $time / 60)
 		sec=$(expr $time % 60)
-		echo -ne " Finished in  : ${min} min ${sec} sec"
+		echo -ne " Finished in : ${min} min ${sec} sec"
 	else
-		echo -ne " Finished in  : ${time} sec"
+		echo -ne " Finished in : ${time} sec"
 	fi
 	#echo -ne "\n Current time : "
 	#echo $(date +%Y-%m-%d" "%H:%M:%S)
 	printf '\n'
 	utc_time=$(date -u '+%F %T')
-	echo " Timestamp    : $utc_time UTC" | tee -a $log
+	echo " Timestamp   : $utc_time UTC" | tee -a $log
 	#echo " Finished!"
-	echo " Results      : $log"
+	echo " Results     : $log"
 	echo "" | tee -a $log
 }
 
