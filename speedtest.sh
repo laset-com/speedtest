@@ -366,7 +366,7 @@ print_speedtest_ukraine() {
 	printf "## Ukraine Speedtest" | tee -a $log
 	echo "" | tee -a $log
 	echo "" | tee -a $log
-	printf "%-32s%-17s%-17s%-10s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
+	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net                 '
 	speed_test '6446' 'Ukraine, Kyiv (KyivStar)      ' 'http://www.speedtest2.kyivstar.ua'
@@ -376,7 +376,7 @@ print_speedtest_ukraine() {
 	speed_test '19332' 'Ukraine, Chernivtsi (C.T.Net) ' 'http://speedtest.ctn.cv.ua'
 	speed_test '3861' 'Ukraine, Zhytomyr (DKS)       ' 'http://speedtest1.dks.com.ua'
 	speed_test '8633' 'Ukraine, Cherkasy (McLaut)    ' 'http://speedtest2.mclaut.com'
-	speed_test '1732' 'Ukraine, Kharkiv (Triolan)    ' 'http://kharkiv.speedtest.triolan.com.ua'
+	speed_test '2970' 'Ukraine, Kharkiv (OnLine)     ' 'http://speedtest.isp.kh.ua'
 	speed_test '23620' 'Ukraine, Dnipro (Fregat)      ' 'http://test.fregat.net'
 	speed_test '2796' 'Ukraine, Odesa (Black Sea)    ' 'http://speedtest.blacksea.net.ua'
 	speed_test '26725' 'Ukraine, Mariupol (CityLine)  ' 'http://speedtest.cl.dn.ua'
