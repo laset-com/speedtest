@@ -349,7 +349,7 @@ print_speedtest_sa() {
         speed_test '' 'Speedtest.net                       '
 	speed_test '9948' 'Brazil, Sao Paulo (Vogel Telecom)   ' 'http://speedtestsp1.stech.net.br'
 	speed_test '18890' 'Brazil, Fortaleza (Claro)           ' 'http://spd1.claro.com.br'
-	speed_test '25199' 'Colombia, Bogota (Ufinet)           ' 'http://speedtest-bog.ufinet.com.co'
+	speed_test '11683' 'Colombia, Bogota (Level 3)          ' 'http://speedtest.globalcrossing.com.co'
 	speed_test '10511' 'Ecuador, Quito (Iplanet)            ' 'http://sp1.iplanet.ec'
 	speed_test '5272' 'Peru, Lima (Fiberluxperu)           ' 'http://medidor.fiberluxperu.com'
 	speed_test '27563' 'Bolivia, La Paz (Sirio)             ' 'http://speedtest.sirio.com.bo'
