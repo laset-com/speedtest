@@ -166,7 +166,7 @@ speed_test(){
 
 	        temp=$(echo "$relatency" | awk -F '.' '{print $1}')
         	if [[ ${temp} -gt 50 ]]; then
-            	relatency=${relatency}"*"
+            	relatency="*"${relatency}
         	fi
 	        local nodeName=$2
 
