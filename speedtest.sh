@@ -665,15 +665,15 @@ print_io() {
 }
 
 print_system_info() {
-	echo -e " CPU Model            : $cname" | tee -a $log
-	echo -e " CPU Cores            : $cores Cores @ $freq MHz $arch $corescache Cache" | tee -a $log
 	echo -e " OS                   : $opsy ($lbit Bit)" | tee -a $log
 	echo -e " Kernel               : $virtual / $kern" | tee -a $log
+	echo -e " CPU Model            : $cname" | tee -a $log
+	echo -e " CPU Cores            : $cores Cores @ $freq MHz $arch $corescache Cache" | tee -a $log
+	echo -e " Load Average         : $load" | tee -a $log
 	echo -e " Total Space          : $disk_used_size GB / $disk_total_size GB " | tee -a $log
 	echo -e " Total RAM            : $uram MB / $tram MB ($bram MB Buff)" | tee -a $log
 	echo -e " Total SWAP           : $uswap MB / $swap MB" | tee -a $log
 	echo -e " Uptime               : $up" | tee -a $log
-	echo -e " Load Average         : $load" | tee -a $log
 	#echo -e " TCP CC               : $tcpctrl" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 }
