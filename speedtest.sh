@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                  v1.3.3 (7 Oct 2019)                  / "
+	echo " \                  v1.3.4 (7 Oct 2019)                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -427,7 +427,7 @@ print_speedtest_meast() {
 geekbench4() {
 	echo -e "" | tee -a $log
 	echo -e "## Geekbench v4 CPU Benchmark:" | tee -a $log
-	GEEKBENCH_PATH=$HOME/geekbench4
+	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
 	curl -s http://cdn.geekbench.com/Geekbench-4.3.3-Linux.tar.gz  | tar xz --strip-components=1 -C $GEEKBENCH_PATH
 	GEEKBENCH_TEST=$($GEEKBENCH_PATH/geekbench4 | grep "https://browser")
@@ -439,6 +439,7 @@ geekbench4() {
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 	
+	echo -en "\e[1A"; echo -e "\e[0K\r"
 	echo -e "" | tee -a $log
 	printf "Single Core:  " "$GEEKBENCH_SCORES_SINGLE" | tee -a $log
 	printf "Multi Core :  " "$GEEKBENCH_SCORES_MULTI" | tee -a $log
@@ -754,7 +755,7 @@ get_system_info() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.3.3 beta (7 Oct 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.3.4 beta (7 Oct 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
@@ -816,7 +817,7 @@ cleanup() {
 	rm -f tools.py;
 	rm -f ip_json.json
 	rm -f geekbench4_claim.url
-	rm -rf geekbench4
+	rm -rf geekbench
 }
 
 bench_all(){
