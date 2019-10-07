@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                  v1.3.4 (7 Oct 2019)                  / "
+	echo " \                  v1.3.5 (7 Oct 2019)                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -441,8 +441,8 @@ geekbench4() {
 	
 	echo -en "\e[1A"; echo -e "\e[0K\r"
 	echo -e "" | tee -a $log
-	printf "Single Core:  " "$GEEKBENCH_SCORES_SINGLE" | tee -a $log
-	printf "Multi Core :  " "$GEEKBENCH_SCORES_MULTI" | tee -a $log
+	echo -e " Single Core: $GEEKBENCH_SCORES_SINGLE" | tee -a $log
+	echo -e " Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
 	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" > geekbench4_claim.url 2> /dev/null
 }
 
@@ -755,7 +755,7 @@ get_system_info() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.3.4 beta (7 Oct 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.3.5 beta (7 Oct 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
