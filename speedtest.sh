@@ -445,6 +445,7 @@ geekbench4() {
 	
 	echo -en "\e[1A"; echo -e "\e[0K\r"
 	echo -en "\e[1A"; echo -e "\e[0K\r"
+	echo -en "\e[1A"; echo -e "\e[0K\r"
 	printf "## Geekbench v4 CPU Benchmark:" | tee -a $log
 	echo "" | tee -a $log
 	echo "" | tee -a $log
