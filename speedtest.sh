@@ -127,6 +127,7 @@ benchinit() {
 	if  [ ! -e 'speedtest.py' ]; then
 		echo " Installing Speedtest-cli ..."
 		wget --no-check-certificate https://raw.github.com/sivel/speedtest-cli/master/speedtest.py > /dev/null 2>&1
+		echo -en "\e[1A"; echo -e "\e[0K\r"
 	fi
 	chmod a+rx speedtest.py
 
@@ -135,6 +136,7 @@ benchinit() {
 	if  [ ! -e 'tools.py' ]; then
 		echo " Installing tools.py ..."
 		wget --no-check-certificate https://raw.githubusercontent.com/laset-com/speedtest/master/tools.py > /dev/null 2>&1
+		echo -en "\e[1A"; echo -e "\e[0K\r"
 	fi
 	chmod a+rx tools.py
 
