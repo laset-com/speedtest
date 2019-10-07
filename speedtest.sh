@@ -425,8 +425,7 @@ print_speedtest_meast() {
 }
 
 geekbench4() {
-	echo -e "" | tee -a $log
-	echo -e "Performing Geekbench v4 benchmark test. Please wait..."
+	echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..."
 
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
@@ -440,7 +439,7 @@ geekbench4() {
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 	
-	echo -en "\e[1A"; echo -e "\e[0K\r"
+	echo -en "\e[1A"; echo -e "\e[0K\r" | tee -a $log
 	echo -e "## Geekbench v4 CPU Benchmark:" | tee -a $log
 	echo -e "" | tee -a $log
 	echo -e " Single Core: $GEEKBENCH_SCORES_SINGLE" | tee -a $log
@@ -778,7 +777,7 @@ sharetest() {
 	esac
 
 	# print result info
-	echo " - $GEEKBENCH_URL"
+	echo " - $GEEKBENCH_URL" | tee -a $log
 	echo " - $share_link"
 	next
 	echo ""
