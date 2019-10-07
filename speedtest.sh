@@ -424,6 +424,28 @@ print_speedtest_meast() {
 	rm -rf speedtest.py
 }
 
+geekbench() {
+	GEEKBENCH_PATH=$HOME/geekbench
+	mkdir -p $GEEKBENCH_PATH
+	curl -s http://cdn.geekbench.com/Geekbench-4.3.3-Linux.tar.gz  | tar xz --strip-components=1 -C $GEEKBENCH_PATH
+	GEEKBENCH_TEST=$($GEEKBENCH_PATH/geekbench4 | grep "https://browser")
+	GEEKBENCH_URL=$(echo -e $GEEKBENCH_TEST | head -1)
+	GEEKBENCH_URL_CLAIM=$(echo $GEEKBENCH_URL | awk '{ print $2 }')
+	GEEKBENCH_URL=$(echo $GEEKBENCH_URL | awk '{ print $1 }')
+	sleep 10
+	GEEKBENCH_SCORES=$(curl -s $GEEKBENCH_URL | grep "class='score' rowspan")
+	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
+	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
+	
+	echo -en "\e[1A"; echo -e "\e[0K\r"
+	echo -e "## Geekbench 4 Benchmark Test:" | tee -a $log
+	echo -e "------------------------------" | tee -a $log
+	printf "%-15s | %-30s\n" "Single Core" "$GEEKBENCH_SCORES_SINGLE" | tee -a $log
+	printf "%-15s | %-30s\n" "Multi Core" "$GEEKBENCH_SCORES_MULTI" | tee -a $log
+	printf "%-15s | %-30s\n" "Full Test" "$GEEKBENCH_URL" | tee -a $log
+	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" > geekbench4_claim.url 2> /dev/null
+}
+
 io_test() {
     (LANG=C dd if=/dev/zero of=test_file_$$ bs=512K count=$1 conv=fdatasync && rm -f test_file_$$ ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
 }
