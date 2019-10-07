@@ -426,7 +426,8 @@ print_speedtest_meast() {
 
 geekbench4() {
 	echo -e "" | tee -a $log
-	echo -e "## Geekbench v4 CPU Benchmark:" | tee -a $log
+	echo -e "Performing Geekbench v4 benchmark test. Please wait..."
+
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
 	curl -s http://cdn.geekbench.com/Geekbench-4.3.3-Linux.tar.gz  | tar xz --strip-components=1 -C $GEEKBENCH_PATH
@@ -440,6 +441,7 @@ geekbench4() {
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 	
 	echo -en "\e[1A"; echo -e "\e[0K\r"
+	echo -e "## Geekbench v4 CPU Benchmark:" | tee -a $log
 	echo -e "" | tee -a $log
 	echo -e " Single Core: $GEEKBENCH_SCORES_SINGLE" | tee -a $log
 	echo -e " Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
@@ -662,13 +664,13 @@ print_io() {
 		printf "## dd: sequential write speed ($writemb_size):" | tee -a $log
 		echo "" | tee -a $log
 		echo "" | tee -a $log
-		echo -n " 1st run   : " | tee -a $log
+		echo -n " 1st run    : " | tee -a $log
 		io1=$( io_test $writemb )
 		echo -e "$io1" | tee -a $log
-		echo -n " 2dn run   : " | tee -a $log
+		echo -n " 2dn run    : " | tee -a $log
 		io2=$( io_test $writemb )
 		echo -e "$io2" | tee -a $log
-		echo -n " 3rd run   : " | tee -a $log
+		echo -n " 3rd run    : " | tee -a $log
 		io3=$( io_test $writemb )
 		echo -e "$io3" | tee -a $log
 		ioraw1=$( echo $io1 | awk 'NR==1 {print $1}' )
@@ -679,8 +681,8 @@ print_io() {
 		[ "`echo $io3 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
 		ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
 		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
-		printf "%-23s\n" "-" | sed 's/\s/-/g' | tee -a $log
-		echo -e " Average   : $ioavg MB/s" | tee -a $log
+		printf "%-24s\n" "-" | sed 's/\s/-/g' | tee -a $log
+		echo -e " Average    : $ioavg MB/s" | tee -a $log
 	else
 		echo -e " Not enough space!"
 	fi
