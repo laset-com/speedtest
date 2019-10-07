@@ -425,6 +425,7 @@ print_speedtest_meast() {
 }
 
 geekbench4() {
+	echo "" | tee -a $log
 	echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..."
 
 	GEEKBENCH_PATH=$HOME/geekbench
@@ -441,6 +442,7 @@ geekbench4() {
 	
 	echo -en "\e[1A"; echo -e "\e[0K\r"
 	printf "## Geekbench v4 CPU Benchmark:" | tee -a $log
+	echo "" | tee -a $log
 	echo "" | tee -a $log
 	echo -e " Single Core: $GEEKBENCH_SCORES_SINGLE" | tee -a $log
 	echo -e " Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
