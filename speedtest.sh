@@ -5,8 +5,8 @@ about() {
 	echo " ========================================================= "
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
-	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                  v1.3.5 (7 Oct 2019)                  / "
+	echo " \    System info, Geekbench, I/O test and speedtest     / "
+	echo " \                  v1.3.6 (7 Oct 2019)                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -445,7 +445,6 @@ geekbench4() {
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 	
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
-	echo -ne "\e[1A"; echo -ne "\033[0K\r"
 	printf "## Geekbench v4 CPU Benchmark:" | tee -a $log
 	echo "" | tee -a $log
 	echo "" | tee -a $log
@@ -763,9 +762,9 @@ get_system_info() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.3.5 beta (7 Oct 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.3.6 beta (7 Oct 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
-	printf " curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
+	printf " Usage : curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
 }
 
@@ -831,12 +830,15 @@ bench_all(){
 	region_name="Global"
 	print_intro;
 	benchinit;
+	delete;
+	delete;
 	clear
 	next;
 	get_system_info;
 	print_system_info;
 	ip_info4;
 	next;
+	geekbench4;
 	print_io;
 	print_speedtest;
 	next;
@@ -849,12 +851,15 @@ usa_bench(){
 	region_name="USA"
 	print_intro;
 	benchinit;
+	delete;
+	delete;
 	clear
 	next;
 	get_system_info;
 	print_system_info;
 	ip_info4;
 	next;
+	geekbench4;
 	print_io;
 	print_speedtest_usa;
 	next;
@@ -867,12 +872,15 @@ europe_bench(){
 	region_name="Europe"
 	print_intro;
 	benchinit;
+	delete;
+	delete;
 	clear
 	next;
 	get_system_info;
 	print_system_info;
 	ip_info4;
 	next;
+	geekbench4;
 	print_io;
 	print_speedtest_europe;
 	next;
@@ -885,12 +893,15 @@ asia_bench(){
 	region_name="Asia"
 	print_intro;
 	benchinit;
+	delete;
+	delete;
 	clear
 	next;
 	get_system_info;
 	print_system_info;
 	ip_info4;
 	next;
+	geekbench4;
 	print_io;
 	print_speedtest_asia;
 	next;
@@ -903,12 +914,15 @@ sa_bench(){
 	region_name="South-America"
 	print_intro;
 	benchinit;
+	delete;
+	delete;
 	clear
 	next;
 	get_system_info;
 	print_system_info;
 	ip_info4;
 	next;
+	geekbench4;
 	print_io;
 	print_speedtest_sa;
 	next;
@@ -921,12 +935,15 @@ ukraine_bench(){
 	region_name="Ukraine"
 	print_intro;
 	benchinit;
+	delete;
+	delete;
 	clear
 	next;
 	get_system_info;
 	print_system_info;
 	ip_info4;
 	next;
+	geekbench4;
 	print_io;
 	print_speedtest_ukraine;
 	next;
@@ -947,6 +964,8 @@ lviv_bench(){
 	ip_info4;
 	next;
 	geekbench4;
+	print_io;
+	print_speedtest_lviv;
 	next;
 	print_end_time;
 	cleanup;
@@ -956,12 +975,15 @@ meast_bench(){
 	region_name="Middle-East"
 	print_intro;
 	benchinit;
+	delete;
+	delete;
 	clear
 	next;
 	get_system_info;
 	print_system_info;
 	ip_info4;
 	next;
+	geekbench4;
 	print_io;
 	print_speedtest_meast;
 	next;
