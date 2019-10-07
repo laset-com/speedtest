@@ -425,10 +425,11 @@ print_speedtest_meast() {
 }
 
 geekbench4() {
-	echo -e "## Geekbench v4 Benchmark:" | tee -a $log
+	echo -e ""
+	echo -e "## Geekbench v4 CPU Benchmark:" | tee -a $log
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
-	curl -s http://cdn.geekbench.com/Geekbench-4.3.4-Linux.tar.gz  | tar xz --strip-components=1 -C $GEEKBENCH_PATH
+	curl -s http://cdn.geekbench.com/Geekbench-4.3.3-Linux.tar.gz  | tar xz --strip-components=1 -C $GEEKBENCH_PATH
 	GEEKBENCH_TEST=$($GEEKBENCH_PATH/geekbench4 | grep "https://browser")
 	GEEKBENCH_URL=$(echo -e $GEEKBENCH_TEST | head -1)
 	GEEKBENCH_URL_CLAIM=$(echo $GEEKBENCH_URL | awk '{ print $2 }')
@@ -438,6 +439,7 @@ geekbench4() {
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 	
+	echo -en "\e[1A"; echo -e "\e[0K\r"
 	echo -e ""
 	printf "Single Core:  " "$GEEKBENCH_SCORES_SINGLE" | tee -a $log
 	printf "Multi Core :  " "$GEEKBENCH_SCORES_MULTI" | tee -a $log
