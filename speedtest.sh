@@ -155,7 +155,7 @@ next() {
 }
 
 delete() {
-    echo -en "\e[1A"; echo -e "\033[0K\r"
+    echo -en "\e[1A"; echo -e "\e[0K\r"
 }
 
 speed_test(){
@@ -938,7 +938,6 @@ lviv_bench(){
 	region_name="Lviv"
 	print_intro;
 	benchinit;
-	delete;
 	delete;
 	clear
 	next;
