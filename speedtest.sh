@@ -776,8 +776,8 @@ sharetest() {
 	esac
 
 	# print result info
-	echo " - $share_link"
 	echo " - $GEEKBENCH_URL"
+	echo " - $share_link"
 	next
 	echo ""
 	rm -f $log_up
