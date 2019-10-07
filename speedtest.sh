@@ -139,7 +139,6 @@ benchinit() {
 	chmod a+rx tools.py
 
 	sleep 5
-	echo -en "\e[3A"; echo -e "\033[0K\r"
 
 	# start
 	start=$(date +%s) 
@@ -153,6 +152,10 @@ get_opsy() {
 
 next() {
     printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+}
+
+delete() {
+    echo -en "\e[1A"; echo -e "\033[0K\r"
 }
 
 speed_test(){
@@ -935,6 +938,8 @@ lviv_bench(){
 	region_name="Lviv"
 	print_intro;
 	benchinit;
+	delete;
+	delete;
 	clear
 	next;
 	get_system_info;
