@@ -429,7 +429,7 @@ geekbench4() {
 
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
-	curl -s http://cdn.geekbench.com/Geekbench-4.3.3-Linux.tar.gz  | tar xz --strip-components=1 -C $GEEKBENCH_PATH
+	curl -s http://cdn.geekbench.com/Geekbench-4.3.4-Linux.tar.gz  | tar xz --strip-components=1 -C $GEEKBENCH_PATH
 	GEEKBENCH_TEST=$($GEEKBENCH_PATH/geekbench4 | grep "https://browser")
 	GEEKBENCH_URL=$(echo -e $GEEKBENCH_TEST | head -1)
 	GEEKBENCH_URL_CLAIM=$(echo $GEEKBENCH_URL | awk '{ print $2 }')
@@ -440,8 +440,8 @@ geekbench4() {
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 	
 	echo -en "\e[1A"; echo -e "\e[0K\r"
-	echo -e "## Geekbench v4 CPU Benchmark:" | tee -a $log
-	echo -e "" | tee -a $log
+	printf "## Geekbench v4 CPU Benchmark:" | tee -a $log
+	echo "" | tee -a $log
 	echo -e " Single Core: $GEEKBENCH_SCORES_SINGLE" | tee -a $log
 	echo -e " Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
 	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" > geekbench4_claim.url 2> /dev/null
@@ -779,7 +779,6 @@ sharetest() {
 	# print result info
 	echo " - $GEEKBENCH_URL" | tee -a $log
 	echo " - $share_link"
-	next
 	echo ""
 	rm -f $log_up
 
@@ -973,7 +972,7 @@ true > $log
 case $1 in
 	'info'|'-i'|'--i'|'-info'|'--info' )
 		about;sleep 3;next;get_system_info;print_system_info;next;;
-    'version'|'-v'|'--v'|'-version'|'--version')
+	'version'|'-v'|'--v'|'-version'|'--version')
 		next;about;next;;
    	'io'|'-io'|'--io'|'-drivespeed'|'--drivespeed' )
 		next;print_io;next;;
