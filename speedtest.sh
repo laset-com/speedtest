@@ -439,7 +439,6 @@ geekbench4() {
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 	
-	echo -en "\e[1A"; echo -e "\e[0K\r"
 	echo -e ""
 	printf "Single Core:  " "$GEEKBENCH_SCORES_SINGLE" | tee -a $log
 	printf "Multi Core :  " "$GEEKBENCH_SCORES_MULTI" | tee -a $log
@@ -817,7 +816,7 @@ cleanup() {
 	rm -f tools.py;
 	rm -f ip_json.json
 	rm -f geekbench4_claim.url
-	rm -rf /geekbench
+	rm -rf geekbench
 }
 
 bench_all(){
