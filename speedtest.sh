@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.3.6 (7 Oct 2019)                  / "
+	echo " \                  v1.3.7 (8 Oct 2019)                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -693,6 +693,84 @@ print_io() {
 	fi
 }
 
+ramtest() {
+	echo "" | tee -a $log
+	echostyle "## IO Test"
+	echo "" | tee -a $log
+
+	# start testing
+	writemb=$(freedisk)
+	if [[ $writemb -gt 512 ]]; then
+		writemb_size="$(( writemb / 2 / 2 ))MB"
+		writemb_cpu="$(( writemb / 2 ))"
+	else
+		writemb_size="$writemb"MB
+		writemb_cpu=$writemb
+	fi
+
+	# CPU Speed test
+	printf " CPU Speed:\n" | tee -a $log
+	printf "    bzip2 %s -" "$writemb_size" | tee -a $log
+	printf "%s\n" "$( cpubench bzip2 $writemb_cpu )" | tee -a $log 
+	printf "   sha256 %s -" "$writemb_size" | tee -a $log
+	printf "%s\n" "$( cpubench sha256sum $writemb_cpu )" | tee -a $log
+	printf "   md5sum %s -" "$writemb_size" | tee -a $log
+	printf "%s\n\n" "$( cpubench md5sum $writemb_cpu )" | tee -a $log
+
+	# Disk test
+	echo " Disk Speed ($writemb_size):" | tee -a $log
+	if [[ $writemb != "1" ]]; then
+		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+		echo "   I/O Speed  -$io" | tee -a $log
+
+		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test oflag=dsync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+		echo "   I/O Direct -$io" | tee -a $log
+	else
+		echo "   Not enough space to test." | tee -a $log
+	fi
+	echo "" | tee -a $log
+	
+	# Disk test
+	echo " dd: sequential write speed:" | tee -a $log
+	if [[ $writemb != "1" ]]; then
+		io=$( ( dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+		echo "   1st run: $io" | tee -a $log
+		io=$( ( dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+		echo "   2nd run: $io" | tee -a $log
+		io=$( ( dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+		echo "   3rd run: $io" | tee -a $log
+	else
+		echo "   Not enough space to test." | tee -a $log
+	fi
+	echo "" | tee -a $log
+
+	# RAM Speed test
+	# set ram allocation for mount
+	tram_mb="$( free -m | grep Mem | awk 'NR=1 {print $2}' )"
+	if [[ tram_mb -gt 1900 ]]; then
+		sbram=1024M
+		sbcount=2048
+	else
+		sbram=$(( tram_mb / 2 ))M
+		sbcount=$tram_mb
+	fi
+	[[ -d $benchram ]] || mkdir $benchram
+	mount -t tmpfs -o size=$sbram tmpfs $benchram/
+	printf " RAM Speed (%sB):\n" "$sbram" | tee -a $log
+	iow1=$( ( dd if=/dev/zero of=$benchram/zero bs=512K count=$sbcount ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+	ior1=$( ( dd if=$benchram/zero of=$NULL bs=512K count=$sbcount; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+	iow2=$( ( dd if=/dev/zero of=$benchram/zero bs=512K count=$sbcount ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+	ior2=$( ( dd if=$benchram/zero of=$NULL bs=512K count=$sbcount; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+	iow3=$( ( dd if=/dev/zero of=$benchram/zero bs=512K count=$sbcount ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+	ior3=$( ( dd if=$benchram/zero of=$NULL bs=512K count=$sbcount; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+	echo "   Avg. write - $(averageio "$iow1" "$iow2" "$iow3") MB/s" | tee -a $log
+	echo "   Avg. read  - $(averageio "$ior1" "$ior2" "$ior3") MB/s" | tee -a $log
+	rm $benchram/zero
+	umount $benchram
+	rm -rf $benchram
+	echo "" | tee -a $log
+}
+
 print_system_info() {
 	echo -e " OS                   : $opsy ($lbit Bit)" | tee -a $log
 	echo -e " Virt/Kernel          : $virtual / $kern" | tee -a $log
@@ -762,7 +840,7 @@ get_system_info() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.3.6 beta (7 Oct 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.3.7 beta (8 Oct 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
@@ -963,9 +1041,7 @@ lviv_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench4;
-	print_io;
-	print_speedtest_lviv;
+	ramtest;
 	next;
 	print_end_time;
 	cleanup;
