@@ -23,6 +23,15 @@ cancel() {
 
 trap cancel SIGINT
 
+echostyle(){
+	if hash tput 2>$NULL; then
+		echo " $(tput setaf 6)$1$(tput sgr0)"
+		echo " $1" >> $log
+	else
+		echo " $1" | tee -a $log
+	fi
+}
+
 benchinit() {
 	# check release
 	if [ -f /etc/redhat-release ]; then
@@ -690,6 +699,31 @@ print_io() {
 		echo -e " Average    : $ioavg MB/s" | tee -a $log
 	else
 		echo -e " Not enough space!"
+	fi
+}
+
+averageio() {
+	ioraw1=$( echo $1 | awk 'NR==1 {print $1}' )
+		[ "$(echo $1 | awk 'NR==1 {print $2}')" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
+	ioraw2=$( echo $2 | awk 'NR==1 {print $1}' )
+		[ "$(echo $2 | awk 'NR==1 {print $2}')" == "GB/s" ] && ioraw2=$( awk 'BEGIN{print '$ioraw2' * 1024}' )
+	ioraw3=$( echo $3 | awk 'NR==1 {print $1}' )
+		[ "$(echo $3 | awk 'NR==1 {print $2}')" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
+	ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
+	ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
+	printf "%s" "$ioavg"
+}
+
+cpubench() {
+	if hash $1 2>$NULL; then
+		io=$( ( dd if=/dev/zero bs=512K count=$2 | $1 ) 2>&1 | grep 'copied' | awk -F, '{io=$NF} END { print io}' )
+		if [[ $io != *"."* ]]; then
+			printf "  %4i %s" "${io% *}" "${io##* }"
+		else
+			printf "%4i.%s" "${io%.*}" "${io#*.}"
+		fi
+	else
+		printf " %s not found on system." "$1"
 	fi
 }
 
