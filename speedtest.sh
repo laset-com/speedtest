@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \       Basic system info, I/O test and speedtest       / "
-	echo " \                  v1.3.1 (5 Oct 2019)                  / "
+	echo " \                  v1.3.2 (7 Oct 2019)                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -425,9 +425,10 @@ print_speedtest_meast() {
 }
 
 geekbench4() {
+	echo -e "## Geekbench v4 Benchmark:" | tee -a $log
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
-	curl -s http://cdn.geekbench.com/Geekbench-4.3.3-Linux.tar.gz  | tar xz --strip-components=1 -C $GEEKBENCH_PATH
+	curl -s http://cdn.geekbench.com/Geekbench-4.3.4-Linux.tar.gz  | tar xz --strip-components=1 -C $GEEKBENCH_PATH
 	GEEKBENCH_TEST=$($GEEKBENCH_PATH/geekbench4 | grep "https://browser")
 	GEEKBENCH_URL=$(echo -e $GEEKBENCH_TEST | head -1)
 	GEEKBENCH_URL_CLAIM=$(echo $GEEKBENCH_URL | awk '{ print $2 }')
@@ -437,12 +438,9 @@ geekbench4() {
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 	
-	echo -en "\e[1A"; echo -e "\e[0K\r"
-	echo -e "## Geekbench 4 Benchmark Test:" | tee -a $log
-	echo -e "------------------------------" | tee -a $log
-	printf "%-15s | %-30s\n" "Single Core" "$GEEKBENCH_SCORES_SINGLE" | tee -a $log
-	printf "%-15s | %-30s\n" "Multi Core" "$GEEKBENCH_SCORES_MULTI" | tee -a $log
-	printf "%-15s | %-30s\n" "Full Test" "$GEEKBENCH_URL" | tee -a $log
+	echo -e ""
+	printf "Single Core:  " "$GEEKBENCH_SCORES_SINGLE" | tee -a $log
+	printf "Multi Core :  " "$GEEKBENCH_SCORES_MULTI" | tee -a $log
 	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" > geekbench4_claim.url 2> /dev/null
 }
 
@@ -755,7 +753,7 @@ get_system_info() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.3.1 beta (5 Oct 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.3.2 beta (7 Oct 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
@@ -777,6 +775,7 @@ sharetest() {
 
 	# print result info
 	echo " - $share_link"
+	echo " - $GEEKBENCH_URL"
 	next
 	echo ""
 	rm -f $log_up
@@ -815,6 +814,8 @@ cleanup() {
 	rm -f speedtest.sh;
 	rm -f tools.py;
 	rm -f ip_json.json
+	rm -f geekbench4_claim.url
+	rm -rf /geekbench
 }
 
 bench_all(){
