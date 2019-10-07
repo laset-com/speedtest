@@ -141,6 +141,7 @@ benchinit() {
 	sleep 5
 	echo -en "\e[1A"; echo -e "\e[0K\r"
 	echo -en "\e[1A"; echo -e "\e[0K\r"
+	echo -en "\e[1A"; echo -e "\e[0K\r"
 
 	# start
 	start=$(date +%s) 
