@@ -424,7 +424,7 @@ print_speedtest_meast() {
 	rm -rf speedtest.py
 }
 
-geekbench() {
+geekbench4() {
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
 	curl -s http://cdn.geekbench.com/Geekbench-4.3.3-Linux.tar.gz  | tar xz --strip-components=1 -C $GEEKBENCH_PATH
@@ -934,6 +934,7 @@ lviv_bench(){
 	print_system_info;
 	ip_info4;
 	next;
+	geekbench4;
 	print_io;
 	print_speedtest_lviv;
 	next;
