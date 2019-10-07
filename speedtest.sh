@@ -425,7 +425,7 @@ print_speedtest_meast() {
 }
 
 geekbench4() {
-	echo -e ""
+	echo -e "" | tee -a $log
 	echo -e "## Geekbench v4 CPU Benchmark:" | tee -a $log
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
@@ -439,7 +439,8 @@ geekbench4() {
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 	
-	echo -e ""
+	echo -en "\e[1A"; echo -e "\e[0K\r"
+	echo -e "" | tee -a $log
 	printf "Single Core:  " "$GEEKBENCH_SCORES_SINGLE" | tee -a $log
 	printf "Multi Core :  " "$GEEKBENCH_SCORES_MULTI" | tee -a $log
 	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" > geekbench4_claim.url 2> /dev/null
