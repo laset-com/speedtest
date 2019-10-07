@@ -439,7 +439,7 @@ geekbench4() {
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 	
-	echo -en "\e[1A"; echo -e "\e[0K\r" | tee -a $log
+	echo -en "\e[1A"; echo -e "\e[0K\r"
 	echo -e "## Geekbench v4 CPU Benchmark:" | tee -a $log
 	echo -e "" | tee -a $log
 	echo -e " Single Core: $GEEKBENCH_SCORES_SINGLE" | tee -a $log
