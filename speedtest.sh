@@ -1065,7 +1065,6 @@ lviv_bench(){
 	ip_info4;
 	next;
 	ramtest;
-	print_io;
 	next;
 	print_end_time;
 	cleanup;
