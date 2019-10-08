@@ -989,7 +989,7 @@ bench_all(){
 	next;
 	geekbench4;
 	iotest;
-	print_io;
+	write_io;
 	print_speedtest;
 	next;
 	print_end_time;
@@ -1011,7 +1011,7 @@ usa_bench(){
 	next;
 	geekbench4;
 	iotest;
-	print_io;
+	write_io;
 	print_speedtest_usa;
 	next;
 	print_end_time;
@@ -1033,7 +1033,7 @@ europe_bench(){
 	next;
 	geekbench4;
 	iotest;
-	print_io;
+	write_io;
 	print_speedtest_europe;
 	next;
 	print_end_time;
@@ -1055,7 +1055,7 @@ asia_bench(){
 	next;
 	geekbench4;
 	iotest;
-	print_io;
+	write_io;
 	print_speedtest_asia;
 	next;
 	print_end_time;
@@ -1077,7 +1077,7 @@ sa_bench(){
 	next;
 	geekbench4;
 	iotest;
-	print_io;
+	write_io;
 	print_speedtest_sa;
 	next;
 	print_end_time;
@@ -1099,7 +1099,7 @@ ukraine_bench(){
 	next;
 	geekbench4;
 	iotest;
-	print_io;
+	write_io;
 	print_speedtest_ukraine;
 	next;
 	print_end_time;
@@ -1140,7 +1140,7 @@ meast_bench(){
 	next;
 	geekbench4;
 	iotest;
-	print_io;
+	write_io;
 	print_speedtest_meast;
 	next;
 	print_end_time;
