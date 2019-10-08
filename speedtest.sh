@@ -847,9 +847,11 @@ write_io() {
 		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
 		echo -e "   -----------------------" | tee -a $log
 		echo -e "   Average    : $ioavg MB/s" | tee -a $log
+		echo "" | tee -a $log
 	else
 		echo -e " Not enough space!"
 	fi
+	echo "" | tee -a $log
 }
 
 read_io() {
