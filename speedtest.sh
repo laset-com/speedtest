@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.4.1 (8 Oct 2019)                  / "
+	echo " \                  v1.4.2 (8 Oct 2019)                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -801,17 +801,17 @@ iotest() {
 	echo "" | tee -a $log
 	
 	# Disk test
-	echostyle "Disk Speed:"
-	if [[ $writemb != "1" ]]; then
-		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-		echo "   I/O Speed  :$io" | tee -a $log
+	#echostyle "Disk Speed:"
+	#if [[ $writemb != "1" ]]; then
+	#	io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+	#	echo "   I/O Speed  :$io" | tee -a $log
 
-		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test oflag=direct; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-		echo "   I/O Direct :$io" | tee -a $log
-	else
-		echo "   Not enough space to test." | tee -a $log
-	fi
-	echo "" | tee -a $log
+	#	io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test oflag=direct; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+	#	echo "   I/O Direct :$io" | tee -a $log
+	#else
+	#	echo "   Not enough space to test." | tee -a $log
+	#fi
+	#echo "" | tee -a $log
 }
 
 
@@ -871,7 +871,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.4.1 beta (8 Oct 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.4.2 beta (8 Oct 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
@@ -1118,10 +1118,12 @@ case $1 in
 		about;sleep 3;next;get_system_info;print_system_info;;
 	'version'|'-v'|'--v'|'-version'|'--version')
 		next;about;next;;
-   	'io'|'-io'|'--io' )
-		next;iotest;next;;
+   	'gb'|'-gb'|'--gb'|'geek'|'-geek'|'--geek' )
+		next;geekbench4;next;cleanup;;
+	'io'|'-io'|'--io' )
+		next;iotest;write_io;next;;
 	'dd'|'-dd'|'--dd' )
-		next;print_io;next;;
+		next;write_io;next;;
 	'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
 		about;benchinit;next;print_speedtest;next;cleanup;;
 	'ip'|'-ip'|'--ip'|'geoip'|'-geoip'|'--geoip' )
@@ -1144,7 +1146,7 @@ case $1 in
 		lviv_bench;;
 	'M-East'|'-M-East'|'--M-East'|'-m-east'|'--m-east'|'-meast'|'--meast'|'-Middle-East'|'-me' )
 		meast_bench;;
-	'share'|'-s'|'--s'|'-share'|'--share' )
+	'-s'|'--s'|'share'|'-share'|'--share' )
 		bench_all;
 		is_share="share"
 		if [[ $2 == "" ]]; then
