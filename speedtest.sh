@@ -728,7 +728,7 @@ cpubench() {
 		if [[ $io != *"."* ]]; then
 			printf "%4i %s" "${io% *}" "${io##* }"
 		else
-			printf "%4i.%s" "${io%.*}" "${io#*.}"
+			printf "%4i.%s" "${io%.*}" "${io##*.}"
 		fi
 	else
 		printf " %s not found on system." "$1"
