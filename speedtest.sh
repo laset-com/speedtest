@@ -664,47 +664,6 @@ freedisk() {
 	fi
 }
 
-print_io() {
-	if [[ $1 == "fast" ]]; then
-		writemb=$((128*2))
-	else
-		writemb=$(freedisk)
-	fi
-	
-	writemb_size="$(( writemb / 2 ))MB"
-	if [[ $writemb_size == "1024MB" ]]; then
-		writemb_size="1.0GB"
-	fi
-
-	if [[ $writemb != "1" ]]; then
-		echo "" | tee -a $log
-		printf "## dd: sequential write speed ($writemb_size):" | tee -a $log
-		echo "" | tee -a $log
-		echo "" | tee -a $log
-		echo -n " 1st run    : " | tee -a $log
-		io1=$( io_test $writemb )
-		echo -e "$io1" | tee -a $log
-		echo -n " 2dn run    : " | tee -a $log
-		io2=$( io_test $writemb )
-		echo -e "$io2" | tee -a $log
-		echo -n " 3rd run    : " | tee -a $log
-		io3=$( io_test $writemb )
-		echo -e "$io3" | tee -a $log
-		ioraw1=$( echo $io1 | awk 'NR==1 {print $1}' )
-		[ "`echo $io1 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
-		ioraw2=$( echo $io2 | awk 'NR==1 {print $1}' )
-		[ "`echo $io2 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw2=$( awk 'BEGIN{print '$ioraw2' * 1024}' )
-		ioraw3=$( echo $io3 | awk 'NR==1 {print $1}' )
-		[ "`echo $io3 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
-		ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
-		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
-		printf "%-24s\n" "-" | sed 's/\s/-/g' | tee -a $log
-		echo -e " Average    : $ioavg MB/s" | tee -a $log
-	else
-		echo -e " Not enough space!"
-	fi
-}
-
 averageio() {
 	ioraw1=$( echo $1 | awk 'NR==1 {print $1}' )
 		[ "$(echo $1 | awk 'NR==1 {print $2}')" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
@@ -806,6 +765,48 @@ ramtest() {
 	umount $benchram
 	rm -rf $benchram
 	echo "" | tee -a $log
+}
+
+
+print_io() {
+	if [[ $1 == "fast" ]]; then
+		writemb=$((128*2))
+	else
+		writemb=$(freedisk)
+	fi
+	
+	writemb_size="$(( writemb / 2 ))MB"
+	if [[ $writemb_size == "1024MB" ]]; then
+		writemb_size="1.0GB"
+	fi
+
+	if [[ $writemb != "1" ]]; then
+		echo "" | tee -a $log
+		printf "dd: sequential write speed ($writemb_size):" | tee -a $log
+		echo "" | tee -a $log
+		echo "" | tee -a $log
+		echo -n " 1st run    : " | tee -a $log
+		io1=$( io_test $writemb )
+		echo -e "$io1" | tee -a $log
+		echo -n " 2dn run    : " | tee -a $log
+		io2=$( io_test $writemb )
+		echo -e "$io2" | tee -a $log
+		echo -n " 3rd run    : " | tee -a $log
+		io3=$( io_test $writemb )
+		echo -e "$io3" | tee -a $log
+		ioraw1=$( echo $io1 | awk 'NR==1 {print $1}' )
+		[ "`echo $io1 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
+		ioraw2=$( echo $io2 | awk 'NR==1 {print $1}' )
+		[ "`echo $io2 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw2=$( awk 'BEGIN{print '$ioraw2' * 1024}' )
+		ioraw3=$( echo $io3 | awk 'NR==1 {print $1}' )
+		[ "`echo $io3 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
+		ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
+		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
+		printf "%-24s\n" "-" | sed 's/\s/-/g' | tee -a $log
+		echo -e " Average    : $ioavg MB/s" | tee -a $log
+	else
+		echo -e " Not enough space!"
+	fi
 }
 
 print_system_info() {
@@ -1079,6 +1080,7 @@ lviv_bench(){
 	ip_info4;
 	next;
 	ramtest;
+	print_io;
 	next;
 	print_end_time;
 	cleanup;
