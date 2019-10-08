@@ -475,10 +475,6 @@ geekbench4() {
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
 }
 
-io_test() {
-    (LANG=C dd if=/dev/zero of=test_file_$$ bs=512K count=$1 conv=fdatasync && rm -f test_file_$$ ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
-}
-
 calc_disk() {
     local total_size=0
     local array=$@
@@ -728,6 +724,14 @@ get_system_info() {
 	virt_check
 }
 
+io_test() {
+    (LANG=C dd if=/dev/zero of=test_file_$$ bs=512K count=$1 conv=fdatasync && rm -f test_file_$$ ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
+}
+
+read_test() {
+    (LANG=C dd if=test_file_$$ of=/dev/zero bs=512K count=$1 && rm -f test_file_$$ ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
+}
+
 averageio() {
 	ioraw1=$( echo $1 | awk 'NR==1 {print $1}' )
 		[ "$(echo $1 | awk 'NR==1 {print $2}')" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
@@ -832,6 +836,39 @@ print_io() {
 		echo -e "$io2" | tee -a $log
 		echo -n "   3rd run    : " | tee -a $log
 		io3=$( io_test $writemb )
+		echo -e "$io3" | tee -a $log
+		ioraw1=$( echo $io1 | awk 'NR==1 {print $1}' )
+		[ "`echo $io1 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
+		ioraw2=$( echo $io2 | awk 'NR==1 {print $1}' )
+		[ "`echo $io2 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw2=$( awk 'BEGIN{print '$ioraw2' * 1024}' )
+		ioraw3=$( echo $io3 | awk 'NR==1 {print $1}' )
+		[ "`echo $io3 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
+		ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
+		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
+		echo -e "   -----------------------" | tee -a $log
+		echo -e "   Average    : $ioavg MB/s" | tee -a $log
+	else
+		echo -e " Not enough space!"
+	fi
+}
+
+read_io() {
+	writemb=$(freedisk)
+	writemb_size="$(( writemb / 2 ))MB"
+	if [[ $writemb_size == "1024MB" ]]; then
+		writemb_size="1.0GB"
+	fi
+
+	if [[ $writemb != "1" ]]; then
+		echostyle "dd: sequential read speed ($writemb_size):"
+		echo -n "   1st run    : " | tee -a $log
+		io1=$( read_test $writemb )
+		echo -e "$io1" | tee -a $log
+		echo -n "   2dn run    : " | tee -a $log
+		io2=$( read_test $writemb )
+		echo -e "$io2" | tee -a $log
+		echo -n "   3rd run    : " | tee -a $log
+		io3=$( read_test $writemb )
 		echo -e "$io3" | tee -a $log
 		ioraw1=$( echo $io1 | awk 'NR==1 {print $1}' )
 		[ "`echo $io1 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
@@ -1078,10 +1115,8 @@ lviv_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench4;
-	iotest;
 	print_io;
-	print_speedtest_lviv;
+	read_io;
 	next;
 	print_end_time;
 	cleanup;
