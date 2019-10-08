@@ -464,11 +464,10 @@ geekbench4() {
 	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" > geekbench4_claim.url 2> /dev/null
 	echo "" | tee -a $log
 	echo -e " Cooling down..."
-	sleep 10
+	sleep 9
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
-	echo "" | tee -a $log
 	echo -e " Ready to continue..."
-	sleep 2
+	sleep 3
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
 }
 
@@ -743,7 +742,6 @@ cpubench() {
 }
 
 ramtest() {
-	echo "" | tee -a $log
 	echostyle "## IO Test"
 	echo "" | tee -a $log
 
