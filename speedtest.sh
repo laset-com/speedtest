@@ -34,6 +34,14 @@ echostyle(){
 		echo " $1" | tee -a $log
 	fi
 }
+echostyle2(){
+	if hash tput 2>$NULL; then
+		echo " $(tput setaf 124)$1$(tput sgr0)"
+		echo " $1" >> $log
+	else
+		echo " $1" | tee -a $log
+	fi
+}
 
 benchinit() {
 	# check release
@@ -751,7 +759,8 @@ ramtest() {
 	fi
 
 	# CPU Speed test
-	printf " CPU Speed:\n" | tee -a $log
+	echostyle2 " CPU Speed:"
+	echo "" | tee -a $log
 	printf "    bzip2 %s -" "$writemb_size" | tee -a $log
 	printf "%s\n" "$( cpubench bzip2 $writemb_cpu )" | tee -a $log 
 	printf "   sha256 %s -" "$writemb_size" | tee -a $log
