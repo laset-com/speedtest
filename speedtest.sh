@@ -448,10 +448,22 @@ geekbench4() {
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 	
+	if [[ $GEEKBENCH_SCORES_SINGLE -le 1500 ]]; then
+		grank=bad
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1500 && $GEEKBENCH_SCORES_SINGLE -le 2000 ]]; then
+		grank=poor
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2000 && $GEEKBENCH_SCORES_SINGLE -le 2500 ]]; then
+		grank=ok
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2500 && $GEEKBENCH_SCORES_SINGLE -le 3500 ]]; then
+		grank=good
+	else
+		grank=awesome
+	fi
+	
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
 	echostyle "## Geekbench v4 CPU Benchmark:"
 	echo "" | tee -a $log
-	echo -e "  Single Core : $GEEKBENCH_SCORES_SINGLE" | tee -a $log
+	echo -e "  Single Core : $GEEKBENCH_SCORES_SINGLE $grank" | tee -a $log
 	echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
 	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" > geekbench4_claim.url 2> /dev/null
 	echo "" | tee -a $log
