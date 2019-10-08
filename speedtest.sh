@@ -848,6 +848,32 @@ write_io() {
 	fi
 }
 
+function disk_test {
+	I=0
+	DISK_WRITE_TEST_RES=()
+	DISK_READ_TEST_RES=()
+	DISK_WRITE_TEST_AVG=0
+	DISK_READ_TEST_AVG=0
+	DATE=`date -Iseconds | sed -e "s/:/_/g"`
+	OS=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
+	while [ $I -lt 3 ]
+	do
+		DISK_WRITE_TEST=$(dd if=/dev/zero of=$DISK_PATH/$DATE.test bs=64k count=16k oflag=direct |& grep copied | awk '{ print $(NF-1) " " $(NF)}')
+		VAL=$(echo $DISK_WRITE_TEST | cut -d " " -f 1)
+		[[ "$DISK_WRITE_TEST" == *"GB"* ]] && VAL=$(awk -v a="$VAL" 'BEGIN { print a * 1000 }')
+		DISK_WRITE_TEST_RES+=( "$VAL" )
+		DISK_WRITE_TEST_AVG=$(awk -v a="$DISK_WRITE_TEST_AVG" -v b="$VAL" 'BEGIN { print a + b }')
+	
+		DISK_READ_TEST=$($DISK_PATH/ioping -R -L -D -B -w 6 . | awk '{ print $4 / 1000 / 1000 }')
+		DISK_READ_TEST_RES+=( "$DISK_READ_TEST" )
+		DISK_READ_TEST_AVG=$(awk -v a="$DISK_READ_TEST_AVG" -v b="$DISK_READ_TEST" 'BEGIN { print a + b }')
+
+		I=$(( $I + 1 ))
+	done	
+	DISK_WRITE_TEST_AVG=$(awk -v a="$DISK_WRITE_TEST_AVG" 'BEGIN { print a / 3 }')
+	DISK_READ_TEST_AVG=$(awk -v a="$DISK_READ_TEST_AVG" 'BEGIN { print a / 3 }')
+}
+
 ioping() {
 	echo -e "Performing disk performance test. This may take a couple minutes to complete..."
 
