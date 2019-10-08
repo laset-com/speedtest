@@ -713,6 +713,33 @@ ramtest() {
 	printf "   md5sum %s -" "$writemb_size" | tee -a $log
 	printf "%s\n\n" "$( cpubench md5sum $writemb_cpu )" | tee -a $log
 
+	# Disk test
+	echo " Disk Speed ($writemb_size):" | tee -a $log
+	if [[ $writemb != "1" ]]; then
+		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+		echo "   I/O Speed  -$io" | tee -a $log
+
+		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test oflag=dsync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+		echo "   I/O Direct -$io" | tee -a $log
+	else
+		echo "   Not enough space to test." | tee -a $log
+	fi
+	echo "" | tee -a $log
+	
+	# Disk test
+	echo " dd: sequential write speed:" | tee -a $log
+	if [[ $writemb != "1" ]]; then
+		io=$( ( dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+		echo "   1st run: $io" | tee -a $log
+		io=$( ( dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+		echo "   2nd run: $io" | tee -a $log
+		io=$( ( dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+		echo "   3rd run: $io" | tee -a $log
+	else
+		echo "   Not enough space to test." | tee -a $log
+	fi
+	echo "" | tee -a $log
+
 	# RAM Speed test
 	# set ram allocation for mount
 	tram_mb="$( free -m | grep Mem | awk 'NR=1 {print $2}' )"
@@ -737,19 +764,6 @@ ramtest() {
 	rm $benchram/zero
 	umount $benchram
 	rm -rf $benchram
-	echo "" | tee -a $log
-	
-	# Disk test
-	echo " Disk Speed ($writemb_size):" | tee -a $log
-	if [[ $writemb != "1" ]]; then
-		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-		echo "   I/O Speed  -$io" | tee -a $log
-
-		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test oflag=dsync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-		echo "   I/O Direct -$io" | tee -a $log
-	else
-		echo "   Not enough space to test." | tee -a $log
-	fi
 	echo "" | tee -a $log
 }
 
