@@ -451,8 +451,8 @@ geekbench4() {
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
 	echostyle "## Geekbench v4 CPU Benchmark:"
 	echo "" | tee -a $log
-	echo -e "   Single Core: $GEEKBENCH_SCORES_SINGLE" | tee -a $log
-	echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
+	echo -e "   Single Core : $GEEKBENCH_SCORES_SINGLE" | tee -a $log
+	echo -e "   Multi Core  : $GEEKBENCH_SCORES_MULTI" | tee -a $log
 	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" > geekbench4_claim.url 2> /dev/null
 	echo "" | tee -a $log
 	echo -e " Cooling down..."
@@ -735,7 +735,7 @@ cpubench() {
 	fi
 }
 
-ramtest() {
+iotest() {
 	echostyle "## IO Test"
 	echo "" | tee -a $log
 
@@ -751,8 +751,7 @@ ramtest() {
 
 	# CPU Speed test
 	echostyle "CPU Speed:"
-	printf "    bzip2 %s -" "$writemb_size" | tee -a $log
-	printf "%s\n" "$( cpubench bzip2 $writemb_cpu )" | tee -a $log 
+	printf "    bzip2   :$( cpubench bzip2 $writemb_cpu )" | tee -a $log 
 	printf "   sha256 %s -" "$writemb_size" | tee -a $log
 	printf "%s\n" "$( cpubench sha256sum $writemb_cpu )" | tee -a $log
 	printf "   md5sum %s -" "$writemb_size" | tee -a $log
@@ -777,8 +776,8 @@ ramtest() {
 	ior2=$( ( dd if=$benchram/zero of=$NULL bs=512K count=$sbcount; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
 	iow3=$( ( dd if=/dev/zero of=$benchram/zero bs=512K count=$sbcount ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
 	ior3=$( ( dd if=$benchram/zero of=$NULL bs=512K count=$sbcount; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-	echo "   Avg. write - $(averageio "$iow1" "$iow2" "$iow3") MB/s" | tee -a $log
-	echo "   Avg. read  - $(averageio "$ior1" "$ior2" "$ior3") MB/s" | tee -a $log
+	echo "   Avg. write : $(averageio "$iow1" "$iow2" "$iow3") MB/s" | tee -a $log
+	echo "   Avg. read  : $(averageio "$ior1" "$ior2" "$ior3") MB/s" | tee -a $log
 	rm $benchram/zero
 	umount $benchram
 	rm -rf $benchram
@@ -788,10 +787,10 @@ ramtest() {
 	echostyle "Disk Speed:"
 	if [[ $writemb != "1" ]]; then
 		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-		echo "   I/O Speed  -$io" | tee -a $log
+		echo "   I/O Speed  :$io" | tee -a $log
 
 		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test oflag=dsync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-		echo "   I/O Direct -$io" | tee -a $log
+		echo "   I/O Direct :$io" | tee -a $log
 	else
 		echo "   Not enough space to test." | tee -a $log
 	fi
@@ -1057,7 +1056,7 @@ lviv_bench(){
 	ip_info4;
 	next;
 	geekbench4;
-	ramtest;
+	iotest;
 	print_io;
 	print_speedtest_lviv;
 	next;
@@ -1097,7 +1096,9 @@ case $1 in
 		about;sleep 3;next;get_system_info;print_system_info;next;;
 	'version'|'-v'|'--v'|'-version'|'--version')
 		next;about;next;;
-   	'io'|'-io'|'--io'|'-drivespeed'|'--drivespeed' )
+   	'io'|'-io'|'--io' )
+		next;iotest;next;;
+	'dd'|'-dd'|'--dd' )
 		next;print_io;next;;
 	'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
 		about;benchinit;next;print_speedtest;next;cleanup;;
