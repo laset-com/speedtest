@@ -724,7 +724,7 @@ get_system_info() {
 	virt_check
 }
 
-io_test() {
+write_test() {
     (LANG=C dd if=/dev/zero of=test_file_$$ bs=512K count=$1 conv=fdatasync ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
 }
 
@@ -819,7 +819,7 @@ iotest() {
 }
 
 
-print_io() {
+write_io() {
 	writemb=$(freedisk)
 	writemb_size="$(( writemb / 2 ))MB"
 	if [[ $writemb_size == "1024MB" ]]; then
@@ -827,15 +827,15 @@ print_io() {
 	fi
 
 	if [[ $writemb != "1" ]]; then
-		echostyle "dd: sequential write speed ($writemb_size):"
+		echostyle "Disk Write Speed ($writemb_size):"
 		echo -n "   1st run    : " | tee -a $log
-		io1=$( io_test $writemb )
+		io1=$( write_test $writemb )
 		echo -e "$io1" | tee -a $log
 		echo -n "   2dn run    : " | tee -a $log
-		io2=$( io_test $writemb )
+		io2=$( write_test $writemb )
 		echo -e "$io2" | tee -a $log
 		echo -n "   3rd run    : " | tee -a $log
-		io3=$( io_test $writemb )
+		io3=$( write_test $writemb )
 		echo -e "$io3" | tee -a $log
 		ioraw1=$( echo $io1 | awk 'NR==1 {print $1}' )
 		[ "`echo $io1 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
@@ -860,7 +860,7 @@ read_io() {
 	fi
 
 	if [[ $writemb != "1" ]]; then
-		echostyle "dd: sequential read speed ($writemb_size):"
+		echostyle "Disk Read Speed ($writemb_size):"
 		echo -n "   1st run    : " | tee -a $log
 		io1=$( read_test $writemb )
 		echo -e "$io1" | tee -a $log
@@ -1116,7 +1116,8 @@ lviv_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	print_io;
+	iotest;
+	write_io;
 	read_io;
 	next;
 	print_end_time;
