@@ -729,7 +729,7 @@ io_test() {
 }
 
 read_test() {
-    (LANG=C dd if=test_file_$$ of=/dev/zero bs=512K count=$1 && rm -f test_file_$$ ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
+    (LANG=C dd if=test_file_$$ of=/dev/zero bs=512K count=$1 oflag=direct && ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
 }
 
 averageio() {
@@ -880,6 +880,7 @@ read_io() {
 		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
 		echo -e "   -----------------------" | tee -a $log
 		echo -e "   Average    : $ioavg MB/s" | tee -a $log
+		rm -f test_file_$$
 	else
 		echo -e " Not enough space!"
 	fi
