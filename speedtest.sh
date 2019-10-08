@@ -449,15 +449,15 @@ geekbench4() {
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 	
 	if [[ $GEEKBENCH_SCORES_SINGLE -le 1500 ]]; then
-		grank=\xF0\x9F\x92\xA9
+		grank="\xF0\x9F\x92\xA9"
 	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1500 && $GEEKBENCH_SCORES_SINGLE -le 2000 ]]; then
-		grank=\xF0\x9F\x91\x8E
+		grank="\xF0\x9F\x91\x8E"
 	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2000 && $GEEKBENCH_SCORES_SINGLE -le 2500 ]]; then
-		grank=\xF0\x9F\x91\x8C
+		grank="\xF0\x9F\x91\x8C"
 	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2500 && $GEEKBENCH_SCORES_SINGLE -le 3500 ]]; then
-		grank=\xF0\x9F\x91\x8D
+		grank="\xF0\x9F\x91\x8D"
 	else
-		grank=\xF0\x9F\x92\xAA
+		grank="\xF0\x9F\x92\xAA"
 	fi
 	
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
@@ -679,6 +679,7 @@ print_system_info() {
 	echo -e " Virt/Kernel  : $virtual / $kern" | tee -a $log
 	echo -e " CPU Model    : $cname" | tee -a $log
 	echo -e " CPU Cores    : $cores @ $freq MHz $arch $corescache Cache" | tee -a $log
+	echo -e " CPU Flags    : $cpu_aes & $cpu_virt" | tee -a $log
 	echo -e " Load Average : $load" | tee -a $log
 	echo -e " Total Space  : $hdd ($hddused ~$hddfree used)" | tee -a $log
 	echo -e " Total RAM    : $uram MB / $tram MB ($bram MB Buff)" | tee -a $log
@@ -693,6 +694,10 @@ get_system_info() {
 	cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
 	freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
 	corescache=$( awk -F: '/cache size/ {cache=$2} END {print cache}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+	cpu_aes=$(cat /proc/cpuinfo | grep aes)
+	[[ -z "$cpu_aes" ]] && cpu_aes="AES-NI Disabled" || cpu_aes="AES-NI Enabled"
+	cpu_virt=$(cat /proc/cpuinfo | grep 'vmx\|svm')
+	[[ -z "$cpu_virt" ]] && cpu_virt="VM-x/AMD-V Disabled" || cpu_virt="VM-x/AMD-V Enabled"
 	tram=$( free -m | awk '/Mem/ {print $2}' )
 	uram=$( free -m | awk '/Mem/ {print $3}' )
 	bram=$( free -m | awk '/Mem/ {print $6}' )
