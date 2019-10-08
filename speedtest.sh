@@ -451,8 +451,8 @@ geekbench4() {
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
 	echostyle "## Geekbench v4 CPU Benchmark:"
 	echo "" | tee -a $log
-	echo -e "   Single Core : $GEEKBENCH_SCORES_SINGLE" | tee -a $log
-	echo -e "   Multi Core  : $GEEKBENCH_SCORES_MULTI" | tee -a $log
+	echo -e "   Single Core: $GEEKBENCH_SCORES_SINGLE" | tee -a $log
+	echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
 	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" > geekbench4_claim.url 2> /dev/null
 	echo "" | tee -a $log
 	echo -e " Cooling down..."
@@ -516,10 +516,10 @@ ip_info(){
 		city=${region}
 	fi
 
-	echo -e " ASN & ISP            : $asn, $isp" | tee -a $log
-	echo -e " Organization         : $org" | tee -a $log
-	echo -e " Location             : $city, $country / $countryCode" | tee -a $log
-	echo -e " Region               : $region" | tee -a $log
+	echo -e " ASN & ISP     : $asn, $isp" | tee -a $log
+	echo -e " Organization  : $org" | tee -a $log
+	echo -e " Location      : $city, $country / $countryCode" | tee -a $log
+	echo -e " Region        : $region" | tee -a $log
 }
 
 ip_info2(){
@@ -663,16 +663,16 @@ freedisk() {
 }
 
 print_system_info() {
-	echo -e " OS                   : $opsy ($lbit Bit)" | tee -a $log
-	echo -e " Virt/Kernel          : $virtual / $kern" | tee -a $log
-	echo -e " CPU Model            : $cname" | tee -a $log
-	echo -e " CPU Cores            : $cores @ $freq MHz $arch $corescache Cache" | tee -a $log
-	echo -e " Load Average         : $load" | tee -a $log
-	echo -e " Total Space          : $hdd ($hddfree used)" | tee -a $log
-	echo -e " Total RAM            : $uram MB / $tram MB ($bram MB Buff)" | tee -a $log
-	echo -e " Total SWAP           : $uswap MB / $swap MB" | tee -a $log
-	echo -e " Uptime               : $up" | tee -a $log
-	#echo -e " TCP CC               : $tcpctrl" | tee -a $log
+	echo -e " OS            : $opsy ($lbit Bit)" | tee -a $log
+	echo -e " Virt/Kernel   : $virtual / $kern" | tee -a $log
+	echo -e " CPU Model     : $cname" | tee -a $log
+	echo -e " CPU Cores     : $cores @ $freq MHz $arch $corescache Cache" | tee -a $log
+	echo -e " Load Average  : $load" | tee -a $log
+	echo -e " Total Space   : $hdd ($hddfree used)" | tee -a $log
+	echo -e " Total RAM     : $uram MB / $tram MB ($bram MB Buff)" | tee -a $log
+	echo -e " Total SWAP    : $uswap MB / $swap MB" | tee -a $log
+	echo -e " Uptime        : $up" | tee -a $log
+	#echo -e " TCP CC        : $tcpctrl" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 }
 
