@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.4.0 (8 Oct 2019)                  / "
+	echo " \                  v1.4.1 (8 Oct 2019)                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -668,7 +668,7 @@ print_system_info() {
 	echo -e " CPU Model    : $cname" | tee -a $log
 	echo -e " CPU Cores    : $cores @ $freq MHz $arch $corescache Cache" | tee -a $log
 	echo -e " Load Average : $load" | tee -a $log
-	echo -e " Total Space  : $hdd ($hddused ~ $hddfree used)" | tee -a $log
+	echo -e " Total Space  : $hdd ($hddused ~$hddfree used)" | tee -a $log
 	echo -e " Total RAM    : $uram MB / $tram MB ($bram MB Buff)" | tee -a $log
 	echo -e " Total SWAP   : $uswap MB / $swap MB" | tee -a $log
 	echo -e " Uptime       : $up" | tee -a $log
@@ -854,7 +854,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.4.0 beta (8 Oct 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.4.1 beta (8 Oct 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
@@ -1100,7 +1100,7 @@ true > $log
 
 case $1 in
 	'info'|'-i'|'--i'|'-info'|'--info' )
-		about;sleep 3;next;get_system_info;print_system_info;next;;
+		about;sleep 3;next;get_system_info;print_system_info;;
 	'version'|'-v'|'--v'|'-version'|'--version')
 		next;about;next;;
    	'io'|'-io'|'--io' )
