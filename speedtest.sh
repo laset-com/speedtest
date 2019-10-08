@@ -806,7 +806,7 @@ iotest() {
 		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
 		echo "   I/O Speed  :$io" | tee -a $log
 
-		io=$( ( dd if=/dev/zero of=test bs=64k count=16k oflag=direct; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test oflag=direct; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
 		echo "   I/O Direct :$io" | tee -a $log
 	else
 		echo "   Not enough space to test." | tee -a $log
