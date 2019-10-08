@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.3.8 (8 Oct 2019)                  / "
+	echo " \                  v1.3.9 (8 Oct 2019)                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -861,7 +861,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.3.8 beta (8 Oct 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.3.9 beta (8 Oct 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
@@ -1065,6 +1065,7 @@ lviv_bench(){
 	geekbench4;
 	ramtest;
 	print_io;
+	print_speedtest_lviv;
 	next;
 	print_end_time;
 	cleanup;
