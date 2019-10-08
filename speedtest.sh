@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.3.9 (8 Oct 2019)                  / "
+	echo " \                  v1.4.0 (8 Oct 2019)                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -219,8 +219,7 @@ speed_test(){
 
 print_speedtest() {
 	echo "" | tee -a $log
-	printf "## Global Speedtest" | tee -a $log
-	echo "" | tee -a $log
+	echostyle "## Global Speedtest"
 	echo "" | tee -a $log
 	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -249,8 +248,7 @@ print_speedtest() {
 
 print_speedtest_usa() {
 	echo "" | tee -a $log
-	printf "## USA Speedtest" | tee -a $log
-	echo "" | tee -a $log
+	echostyle "## USA Speedtest"
 	echo "" | tee -a $log
 	printf "%-36s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -288,8 +286,7 @@ print_speedtest_usa() {
 
 print_speedtest_europe() {
 	echo "" | tee -a $log
-	printf "## Europe Speedtest" | tee -a $log
-	echo "" | tee -a $log
+	echostyle "## Europe Speedtest"
 	echo "" | tee -a $log
 	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -323,8 +320,7 @@ print_speedtest_europe() {
 
 print_speedtest_asia() {
 	echo "" | tee -a $log
-	printf "## Asia Speedtest" | tee -a $log
-	echo "" | tee -a $log
+	echostyle "## Asia Speedtest"
 	echo "" | tee -a $log
 	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -357,8 +353,7 @@ print_speedtest_asia() {
 
 print_speedtest_sa() {
 	echo "" | tee -a $log
-	printf "## South America Speedtest" | tee -a $log
-	echo "" | tee -a $log
+	echostyle "## South America Speedtest"
 	echo "" | tee -a $log
 	printf "%-38s%-17s%-16s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -379,8 +374,7 @@ print_speedtest_sa() {
 
 print_speedtest_ukraine() {
 	echo "" | tee -a $log
-	printf "## Ukraine Speedtest" | tee -a $log
-	echo "" | tee -a $log
+	echostyle "## Ukraine Speedtest"
 	echo "" | tee -a $log
 	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -402,8 +396,7 @@ print_speedtest_ukraine() {
 
 print_speedtest_lviv() {
 	echo "" | tee -a $log
-	printf "## Lviv Speedtest" | tee -a $log
-	echo "" | tee -a $log
+	echostyle "## Lviv Speedtest"
 	echo "" | tee -a $log
 	printf "%-26s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -421,8 +414,7 @@ print_speedtest_lviv() {
 
 print_speedtest_meast() {
 	echo "" | tee -a $log
-	printf "## Middle East Speedtest" | tee -a $log
-	echo "" | tee -a $log
+	echostyle "## Middle East Speedtest"
 	echo "" | tee -a $log
 	printf "%-30s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -701,10 +693,10 @@ get_system_info() {
 	lbit=$( getconf LONG_BIT )
 	kern=$( uname -r )
 	#ipv6=$( wget -qO- -t1 -T2 ipv6.icanhazip.com )
-	disk_size1=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $2}' ))
-	disk_size2=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $3}' ))
-	disk_total_size=$( calc_disk ${disk_size1[@]} )
-	disk_used_size=$( calc_disk ${disk_size2[@]} )
+	#disk_size1=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $2}' ))
+	#disk_size2=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $3}' ))
+	#disk_total_size=$( calc_disk ${disk_size1[@]} )
+	#disk_used_size=$( calc_disk ${disk_size2[@]} )
 	hdd=$( df -h --total --local -x tmpfs | grep 'total' | awk '{print $2}' )B
 	hddfree=$( df -h --total | grep 'total' | awk '{print $5}' )
 	#tcp congestion control
