@@ -728,10 +728,6 @@ write_test() {
     (LANG=C dd if=/dev/zero of=test_file_$$ bs=512K count=$1 conv=fdatasync ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
 }
 
-read_test() {
-    (LANG=C dd if=test_file_$$ of=/dev/null bs=512K oflag=direct,sync ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
-}
-
 averageio() {
 	ioraw1=$( echo $1 | awk 'NR==1 {print $1}' )
 		[ "$(echo $1 | awk 'NR==1 {print $2}')" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
@@ -847,42 +843,6 @@ write_io() {
 		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
 		echo -e "   -----------------------" | tee -a $log
 		echo -e "   Average    : $ioavg MB/s" | tee -a $log
-		echo "" | tee -a $log
-	else
-		echo -e " Not enough space!"
-	fi
-	echo "" | tee -a $log
-}
-
-read_io() {
-	writemb=$(freedisk)
-	writemb_size="$(( writemb / 2 ))MB"
-	if [[ $writemb_size == "1024MB" ]]; then
-		writemb_size="1.0GB"
-	fi
-
-	if [[ $writemb != "1" ]]; then
-		echostyle "Disk Read Speed ($writemb_size):"
-		echo -n "   1st run    : " | tee -a $log
-		io1=$( read_test $writemb )
-		echo -e "$io1" | tee -a $log
-		echo -n "   2dn run    : " | tee -a $log
-		io2=$( read_test $writemb )
-		echo -e "$io2" | tee -a $log
-		echo -n "   3rd run    : " | tee -a $log
-		io3=$( read_test $writemb )
-		echo -e "$io3" | tee -a $log
-		ioraw1=$( echo $io1 | awk 'NR==1 {print $1}' )
-		[ "`echo $io1 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
-		ioraw2=$( echo $io2 | awk 'NR==1 {print $1}' )
-		[ "`echo $io2 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw2=$( awk 'BEGIN{print '$ioraw2' * 1024}' )
-		ioraw3=$( echo $io3 | awk 'NR==1 {print $1}' )
-		[ "`echo $io3 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
-		ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
-		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
-		echo -e "   -----------------------" | tee -a $log
-		echo -e "   Average    : $ioavg MB/s" | tee -a $log
-		rm -f test_file_$$
 	else
 		echo -e " Not enough space!"
 	fi
@@ -1120,7 +1080,6 @@ lviv_bench(){
 	next;
 	iotest;
 	write_io;
-	read_io;
 	next;
 	print_end_time;
 	cleanup;
