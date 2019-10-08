@@ -676,7 +676,7 @@ print_system_info() {
 	echo -e " CPU Model            : $cname" | tee -a $log
 	echo -e " CPU Cores            : $cores @ $freq MHz $arch $corescache Cache" | tee -a $log
 	echo -e " Load Average         : $load" | tee -a $log
-	echo -e " Total Space          : $disk_used_size GB / $disk_total_size GB " | tee -a $log
+	echo -e " Total Space          : $hdd ($hddfree used)" | tee -a $log
 	echo -e " Total RAM            : $uram MB / $tram MB ($bram MB Buff)" | tee -a $log
 	echo -e " Total SWAP           : $uswap MB / $swap MB" | tee -a $log
 	echo -e " Uptime               : $up" | tee -a $log
@@ -705,6 +705,8 @@ get_system_info() {
 	disk_size2=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $3}' ))
 	disk_total_size=$( calc_disk ${disk_size1[@]} )
 	disk_used_size=$( calc_disk ${disk_size2[@]} )
+	hdd=$( df -h --total --local -x tmpfs | grep 'total' | awk '{print $2}' )B
+	hddfree=$( df -h --total | grep 'total' | awk '{print $5}' )
 	#tcp congestion control
 	#tcpctrl=$( sysctl net.ipv4.tcp_congestion_control | awk -F ' ' '{print $3}' )
 
