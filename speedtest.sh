@@ -516,10 +516,10 @@ ip_info(){
 		city=${region}
 	fi
 
-	echo -e " ASN & ISP     : $asn, $isp" | tee -a $log
-	echo -e " Organization  : $org" | tee -a $log
-	echo -e " Location      : $city, $country / $countryCode" | tee -a $log
-	echo -e " Region        : $region" | tee -a $log
+	echo -e " ASN & ISP    : $asn, $isp" | tee -a $log
+	echo -e " Organization : $org" | tee -a $log
+	echo -e " Location     : $city, $country / $countryCode" | tee -a $log
+	echo -e " Region       : $region" | tee -a $log
 }
 
 ip_info2(){
@@ -548,10 +548,10 @@ ip_info3(){
 	countryCode=$(python ip_info.py countryCode)
 	region=$(python ip_info.py regionName)
 
-	echo -e " ASN & ISP            : $asn, $isp" | tee -a $log
-	echo -e " Organization         : $org" | tee -a $log
-	echo -e " Location             : $city, $country / $countryCode" | tee -a $log
-	echo -e " Region               : $region" | tee -a $log
+	echo -e " ASN & ISP    : $asn, $isp" | tee -a $log
+	echo -e " Organization : $org" | tee -a $log
+	echo -e " Location     : $city, $country / $countryCode" | tee -a $log
+	echo -e " Region       : $region" | tee -a $log
 
 	rm -rf ip_info.py
 }
@@ -580,10 +580,10 @@ ip_info4(){
 		city=${region}
 	fi
 
-	echo -e " ASN & ISP            : $asn, $isp" | tee -a $log
-	echo -e " Organization         : $org" | tee -a $log
-	echo -e " Location             : $city, $country / $countryCode" | tee -a $log
-	echo -e " Region               : $region" | tee -a $log
+	echo -e " ASN & ISP    : $asn, $isp" | tee -a $log
+	echo -e " Organization : $org" | tee -a $log
+	echo -e " Location     : $city, $country / $countryCode" | tee -a $log
+	echo -e " Region       : $region" | tee -a $log
 
 	rm -rf tools.py
 	rm -rf ip_json.json
@@ -663,16 +663,16 @@ freedisk() {
 }
 
 print_system_info() {
-	echo -e " OS            : $opsy ($lbit Bit)" | tee -a $log
-	echo -e " Virt/Kernel   : $virtual / $kern" | tee -a $log
-	echo -e " CPU Model     : $cname" | tee -a $log
-	echo -e " CPU Cores     : $cores @ $freq MHz $arch $corescache Cache" | tee -a $log
-	echo -e " Load Average  : $load" | tee -a $log
-	echo -e " Total Space   : $hdd ($hddfree used)" | tee -a $log
-	echo -e " Total RAM     : $uram MB / $tram MB ($bram MB Buff)" | tee -a $log
-	echo -e " Total SWAP    : $uswap MB / $swap MB" | tee -a $log
-	echo -e " Uptime        : $up" | tee -a $log
-	#echo -e " TCP CC        : $tcpctrl" | tee -a $log
+	echo -e " OS           : $opsy ($lbit Bit)" | tee -a $log
+	echo -e " Virt/Kernel  : $virtual / $kern" | tee -a $log
+	echo -e " CPU Model    : $cname" | tee -a $log
+	echo -e " CPU Cores    : $cores @ $freq MHz $arch $corescache Cache" | tee -a $log
+	echo -e " Load Average : $load" | tee -a $log
+	echo -e " Total Space  : $hdd ($hddfree used)" | tee -a $log
+	echo -e " Total RAM    : $uram MB / $tram MB ($bram MB Buff)" | tee -a $log
+	echo -e " Total SWAP   : $uswap MB / $swap MB" | tee -a $log
+	echo -e " Uptime       : $up" | tee -a $log
+	#echo -e " TCP CC       : $tcpctrl" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 }
 
@@ -853,7 +853,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.3.9 beta (8 Oct 2019) \n' | tee -a $log
+	printf ' Speedtest Monster v.1.4.0 beta (8 Oct 2019) \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
