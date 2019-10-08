@@ -36,7 +36,7 @@ echostyle(){
 }
 echostyle2(){
 	if hash tput 2>$NULL; then
-		echo " $(tput setaf 7)$1$(tput sgr0)"
+		echo " $(tput setaf 5)$1$(tput sgr0)"
 		echo " $1" >> $log
 	else
 		echo " $1" | tee -a $log
@@ -779,7 +779,7 @@ ramtest() {
 	fi
 	[[ -d $benchram ]] || mkdir $benchram
 	mount -t tmpfs -o size=$sbram tmpfs $benchram/
-	printf " RAM Speed (%sB):\n" "$sbram" | tee -a $log
+	echostyle2 " RAM Speed (%sB):" "$sbram"
 	iow1=$( ( dd if=/dev/zero of=$benchram/zero bs=512K count=$sbcount ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
 	ior1=$( ( dd if=$benchram/zero of=$NULL bs=512K count=$sbcount; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
 	iow2=$( ( dd if=/dev/zero of=$benchram/zero bs=512K count=$sbcount ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
@@ -794,7 +794,7 @@ ramtest() {
 	echo "" | tee -a $log
 	
 	# Disk test
-	echo " Disk Speed ($writemb_size):" | tee -a $log
+	echostyle2 " Disk Speed ($writemb_size):"
 	if [[ $writemb != "1" ]]; then
 		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
 		echo "   I/O Speed  -$io" | tee -a $log
@@ -840,7 +840,7 @@ print_io() {
 		[ "`echo $io3 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
 		ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
 		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
-		echo -e "   ------------------------" | tee -a $log
+		echo -e "   -----------------------" | tee -a $log
 		echo -e "   Average    : $ioavg MB/s" | tee -a $log
 	else
 		echo -e " Not enough space!"
