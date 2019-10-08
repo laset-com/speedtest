@@ -36,7 +36,7 @@ echostyle(){
 }
 echostyle2(){
 	if hash tput 2>$NULL; then
-		echo " $(tput setaf 124)$1$(tput sgr0)"
+		echo " $(tput setaf 7)$1$(tput sgr0)"
 		echo " $1" >> $log
 	else
 		echo " $1" | tee -a $log
@@ -760,7 +760,6 @@ ramtest() {
 
 	# CPU Speed test
 	echostyle2 " CPU Speed:"
-	echo "" | tee -a $log
 	printf "    bzip2 %s -" "$writemb_size" | tee -a $log
 	printf "%s\n" "$( cpubench bzip2 $writemb_cpu )" | tee -a $log 
 	printf "   sha256 %s -" "$writemb_size" | tee -a $log
