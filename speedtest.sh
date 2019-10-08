@@ -848,6 +848,39 @@ write_io() {
 	fi
 }
 
+ioping() {
+	echo -e "Performing disk performance test. This may take a couple minutes to complete..."
+
+	DISK_PATH=$HOME/disk
+	mkdir -p $DISK_PATH
+	curl -s https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/ioping -o $DISK_PATH/ioping
+	chmod +x $DISK_PATH/ioping
+	
+	disk_test
+
+	if [ $(echo $DISK_WRITE_TEST_AVG | cut -d "." -f 1) -ge 1000 ]; then
+		DISK_WRITE_TEST_AVG=$(awk -v a="$DISK_WRITE_TEST_AVG" 'BEGIN { print a / 1000 }')
+		DISK_WRITE_TEST_UNIT="GB/s"
+	else
+		DISK_WRITE_TEST_UNIT="MB/s"
+	fi
+	if [ $(echo $DISK_READ_TEST_AVG | cut -d "." -f 1) -ge 1000 ]; then
+		DISK_READ_TEST_AVG=$(awk -v a="$DISK_READ_TEST_AVG" 'BEGIN { print a / 1000 }')
+		DISK_READ_TEST_UNIT="GB/s"
+	else
+		DISK_READ_TEST_UNIT="MB/s"
+	fi
+
+	echo -en "\e[1A"; echo -e "\e[0K\r"
+	echo -e "Disk Speed Tests:"
+	echo -e "---------------------------------"
+	printf "%-6s | %-6s %-4s | %-6s %-4s | %-6s %-4s | %-6s %-4s\n" "" "Test 1" "" "Test 2" ""  "Test 3" "" "Avg" ""
+	printf "%-6s | %-6s %-4s | %-6s %-4s | %-6s %-4s | %-6s %-4s\n"
+	printf "%-6s | %-6.2f MB/s | %-6.2f MB/s | %-6.2f MB/s | %-6.2f %-4s\n" "Write" "${DISK_WRITE_TEST_RES[0]}" "${DISK_WRITE_TEST_RES[1]}" "${DISK_WRITE_TEST_RES[2]}" "${DISK_WRITE_TEST_AVG}" "${DISK_WRITE_TEST_UNIT}" 
+	printf "%-6s | %-6.2f MB/s | %-6.2f MB/s | %-6.2f MB/s | %-6.2f %-4s\n" "Read" "${DISK_READ_TEST_RES[0]}" "${DISK_READ_TEST_RES[1]}" "${DISK_READ_TEST_RES[2]}" "${DISK_READ_TEST_AVG}" "${DISK_READ_TEST_UNIT}"
+	rm -rf $DISK_PATH
+}
+
 print_end_time() {
 	echo "" | tee -a $log
 	end=$(date +%s) 
@@ -1078,6 +1111,7 @@ lviv_bench(){
 	print_system_info;
 	ip_info4;
 	next;
+	geekbench4;
 	iotest;
 	write_io;
 	next;
@@ -1122,6 +1156,8 @@ case $1 in
 		next;geekbench4;next;cleanup;;
 	'io'|'-io'|'--io' )
 		next;iotest;write_io;next;;
+	'ioping'|'-ioping'|'--ioping' )
+		next;ioping;next;;
 	'dd'|'-dd'|'--dd' )
 		next;write_io;next;;
 	'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
