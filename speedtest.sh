@@ -724,7 +724,7 @@ averageio() {
 
 cpubench() {
 	if hash $1 2>$NULL; then
-		io=$( ( dd if=/dev/zero bs=512K count=$2 | $1 ) 2>&1 | grep 'copied' | awk -F, '{io=$NF} END { print io}' )
+		io=$( ( dd if=/dev/zero bs=512K count=$2 | $1 ) 2>&1 | grep 'copied' | awk -F, '{io=$NF} END {print io}' )
 		if [[ $io != *"."* ]]; then
 			printf "%4i %s" "${io% *}" "${io##* }"
 		else
