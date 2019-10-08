@@ -34,14 +34,6 @@ echostyle(){
 		echo " $1" | tee -a $log
 	fi
 }
-echostyle2(){
-	if hash tput 2>$NULL; then
-		echo " $(tput setaf 3)$1$(tput sgr0)"
-		echo " $1" >> $log
-	else
-		echo " $1" | tee -a $log
-	fi
-}
 
 benchinit() {
 	# check release
@@ -465,11 +457,9 @@ geekbench4() {
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 	
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
-	printf "## Geekbench v4 CPU Benchmark:" | tee -a $log
-	echo "" | tee -a $log
-	echo "" | tee -a $log
-	echo -e " Single Core: $GEEKBENCH_SCORES_SINGLE" | tee -a $log
-	echo -e " Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
+	echostyle "## Geekbench v4 CPU Benchmark:"
+	echo -e "   Single Core: $GEEKBENCH_SCORES_SINGLE" | tee -a $log
+	echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
 	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" > geekbench4_claim.url 2> /dev/null
 }
 
@@ -759,7 +749,7 @@ ramtest() {
 	fi
 
 	# CPU Speed test
-	echostyle2 " CPU Speed:"
+	echostyle "CPU Speed:"
 	printf "    bzip2 %s -" "$writemb_size" | tee -a $log
 	printf "%s\n" "$( cpubench bzip2 $writemb_cpu )" | tee -a $log 
 	printf "   sha256 %s -" "$writemb_size" | tee -a $log
@@ -779,7 +769,7 @@ ramtest() {
 	fi
 	[[ -d $benchram ]] || mkdir $benchram
 	mount -t tmpfs -o size=$sbram tmpfs $benchram/
-	echostyle2 " RAM Speed:"
+	echostyle "RAM Speed:"
 	iow1=$( ( dd if=/dev/zero of=$benchram/zero bs=512K count=$sbcount ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
 	ior1=$( ( dd if=$benchram/zero of=$NULL bs=512K count=$sbcount; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
 	iow2=$( ( dd if=/dev/zero of=$benchram/zero bs=512K count=$sbcount ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
@@ -794,7 +784,7 @@ ramtest() {
 	echo "" | tee -a $log
 	
 	# Disk test
-	echostyle2 " Disk Speed ($writemb_size):"
+	echostyle "Disk Speed:"
 	if [[ $writemb != "1" ]]; then
 		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
 		echo "   I/O Speed  -$io" | tee -a $log
@@ -809,19 +799,14 @@ ramtest() {
 
 
 print_io() {
-	if [[ $1 == "fast" ]]; then
-		writemb=$((128*2))
-	else
-		writemb=$(freedisk)
-	fi
-	
+	writemb=$(freedisk)
 	writemb_size="$(( writemb / 2 ))MB"
 	if [[ $writemb_size == "1024MB" ]]; then
 		writemb_size="1.0GB"
 	fi
 
 	if [[ $writemb != "1" ]]; then
-		echostyle2 " dd: sequential write speed ($writemb_size):"
+		echostyle "dd: sequential write speed ($writemb_size):"
 		echo -n "   1st run    : " | tee -a $log
 		io1=$( io_test $writemb )
 		echo -e "$io1" | tee -a $log
@@ -1070,6 +1055,7 @@ lviv_bench(){
 	print_system_info;
 	ip_info4;
 	next;
+	geekbench4;
 	ramtest;
 	print_io;
 	next;
