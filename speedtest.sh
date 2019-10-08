@@ -448,16 +448,16 @@ geekbench4() {
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 	
-	if [[ $GEEKBENCH_SCORES_SINGLE -le 1500 ]]; then
-		grank="\xF0\x9F\x92\xA9"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1500 && $GEEKBENCH_SCORES_SINGLE -le 2000 ]]; then
-		grank="\xF0\x9F\x91\x8E"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2000 && $GEEKBENCH_SCORES_SINGLE -le 2500 ]]; then
-		grank="\xF0\x9F\x91\x8C"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2500 && $GEEKBENCH_SCORES_SINGLE -le 3500 ]]; then
-		grank="\xF0\x9F\x91\x8D"
+	if [[ $GEEKBENCH_SCORES_SINGLE -le 1700 ]]; then
+		grank=(POOR)
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1700 && $GEEKBENCH_SCORES_SINGLE -le 2300 ]]; then
+		grank=(FAIR)
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2300 && $GEEKBENCH_SCORES_SINGLE -le 3000 ]]; then
+		grank=(GOOD)
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 3000 && $GEEKBENCH_SCORES_SINGLE -le 4000 ]]; then
+		grank=(VERY GOOD)
 	else
-		grank="\xF0\x9F\x92\xAA"
+		grank=(EXCELLENT)
 	fi
 	
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
