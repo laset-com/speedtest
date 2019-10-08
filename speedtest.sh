@@ -23,6 +23,9 @@ cancel() {
 
 trap cancel SIGINT
 
+benchram="$HOME/tmpbenchram"
+NULL="/dev/null"
+
 echostyle(){
 	if hash tput 2>$NULL; then
 		echo " $(tput setaf 6)$1$(tput sgr0)"
