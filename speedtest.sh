@@ -832,7 +832,7 @@ print_io() {
 		[ "`echo $io3 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
 		ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
 		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
-		printf "%-27s\n" "-" | sed 's/\s/-/g' | tee -a $log
+		echo -e "   ------------------------" | tee -a $log
 		echo -e "   Average    : $ioavg MB/s" | tee -a $log
 	else
 		echo -e " Not enough space!"
