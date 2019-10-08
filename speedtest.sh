@@ -713,33 +713,6 @@ ramtest() {
 	printf "   md5sum %s -" "$writemb_size" | tee -a $log
 	printf "%s\n\n" "$( cpubench md5sum $writemb_cpu )" | tee -a $log
 
-	# Disk test
-	echo " Disk Speed ($writemb_size):" | tee -a $log
-	if [[ $writemb != "1" ]]; then
-		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-		echo "   I/O Speed  -$io" | tee -a $log
-
-		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test oflag=dsync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-		echo "   I/O Direct -$io" | tee -a $log
-	else
-		echo "   Not enough space to test." | tee -a $log
-	fi
-	echo "" | tee -a $log
-	
-	# Disk test
-	echo " dd: sequential write speed:" | tee -a $log
-	if [[ $writemb != "1" ]]; then
-		io=$( ( dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-		echo "   1st run: $io" | tee -a $log
-		io=$( ( dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-		echo "   2nd run: $io" | tee -a $log
-		io=$( ( dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-		echo "   3rd run: $io" | tee -a $log
-	else
-		echo "   Not enough space to test." | tee -a $log
-	fi
-	echo "" | tee -a $log
-
 	# RAM Speed test
 	# set ram allocation for mount
 	tram_mb="$( free -m | grep Mem | awk 'NR=1 {print $2}' )"
@@ -765,6 +738,19 @@ ramtest() {
 	umount $benchram
 	rm -rf $benchram
 	echo "" | tee -a $log
+	
+	# Disk test
+	echo " Disk Speed ($writemb_size):" | tee -a $log
+	if [[ $writemb != "1" ]]; then
+		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+		echo "   I/O Speed  -$io" | tee -a $log
+
+		io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test oflag=dsync; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
+		echo "   I/O Direct -$io" | tee -a $log
+	else
+		echo "   Not enough space to test." | tee -a $log
+	fi
+	echo "" | tee -a $log
 }
 
 
@@ -782,16 +768,15 @@ print_io() {
 
 	if [[ $writemb != "1" ]]; then
 		echo "" | tee -a $log
-		printf "dd: sequential write speed ($writemb_size):" | tee -a $log
+		printf " dd: sequential write speed ($writemb_size):" | tee -a $log
 		echo "" | tee -a $log
-		echo "" | tee -a $log
-		echo -n " 1st run    : " | tee -a $log
+		echo -n "    1st run    : " | tee -a $log
 		io1=$( io_test $writemb )
 		echo -e "$io1" | tee -a $log
-		echo -n " 2dn run    : " | tee -a $log
+		echo -n "    2dn run    : " | tee -a $log
 		io2=$( io_test $writemb )
 		echo -e "$io2" | tee -a $log
-		echo -n " 3rd run    : " | tee -a $log
+		echo -n "    3rd run    : " | tee -a $log
 		io3=$( io_test $writemb )
 		echo -e "$io3" | tee -a $log
 		ioraw1=$( echo $io1 | awk 'NR==1 {print $1}' )
@@ -802,8 +787,8 @@ print_io() {
 		[ "`echo $io3 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
 		ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
 		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
-		printf "%-24s\n" "-" | sed 's/\s/-/g' | tee -a $log
-		echo -e " Average    : $ioavg MB/s" | tee -a $log
+		printf "%-27s\n" "-" | sed 's/\s/-/g' | tee -a $log
+		echo -e "    Average    : $ioavg MB/s" | tee -a $log
 	else
 		echo -e " Not enough space!"
 	fi
