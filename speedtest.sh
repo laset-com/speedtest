@@ -847,7 +847,7 @@ print_end_time() {
 	utc_time=$(date -u '+%F %T')
 	echo " Timestamp   : $utc_time UTC" | tee -a $log
 	#echo " Finished!"
-	echo " Results     : $log"
+	echo " Saved in    : $log"
 	echo "" | tee -a $log
 }
 
@@ -860,7 +860,7 @@ print_intro() {
 }
 
 sharetest() {
-	echo " Share result:"
+	echo " Share results:"
 	echo " - $result_speed"
 	log_preupload
 	case $1 in
@@ -930,6 +930,7 @@ bench_all(){
 	ip_info4;
 	next;
 	geekbench4;
+	iotest;
 	print_io;
 	print_speedtest;
 	next;
@@ -951,6 +952,7 @@ usa_bench(){
 	ip_info4;
 	next;
 	geekbench4;
+	iotest;
 	print_io;
 	print_speedtest_usa;
 	next;
@@ -972,6 +974,7 @@ europe_bench(){
 	ip_info4;
 	next;
 	geekbench4;
+	iotest;
 	print_io;
 	print_speedtest_europe;
 	next;
@@ -993,6 +996,7 @@ asia_bench(){
 	ip_info4;
 	next;
 	geekbench4;
+	iotest;
 	print_io;
 	print_speedtest_asia;
 	next;
@@ -1014,6 +1018,7 @@ sa_bench(){
 	ip_info4;
 	next;
 	geekbench4;
+	iotest;
 	print_io;
 	print_speedtest_sa;
 	next;
@@ -1035,6 +1040,7 @@ ukraine_bench(){
 	ip_info4;
 	next;
 	geekbench4;
+	iotest;
 	print_io;
 	print_speedtest_ukraine;
 	next;
@@ -1076,6 +1082,7 @@ meast_bench(){
 	ip_info4;
 	next;
 	geekbench4;
+	iotest;
 	print_io;
 	print_speedtest_meast;
 	next;
