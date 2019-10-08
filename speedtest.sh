@@ -751,11 +751,9 @@ iotest() {
 
 	# CPU Speed test
 	echostyle "CPU Speed:"
-	printf "    bzip2   :$( cpubench bzip2 $writemb_cpu )" | tee -a $log 
-	printf "   sha256 %s -" "$writemb_size" | tee -a $log
-	printf "%s\n" "$( cpubench sha256sum $writemb_cpu )" | tee -a $log
-	printf "   md5sum %s -" "$writemb_size" | tee -a $log
-	printf "%s\n\n" "$( cpubench md5sum $writemb_cpu )" | tee -a $log
+	echo "    bzip2    :$( cpubench bzip2 $writemb_cpu )" | tee -a $log 
+	echo "   sha256    :$( cpubench sha256sum $writemb_cpu )" | tee -a $log
+	echo "   md5sum    :$( cpubench md5sum $writemb_cpu )" | tee -a $log
 
 	# RAM Speed test
 	# set ram allocation for mount
