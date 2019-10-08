@@ -823,7 +823,7 @@ write_io() {
 	fi
 
 	if [[ $writemb != "1" ]]; then
-		echostyle "Disk Write Speed ($writemb_size):"
+		echostyle "Disk Write Speed:"
 		echo -n "   1st run    : " | tee -a $log
 		io1=$( write_test $writemb )
 		echo -e "$io1" | tee -a $log
