@@ -458,9 +458,11 @@ geekbench4() {
 	
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
 	echostyle "## Geekbench v4 CPU Benchmark:"
+	echo "" | tee -a $log
 	echo -e "   Single Core: $GEEKBENCH_SCORES_SINGLE" | tee -a $log
 	echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
 	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" > geekbench4_claim.url 2> /dev/null
+	sleep 10
 }
 
 io_test() {
