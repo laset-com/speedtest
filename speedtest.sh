@@ -664,6 +664,52 @@ freedisk() {
 	fi
 }
 
+print_system_info() {
+	echo -e " OS                   : $opsy ($lbit Bit)" | tee -a $log
+	echo -e " Virt/Kernel          : $virtual / $kern" | tee -a $log
+	echo -e " CPU Model            : $cname" | tee -a $log
+	echo -e " CPU Cores            : $cores @ $freq MHz $arch $corescache Cache" | tee -a $log
+	echo -e " Load Average         : $load" | tee -a $log
+	echo -e " Total Space          : $disk_used_size GB / $disk_total_size GB " | tee -a $log
+	echo -e " Total RAM            : $uram MB / $tram MB ($bram MB Buff)" | tee -a $log
+	echo -e " Total SWAP           : $uswap MB / $swap MB" | tee -a $log
+	echo -e " Uptime               : $up" | tee -a $log
+	#echo -e " TCP CC               : $tcpctrl" | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+}
+
+get_system_info() {
+	cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+	cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
+	freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+	corescache=$( awk -F: '/cache size/ {cache=$2} END {print cache}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+	tram=$( free -m | awk '/Mem/ {print $2}' )
+	uram=$( free -m | awk '/Mem/ {print $3}' )
+	bram=$( free -m | awk '/Mem/ {print $6}' )
+	swap=$( free -m | awk '/Swap/ {print $2}' )
+	uswap=$( free -m | awk '/Swap/ {print $3}' )
+	up=$( awk '{a=$1/86400;b=($1%86400)/3600;c=($1%3600)/60} {printf("%d days %d:%d\n",a,b,c)}' /proc/uptime )
+	load=$( w | head -1 | awk -F'load average:' '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
+	opsy=$( get_opsy )
+	arch=$( uname -m )
+	lbit=$( getconf LONG_BIT )
+	kern=$( uname -r )
+	#ipv6=$( wget -qO- -t1 -T2 ipv6.icanhazip.com )
+	disk_size1=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $2}' ))
+	disk_size2=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $3}' ))
+	disk_total_size=$( calc_disk ${disk_size1[@]} )
+	disk_used_size=$( calc_disk ${disk_size2[@]} )
+	#tcp congestion control
+	#tcpctrl=$( sysctl net.ipv4.tcp_congestion_control | awk -F ' ' '{print $3}' )
+
+	#tmp=$(python tools.py disk 0)
+	#disk_total_size=$(echo $tmp | sed s/G//)
+	#tmp=$(python tools.py disk 1)
+	#disk_used_size=$(echo $tmp | sed s/G//)
+
+	virt_check
+}
+
 averageio() {
 	ioraw1=$( echo $1 | awk 'NR==1 {print $1}' )
 		[ "$(echo $1 | awk 'NR==1 {print $2}')" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
@@ -767,16 +813,15 @@ print_io() {
 	fi
 
 	if [[ $writemb != "1" ]]; then
-		echo "" | tee -a $log
 		printf " dd: sequential write speed ($writemb_size):" | tee -a $log
 		echo "" | tee -a $log
-		echo -n "    1st run    : " | tee -a $log
+		echo -n "   1st run    : " | tee -a $log
 		io1=$( io_test $writemb )
 		echo -e "$io1" | tee -a $log
-		echo -n "    2dn run    : " | tee -a $log
+		echo -n "   2dn run    : " | tee -a $log
 		io2=$( io_test $writemb )
 		echo -e "$io2" | tee -a $log
-		echo -n "    3rd run    : " | tee -a $log
+		echo -n "   3rd run    : " | tee -a $log
 		io3=$( io_test $writemb )
 		echo -e "$io3" | tee -a $log
 		ioraw1=$( echo $io1 | awk 'NR==1 {print $1}' )
@@ -788,24 +833,10 @@ print_io() {
 		ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
 		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
 		printf "%-27s\n" "-" | sed 's/\s/-/g' | tee -a $log
-		echo -e "    Average    : $ioavg MB/s" | tee -a $log
+		echo -e "   Average    : $ioavg MB/s" | tee -a $log
 	else
 		echo -e " Not enough space!"
 	fi
-}
-
-print_system_info() {
-	echo -e " OS                   : $opsy ($lbit Bit)" | tee -a $log
-	echo -e " Virt/Kernel          : $virtual / $kern" | tee -a $log
-	echo -e " CPU Model            : $cname" | tee -a $log
-	echo -e " CPU Cores            : $cores @ $freq MHz $arch $corescache Cache" | tee -a $log
-	echo -e " Load Average         : $load" | tee -a $log
-	echo -e " Total Space          : $disk_used_size GB / $disk_total_size GB " | tee -a $log
-	echo -e " Total RAM            : $uram MB / $tram MB ($bram MB Buff)" | tee -a $log
-	echo -e " Total SWAP           : $uswap MB / $swap MB" | tee -a $log
-	echo -e " Uptime               : $up" | tee -a $log
-	#echo -e " TCP CC               : $tcpctrl" | tee -a $log
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 }
 
 print_end_time() {
@@ -827,38 +858,6 @@ print_end_time() {
 	#echo " Finished!"
 	echo " Results     : $log"
 	echo "" | tee -a $log
-}
-
-get_system_info() {
-	cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
-	cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
-	freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
-	corescache=$( awk -F: '/cache size/ {cache=$2} END {print cache}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
-	tram=$( free -m | awk '/Mem/ {print $2}' )
-	uram=$( free -m | awk '/Mem/ {print $3}' )
-	bram=$( free -m | awk '/Mem/ {print $6}' )
-	swap=$( free -m | awk '/Swap/ {print $2}' )
-	uswap=$( free -m | awk '/Swap/ {print $3}' )
-	up=$( awk '{a=$1/86400;b=($1%86400)/3600;c=($1%3600)/60} {printf("%d days %d:%d\n",a,b,c)}' /proc/uptime )
-	load=$( w | head -1 | awk -F'load average:' '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
-	opsy=$( get_opsy )
-	arch=$( uname -m )
-	lbit=$( getconf LONG_BIT )
-	kern=$( uname -r )
-	#ipv6=$( wget -qO- -t1 -T2 ipv6.icanhazip.com )
-	disk_size1=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $2}' ))
-	disk_size2=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $3}' ))
-	disk_total_size=$( calc_disk ${disk_size1[@]} )
-	disk_used_size=$( calc_disk ${disk_size2[@]} )
-	#tcp congestion control
-	#tcpctrl=$( sysctl net.ipv4.tcp_congestion_control | awk -F ' ' '{print $3}' )
-
-	#tmp=$(python tools.py disk 0)
-	#disk_total_size=$(echo $tmp | sed s/G//)
-	#tmp=$(python tools.py disk 1)
-	#disk_used_size=$(echo $tmp | sed s/G//)
-
-	virt_check
 }
 
 print_intro() {
