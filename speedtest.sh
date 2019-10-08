@@ -725,7 +725,7 @@ get_system_info() {
 }
 
 write_test() {
-    (LANG=C dd if=/dev/zero of=test_file_$$ bs=512K count=$1 conv=fdatasync ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
+    (LANG=C dd if=/dev/zero of=test_file_$$ bs=512K count=$1 conv=fdatasync && rm -f test_file_$$ ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
 }
 
 averageio() {
