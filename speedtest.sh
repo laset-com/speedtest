@@ -729,7 +729,7 @@ io_test() {
 }
 
 read_test() {
-    (LANG=C dd if=test_file_$$ of=/dev/zero bs=512K count=$1 oflag=direct && ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
+    (LANG=C dd if=test_file_$$ of=/dev/zero bs=512K count=$1 oflag=direct ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
 }
 
 averageio() {
