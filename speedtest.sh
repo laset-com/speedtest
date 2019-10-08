@@ -36,7 +36,7 @@ echostyle(){
 }
 echostyle2(){
 	if hash tput 2>$NULL; then
-		echo " $(tput setaf 4)$1$(tput sgr0)"
+		echo " $(tput setaf 3)$1$(tput sgr0)"
 		echo " $1" >> $log
 	else
 		echo " $1" | tee -a $log
@@ -779,7 +779,7 @@ ramtest() {
 	fi
 	[[ -d $benchram ]] || mkdir $benchram
 	mount -t tmpfs -o size=$sbram tmpfs $benchram/
-	echostyle2 " RAM Speed ($sbramB):"
+	echostyle2 " RAM Speed:"
 	iow1=$( ( dd if=/dev/zero of=$benchram/zero bs=512K count=$sbcount ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
 	ior1=$( ( dd if=$benchram/zero of=$NULL bs=512K count=$sbcount; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
 	iow2=$( ( dd if=/dev/zero of=$benchram/zero bs=512K count=$sbcount ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
@@ -822,7 +822,6 @@ print_io() {
 
 	if [[ $writemb != "1" ]]; then
 		echostyle2 " dd: sequential write speed ($writemb_size):"
-		echo "" | tee -a $log
 		echo -n "   1st run    : " | tee -a $log
 		io1=$( io_test $writemb )
 		echo -e "$io1" | tee -a $log
