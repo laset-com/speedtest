@@ -165,6 +165,9 @@ get_opsy() {
 next() {
     printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 }
+next2() {
+    printf "%-50s\n" "-" | sed 's/\s/-/g' | tee -a $log
+}
 
 delete() {
     echo -ne "\e[1A"; echo -ne "\e[0K\r"
@@ -1197,7 +1200,7 @@ case $1 in
 	'ioping'|'-ioping'|'--ioping' )
 		next;ioping;next;;
 	'dd'|'-dd'|'--dd'|'disk'|'-disk'|'--disk' )
-		about;ioping;;
+		about;ioping;next2;;
 	'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
 		about;benchinit;next;print_speedtest;next;cleanup;;
 	'ip'|'-ip'|'--ip'|'geoip'|'-geoip'|'--geoip' )
