@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.4.2   2019-10-08                  / "
+	echo " \                  v1.4.3   2019-10-09                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -912,7 +912,7 @@ ioping() {
 	echo -e "   2dn run    : ${DISK_READ_TEST_RES[1]} ${DISK_READ_TEST_UNIT}"
 	echo -e "   3rd run    : ${DISK_READ_TEST_RES[2]} ${DISK_READ_TEST_UNIT}"
 	echo -e "   -----------------------"
-	echo -e "   Average    : ${DISK_WRITE_TEST_AVG} ${DISK_WRITE_TEST_UNIT}" | tee -a $log
+	echo -e "   Average    : ${DISK_WRITE_TEST_AVG} ${DISK_READ_TEST_UNIT}" | tee -a $log
 	echo -e ""
 	rm -rf $DISK_PATH;
 	rm -f speedtest.sh
@@ -941,7 +941,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.4.2 2019-10-08 \n' | tee -a $log
+	printf ' Speedtest Monster v.1.4.3 2019-10-09 \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
@@ -1191,12 +1191,12 @@ case $1 in
 		next;about;next;;
    	'gb'|'-gb'|'--gb'|'geek'|'-geek'|'--geek' )
 		next;geekbench4;next;cleanup;;
-	'io'|'-io'|'--io' )
+	'io'|'-io'|'--io'|'ioping'|'-ioping'|'--ioping' )
 		next;iotest;write_io;next;;
 	'ioping'|'-ioping'|'--ioping' )
 		next;ioping;next;;
-	'dd'|'-dd'|'--dd' )
-		next;write_io;next;;
+	'dd'|'-dd'|'--dd'|'disk'|'-disk'|'--disk' )
+		about;ioping;next;;
 	'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
 		about;benchinit;next;print_speedtest;next;cleanup;;
 	'ip'|'-ip'|'--ip'|'geoip'|'-geoip'|'--geoip' )
