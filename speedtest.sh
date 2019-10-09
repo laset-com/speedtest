@@ -166,7 +166,7 @@ next() {
     printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 }
 next2() {
-    printf "%-50s\n" "-" | sed 's/\s/-/g' | tee -a $log
+    printf "%-55s\n" "-" | sed 's/\s/-/g' | tee -a $log
 }
 
 delete() {
@@ -904,17 +904,17 @@ ioping() {
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
 	echostyle "Disk Write Speed:"
 	echo -e ""
-	echo -e "   1st run    : ${DISK_WRITE_TEST_RES[0]} ${DISK_WRITE_TEST_UNIT}" 
-	echo -e "   2dn run    : ${DISK_WRITE_TEST_RES[1]} ${DISK_WRITE_TEST_UNIT}"
-	echo -e "   3rd run    : ${DISK_WRITE_TEST_RES[2]} ${DISK_WRITE_TEST_UNIT}"
+	echo -e "   1st run    : ${DISK_WRITE_TEST_RES[0]} MB/s" 
+	echo -e "   2dn run    : ${DISK_WRITE_TEST_RES[1]} MB/s"
+	echo -e "   3rd run    : ${DISK_WRITE_TEST_RES[2]} MB/s"
 	echo -e "   -----------------------"
 	echo -e "   Average    : ${DISK_WRITE_TEST_AVG} ${DISK_WRITE_TEST_UNIT}" | tee -a $log
 	echo -e ""
 	echostyle "Disk Read Speed:"
 	echo -e ""
-	echo -e "   1st run    : ${DISK_READ_TEST_RES[0]} ${DISK_READ_TEST_UNIT}" 
-	echo -e "   2dn run    : ${DISK_READ_TEST_RES[1]} ${DISK_READ_TEST_UNIT}"
-	echo -e "   3rd run    : ${DISK_READ_TEST_RES[2]} ${DISK_READ_TEST_UNIT}"
+	echo -e "   1st run    : ${DISK_READ_TEST_RES[0]} MB/s" 
+	echo -e "   2dn run    : ${DISK_READ_TEST_RES[1]} MB/s"
+	echo -e "   3rd run    : ${DISK_READ_TEST_RES[2]} MB/s"
 	echo -e "   -----------------------"
 	echo -e "   Average    : ${DISK_READ_TEST_AVG} ${DISK_READ_TEST_UNIT}" | tee -a $log
 	echo -e ""
