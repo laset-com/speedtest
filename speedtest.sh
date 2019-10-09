@@ -848,6 +848,7 @@ write_io() {
 	fi
 }
 
+# https://github.com/masonr/yet-another-bench-script
 function disk_test {
 	I=0
 	DISK_WRITE_TEST_RES=()
@@ -898,21 +899,19 @@ ioping() {
 	fi
 
 	echo -en "\e[1A"; echo -e "\e[0K\r"
-	echostyle " Disk Write Speed:"
-	echo -e ""
+	echostyle "Disk Write Speed:"
 	echo -e "   1st run    : ${DISK_WRITE_TEST_RES[0]} ${DISK_WRITE_TEST_UNIT}" 
 	echo -e "   2dn run    : ${DISK_WRITE_TEST_RES[1]} ${DISK_WRITE_TEST_UNIT}"
 	echo -e "   3rd run    : ${DISK_WRITE_TEST_RES[2]} ${DISK_WRITE_TEST_UNIT}"
 	echo -e "   -----------------------"
 	echo -e "   Average    : ${DISK_WRITE_TEST_AVG} ${DISK_WRITE_TEST_UNIT}" | tee -a $log
 	echo -e ""
-	echostyle " Disk Read Speed:"
-	echo -e ""
+	echostyle "Disk Read Speed:"
 	echo -e "   1st run    : ${DISK_READ_TEST_RES[0]} ${DISK_READ_TEST_UNIT}" 
 	echo -e "   2dn run    : ${DISK_READ_TEST_RES[1]} ${DISK_READ_TEST_UNIT}"
 	echo -e "   3rd run    : ${DISK_READ_TEST_RES[2]} ${DISK_READ_TEST_UNIT}"
 	echo -e "   -----------------------"
-	echo -e "   Average    : ${DISK_WRITE_TEST_AVG} ${DISK_READ_TEST_UNIT}" | tee -a $log
+	echo -e "   Average    : ${DISK_READ_TEST_AVG} ${DISK_READ_TEST_UNIT}" | tee -a $log
 	echo -e ""
 	rm -rf $DISK_PATH;
 	rm -f speedtest.sh
