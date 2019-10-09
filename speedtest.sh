@@ -411,6 +411,17 @@ print_speedtest_meast() {
 	rm -rf speedtest.py
 }
 
+print_speedtest_ru() {
+	echo "" | tee -a $log
+	echostyle "## Russian Federation"
+	echo "" | tee -a $log
+	printf "%-30s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+        speed_test '' 'Speedtest.net               '
+	 
+	rm -rf speedtest.py
+}
+
 geekbench4() {
 	echo "" | tee -a $log
 	echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..."
@@ -1141,9 +1152,25 @@ meast_bench(){
 	cleanup;
 	sharetest clbin;
 }
-
-
-
+ru_bench(){
+	region_name="Russia"
+	print_intro;
+	benchinit;
+	clear
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	geekbench4;
+	iotest;
+	write_io;
+	print_speedtest_ru;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
 
 log="$HOME/speedtest.log"
 true > $log
@@ -1183,6 +1210,8 @@ case $1 in
 		lviv_bench;;
 	'M-East'|'-M-East'|'--M-East'|'-m-east'|'--m-east'|'-meast'|'--meast'|'-Middle-East'|'-me' )
 		meast_bench;;
+	'ru'|'-ru'|'--ru'|'rus'|'-rus'|'--rus'|'russia'|'-russia'|'--russia'|'Russia'|'-Russia'|'--Russia' )
+		ru_bench;;
 	'-s'|'--s'|'share'|'-share'|'--share' )
 		bench_all;
 		is_share="share"
