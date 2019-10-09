@@ -415,9 +415,26 @@ print_speedtest_ru() {
 	echo "" | tee -a $log
 	echostyle "## Russian Federation"
 	echo "" | tee -a $log
-	printf "%-30s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
+	printf "%-36s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-        speed_test '' 'Speedtest.net               '
+        speed_test '' 'Speedtest.net                    '
+	speed_test '1907' 'Russia, Moscow (MTS)              ' 'http://librarian.comstar.ru'
+	speed_test '10987' 'Russia, Moscow (Beeline)          ' 'http://librarian.comstar.ru'
+	speed_test '6562' 'Russia, Moscow (Tele2)            ' 'http://176.59.63.150'
+	speed_test '2599' 'Russia, St.Petersburg (Rostelecom)' 'http://sankt-peterburg2.speedtest.rt.ru'
+	speed_test '4231' 'Russia, St.Petersburg (Prometey)  ' 'http://speedtest1.ptspb.net'
+	speed_test '1497' 'Russia, Voronezh (Kvant-Telecom)  ' 'http://speedtest.orixcom.net'
+	speed_test '5623' 'Russia, Krasnodar (Beeline)       ' 'http://krr1.speedtest.corbina.net'
+	speed_test '26823' 'Russia, Volgograd (Beeline)       ' 'http://volgograd-speedtest.corbina.net'
+	speed_test '3256' 'Russia, Samara (TTK)              ' 'http://test.samara-ttk.ru'
+	speed_test '4503' 'Russia, Nizhny Novgorod (MTS)     ' 'http://speedtest.nnov.mts.ru'
+	speed_test '1930' 'Russia, Ekaterinburg (Ural WES)   ' 'http://tarvalon.ural.net'
+	speed_test '5127' 'Russia, Omsk (Beeline)            ' 'http://omsk2.speedtest.corbina.net'
+	speed_test '2313' 'Russia, Surgut (METROSET)         ' 'http://speedtest.sg.metro-set.ru'
+	speed_test '6430' 'Russia, Novosibirsk (Tele2)       ' 'http://176.59.159.158'
+	speed_test '4541' 'Russia, Irkutsk (TransTeleCom)    ' 'http://5.254.224.9'
+	speed_test '5647' 'Russia, Yakutsk (MegaFon)         ' 'http://ykt.speedtest-dvf.megafon.ru'
+	speed_test '25204' 'Russia, Vladivostok (Rostelecom)' 'http://speedtest.inetvl.ru'
 	 
 	rm -rf speedtest.py
 }
