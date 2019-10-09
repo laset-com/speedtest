@@ -166,7 +166,7 @@ next() {
     printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 }
 next2() {
-    printf "%-55s\n" "-" | sed 's/\s/-/g' | tee -a $log
+    printf "%-56s\n" "-" | sed 's/\s/-/g' | tee -a $log
 }
 
 delete() {
