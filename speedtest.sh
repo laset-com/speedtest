@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.4.3   2019-10-09                  / "
+	echo " \                  v1.4.4   2019-10-09                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -58,9 +58,6 @@ benchinit() {
 
 	# check python
 	if  [ ! -e '/usr/bin/python' ]; then
-	        #echo -e
-	        #read -p "Error: python is not install. You must be install python command at first.\nDo you want to install? [y/n]" is_install
-	        #if [[ ${is_install} == "y" || ${is_install} == "Y" ]]; then
 	        echo " Installing Python2 ..."
 	            if [ "${release}" == "centos" ]; then
 	            		yum update > /dev/null 2>&1
@@ -70,18 +67,11 @@ benchinit() {
 	                	apt-get update > /dev/null 2>&1
 	                    apt-get -y install python > /dev/null 2>&1
 	                fi
-	        echo -ne "\e[1A"; echo -ne "\e[0K\r"
-	        #else
-	        #    exit
-	        #fi
-	        
+	        echo -ne "\e[1A"; echo -ne "\e[0K\r" 
 	fi
 
 	# check curl
 	if  [ ! -e '/usr/bin/curl' ]; then
-	    #echo -e
-	    #read -p "Error: curl is not install. You must be install curl command at first.\nDo you want to install? [y/n]" is_install
-	    #if [[ ${is_install} == "y" || ${is_install} == "Y" ]]; then
 	        echo " Installing Curl ..."
 	            if [ "${release}" == "centos" ]; then
 	                yum update > /dev/null 2>&1
@@ -91,16 +81,10 @@ benchinit() {
 	                apt-get -y install curl > /dev/null 2>&1
 	            fi
 		echo -ne "\e[1A"; echo -ne "\e[0K\r"
-	    #else
-	    #    exit
-	    #fi
 	fi
 
 	# check wget
 	if  [ ! -e '/usr/bin/wget' ]; then
-	    #echo -e
-	    #read -p "Error: wget is not install. You must be install wget command at first.\nDo you want to install? [y/n]" is_install
-	    #if [[ ${is_install} == "y" || ${is_install} == "Y" ]]; then
 	        echo " Installing Wget ..."
 	            if [ "${release}" == "centos" ]; then
 	                yum update > /dev/null 2>&1
@@ -110,34 +94,20 @@ benchinit() {
 	                apt-get -y install wget > /dev/null 2>&1
 	            fi
 		echo -ne "\e[1A"; echo -ne "\e[0K\r"
-	    #else
-	    #    exit
-	    #fi
 	fi
-
-	# install virt-what
-	#if  [ ! -e '/usr/sbin/virt-what' ]; then
-	#	echo "Installing Virt-what ..."
-	#    if [ "${release}" == "centos" ]; then
-	#    	yum update > /dev/null 2>&1
-	#        yum -y install virt-what > /dev/null 2>&1
-	#    else
-	#    	apt-get update > /dev/null 2>&1
-	#        apt-get -y install virt-what > /dev/null 2>&1
-	#    fi      
-	#fi
-
-	# install jq
-	#if  [ ! -e '/usr/bin/jq' ]; then
-	# 	echo " Installing Jq ..."
-    #		if [ "${release}" == "centos" ]; then
-	#	    yum update > /dev/null 2>&1
-	#	    yum -y install jq > /dev/null 2>&1
-	#	else
-	#	    apt-get update > /dev/null 2>&1
-	#	    apt-get -y install jq > /dev/null 2>&1
-	#	fi      
-	#fi
+	
+	# check bzip2
+	if  [ ! -e '/usr/bin/bzip2' ]; then
+	        echo " Installing bzip2 ..."
+	            if [ "${release}" == "centos" ]; then
+	                yum update > /dev/null 2>&1
+	                yum -y install bzip2 > /dev/null 2>&1
+	            else
+	                apt-get update > /dev/null 2>&1
+	                apt-get -y install bzip2 > /dev/null 2>&1
+	            fi
+		echo -ne "\e[1A"; echo -ne "\e[0K\r"
+	fi
 
 	# install speedtest-cli
 	if  [ ! -e 'speedtest.py' ]; then
@@ -951,7 +921,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.4.3 2019-10-09 \n' | tee -a $log
+	printf ' Speedtest Monster v.1.4.4 2019-10-09 \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
@@ -1019,8 +989,6 @@ bench_all(){
 	region_name="Global"
 	print_intro;
 	benchinit;
-	delete;
-	delete;
 	clear
 	next;
 	get_system_info;
@@ -1041,8 +1009,6 @@ usa_bench(){
 	region_name="USA"
 	print_intro;
 	benchinit;
-	delete;
-	delete;
 	clear
 	next;
 	get_system_info;
@@ -1063,8 +1029,6 @@ europe_bench(){
 	region_name="Europe"
 	print_intro;
 	benchinit;
-	delete;
-	delete;
 	clear
 	next;
 	get_system_info;
@@ -1105,8 +1069,6 @@ sa_bench(){
 	region_name="South-America"
 	print_intro;
 	benchinit;
-	delete;
-	delete;
 	clear
 	next;
 	get_system_info;
@@ -1127,8 +1089,6 @@ ukraine_bench(){
 	region_name="Ukraine"
 	print_intro;
 	benchinit;
-	delete;
-	delete;
 	clear
 	next;
 	get_system_info;
@@ -1148,8 +1108,6 @@ lviv_bench(){
 	region_name="Lviv"
 	print_intro;
 	benchinit;
-	delete;
-	delete;
 	clear
 	next;
 	get_system_info;
@@ -1168,8 +1126,6 @@ meast_bench(){
 	region_name="Middle-East"
 	print_intro;
 	benchinit;
-	delete;
-	delete;
 	clear
 	next;
 	get_system_info;
