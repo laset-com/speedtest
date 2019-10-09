@@ -70,6 +70,7 @@ benchinit() {
 	                	apt-get update > /dev/null 2>&1
 	                    apt-get -y install python > /dev/null 2>&1
 	                fi
+	        echo -ne "\e[1A"; echo -ne "\e[0K\r"
 	        #else
 	        #    exit
 	        #fi
@@ -89,6 +90,7 @@ benchinit() {
 	                apt-get update > /dev/null 2>&1
 	                apt-get -y install curl > /dev/null 2>&1
 	            fi
+		echo -ne "\e[1A"; echo -ne "\e[0K\r"
 	    #else
 	    #    exit
 	    #fi
@@ -107,6 +109,7 @@ benchinit() {
 	                apt-get update > /dev/null 2>&1
 	                apt-get -y install wget > /dev/null 2>&1
 	            fi
+		echo -ne "\e[1A"; echo -ne "\e[0K\r"
 	    #else
 	    #    exit
 	    #fi
@@ -140,6 +143,7 @@ benchinit() {
 	if  [ ! -e 'speedtest.py' ]; then
 		echo " Installing Speedtest-cli ..."
 		wget --no-check-certificate https://raw.github.com/sivel/speedtest-cli/master/speedtest.py > /dev/null 2>&1
+		echo -ne "\e[1A"; echo -ne "\e[0K\r"
 	fi
 	chmod a+rx speedtest.py
 
@@ -148,6 +152,7 @@ benchinit() {
 	if  [ ! -e 'tools.py' ]; then
 		echo " Installing tools.py ..."
 		wget --no-check-certificate https://raw.githubusercontent.com/laset-com/speedtest/master/tools.py > /dev/null 2>&1
+		echo -ne "\e[1A"; echo -ne "\e[0K\r"
 	fi
 	chmod a+rx tools.py
 
@@ -1080,8 +1085,6 @@ asia_bench(){
 	region_name="Asia"
 	print_intro;
 	benchinit;
-	delete;
-	delete;
 	clear
 	next;
 	get_system_info;
