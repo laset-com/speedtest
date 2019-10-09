@@ -434,7 +434,7 @@ print_speedtest_ru() {
 	speed_test '6430' 'Russia, Novosibirsk (Tele2)       ' 'http://176.59.159.158'
 	speed_test '4541' 'Russia, Irkutsk (TransTeleCom)    ' 'http://5.254.224.9'
 	speed_test '5647' 'Russia, Yakutsk (MegaFon)         ' 'http://ykt.speedtest-dvf.megafon.ru'
-	speed_test '25204' 'Russia, Vladivostok (Rostelecom) ' 'http://speedtest.inetvl.ru'
+	speed_test '25204' 'Russia, Vladivostok (Rostelecom)  ' 'http://speedtest.inetvl.ru'
 	 
 	rm -rf speedtest.py
 }
