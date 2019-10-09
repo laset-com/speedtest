@@ -898,8 +898,9 @@ ioping() {
 		DISK_READ_TEST_UNIT="MB/s"
 	fi
 
-	echo -en "\e[1A"; echo -e "\e[0K\r"
+	echo -ne "\e[1A"; echo -ne "\033[0K\r"
 	echostyle "Disk Write Speed:"
+	echo -e ""
 	echo -e "   1st run    : ${DISK_WRITE_TEST_RES[0]} ${DISK_WRITE_TEST_UNIT}" 
 	echo -e "   2dn run    : ${DISK_WRITE_TEST_RES[1]} ${DISK_WRITE_TEST_UNIT}"
 	echo -e "   3rd run    : ${DISK_WRITE_TEST_RES[2]} ${DISK_WRITE_TEST_UNIT}"
@@ -907,6 +908,7 @@ ioping() {
 	echo -e "   Average    : ${DISK_WRITE_TEST_AVG} ${DISK_WRITE_TEST_UNIT}" | tee -a $log
 	echo -e ""
 	echostyle "Disk Read Speed:"
+	echo -e ""
 	echo -e "   1st run    : ${DISK_READ_TEST_RES[0]} ${DISK_READ_TEST_UNIT}" 
 	echo -e "   2dn run    : ${DISK_READ_TEST_RES[1]} ${DISK_READ_TEST_UNIT}"
 	echo -e "   3rd run    : ${DISK_READ_TEST_RES[2]} ${DISK_READ_TEST_UNIT}"
