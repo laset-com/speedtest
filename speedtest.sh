@@ -898,13 +898,24 @@ ioping() {
 	fi
 
 	echo -en "\e[1A"; echo -e "\e[0K\r"
-	echo -e "Disk Speed Tests:"
-	echo -e "---------------------------------"
-	printf "%-6s | %-6s %-4s | %-6s %-4s | %-6s %-4s | %-6s %-4s\n" "" "Test 1" "" "Test 2" ""  "Test 3" "" "Avg" ""
-	printf "%-6s | %-6s %-4s | %-6s %-4s | %-6s %-4s | %-6s %-4s\n"
-	printf "%-6s | %-6.2f MB/s | %-6.2f MB/s | %-6.2f MB/s | %-6.2f %-4s\n" "Write" "${DISK_WRITE_TEST_RES[0]}" "${DISK_WRITE_TEST_RES[1]}" "${DISK_WRITE_TEST_RES[2]}" "${DISK_WRITE_TEST_AVG}" "${DISK_WRITE_TEST_UNIT}" 
-	printf "%-6s | %-6.2f MB/s | %-6.2f MB/s | %-6.2f MB/s | %-6.2f %-4s\n" "Read" "${DISK_READ_TEST_RES[0]}" "${DISK_READ_TEST_RES[1]}" "${DISK_READ_TEST_RES[2]}" "${DISK_READ_TEST_AVG}" "${DISK_READ_TEST_UNIT}"
-	rm -rf $DISK_PATH
+	echostyle " Disk Write Speed:"
+	echo -e ""
+	echo -e "   1st run    : ${DISK_WRITE_TEST_RES[0]} ${DISK_WRITE_TEST_UNIT}" 
+	echo -e "   2dn run    : ${DISK_WRITE_TEST_RES[1]} ${DISK_WRITE_TEST_UNIT}"
+	echo -e "   3rd run    : ${DISK_WRITE_TEST_RES[2]} ${DISK_WRITE_TEST_UNIT}"
+	echo -e "   -----------------------"
+	echo -e "   Average    : ${DISK_WRITE_TEST_AVG} ${DISK_WRITE_TEST_UNIT}" | tee -a $log
+	echo -e ""
+	echostyle " Disk Read Speed:"
+	echo -e ""
+	echo -e "   1st run    : ${DISK_READ_TEST_RES[0]} ${DISK_READ_TEST_UNIT}" 
+	echo -e "   2dn run    : ${DISK_READ_TEST_RES[1]} ${DISK_READ_TEST_UNIT}"
+	echo -e "   3rd run    : ${DISK_READ_TEST_RES[2]} ${DISK_READ_TEST_UNIT}"
+	echo -e "   -----------------------"
+	echo -e "   Average    : ${DISK_WRITE_TEST_AVG} ${DISK_WRITE_TEST_UNIT}" | tee -a $log
+	echo -e ""
+	rm -rf $DISK_PATH;
+	rm -f speedtest.sh
 }
 
 print_end_time() {
@@ -989,9 +1000,9 @@ cleanup() {
 	rm -f speedtest.py;
 	rm -f speedtest.sh;
 	rm -f tools.py;
-	rm -f ip_json.json
-	rm -f geekbench4_claim.url
-	rm -rf geekbench
+	rm -f ip_json.json;
+	rm -f geekbench4_claim.url;
+	rm -rf geekbench;
 }
 
 bench_all(){
