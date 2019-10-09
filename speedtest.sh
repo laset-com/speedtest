@@ -1197,7 +1197,7 @@ case $1 in
 	'ioping'|'-ioping'|'--ioping' )
 		next;ioping;next;;
 	'dd'|'-dd'|'--dd'|'disk'|'-disk'|'--disk' )
-		about;ioping;next;;
+		about;ioping;;
 	'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
 		about;benchinit;next;print_speedtest;next;cleanup;;
 	'ip'|'-ip'|'--ip'|'geoip'|'-geoip'|'--geoip' )
