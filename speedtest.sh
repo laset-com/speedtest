@@ -61,10 +61,11 @@ benchinit() {
 	        #echo -e
 	        #read -p "Error: python is not install. You must be install python command at first.\nDo you want to install? [y/n]" is_install
 	        #if [[ ${is_install} == "y" || ${is_install} == "Y" ]]; then
-	        echo " Installing Python ..."
+	        echo " Installing Python2 ..."
 	            if [ "${release}" == "centos" ]; then
 	            		yum update > /dev/null 2>&1
-	                    yum -y install python > /dev/null 2>&1
+	                    yum -y install python2 > /dev/null 2>&1
+			    alternatives --set python /usr/bin/python2 > /dev/null 2>&1
 	                else
 	                	apt-get update > /dev/null 2>&1
 	                    apt-get -y install python > /dev/null 2>&1
