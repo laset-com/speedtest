@@ -413,7 +413,7 @@ print_speedtest_meast() {
 
 print_speedtest_ru() {
 	echo "" | tee -a $log
-	echostyle "## Russian Federation"
+	echostyle "## Russian Federation Speedtest"
 	echo "" | tee -a $log
 	printf "%-36s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
