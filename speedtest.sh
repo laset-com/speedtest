@@ -856,7 +856,7 @@ write_io() {
 }
 
 # https://github.com/masonr/yet-another-bench-script
-function disk_test {
+disk_test () {
 	I=0
 	DISK_WRITE_TEST_RES=()
 	DISK_READ_TEST_RES=()
