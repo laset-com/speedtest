@@ -961,6 +961,7 @@ print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
 	printf ' Speedtest Monster v.1.4.5 2019-10-13 \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
+	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
 }
 
