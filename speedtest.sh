@@ -54,13 +54,13 @@ benchinit() {
 	fi
 
 	# check OS
-	if [ "${release}" == "centos" ]; then
-	                echo "Checking OS ... [ok]"
-	else
-	                echo "Error: This script must be run on CentOS!"
-			exit 1
-	fi
-	echo -ne "\e[1A"; echo -ne "\e[0K\r"
+	#if [ "${release}" == "centos" ]; then
+	#                echo "Checking OS ... [ok]"
+	#else
+	#                echo "Error: This script must be run on CentOS!"
+	#		exit 1
+	#fi
+	#echo -ne "\e[1A"; echo -ne "\e[0K\r"
 	
 	# check root
 	[[ $EUID -ne 0 ]] && echo -e "Error: This script must be run as root!" && exit 1
