@@ -55,12 +55,21 @@ benchinit() {
 
 	# check root
 	[[ $EUID -ne 0 ]] && echo -e "Error: This script must be run as root!" && exit 1
+	
+	# check OS
+	if [ "${release}" == "centos" ]; then
+	                echo -e "Checking OS ... [ok]"
+	else
+	                echo -e "Error: This script must be run on CentOS!"
+			exit 1
+	fi
+	echo -ne "\e[1A"; echo -ne "\e[0K\r"
 
 	# check python
 	if  [ ! -e '/usr/bin/python' ]; then
 	        echo " Installing Python2 ..."
 	            if [ "${release}" == "centos" ]; then
-	            		yum update > /dev/null 2>&1
+	                    yum update > /dev/null 2>&1
 	                    yum -y install python2 > /dev/null 2>&1
 			    alternatives --set python /usr/bin/python2 > /dev/null 2>&1
 	                else
