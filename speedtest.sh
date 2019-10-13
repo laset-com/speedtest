@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.4.4   2019-10-09                  / "
+	echo " \                  v1.4.5   2019-10-13                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -866,75 +866,75 @@ write_io() {
 }
 
 # https://github.com/masonr/yet-another-bench-script
-#function disk_test () {
-#	I=0
-#	DISK_WRITE_TEST_RES=()
-#	DISK_READ_TEST_RES=()
-#	DISK_WRITE_TEST_AVG=0
-#	DISK_READ_TEST_AVG=0
-#	DATE=`date -Iseconds | sed -e "s/:/_/g"`
-#	OS=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
-#	while [ $I -lt 3 ]
-#	do
-#		DISK_WRITE_TEST=$(dd if=/dev/zero of=$DISK_PATH/$DATE.test bs=64k count=16k oflag=direct |& grep copied | awk '{ print $(NF-1) " " $(NF)}')
-#		VAL=$(echo $DISK_WRITE_TEST | cut -d " " -f 1)
-#		[[ "$DISK_WRITE_TEST" == *"GB"* ]] && VAL=$(awk -v a="$VAL" 'BEGIN { print a * 1000 }')
-#		DISK_WRITE_TEST_RES+=( "$VAL" )
-#		DISK_WRITE_TEST_AVG=$(awk -v a="$DISK_WRITE_TEST_AVG" -v b="$VAL" 'BEGIN { print a + b }')
-#
-#		DISK_READ_TEST=$($DISK_PATH/ioping -R -L -D -B -w 6 . | awk '{ print $4 / 1000 / 1000 }')
-#		DISK_READ_TEST_RES+=( "$DISK_READ_TEST" )
-#		DISK_READ_TEST_AVG=$(awk -v a="$DISK_READ_TEST_AVG" -v b="$DISK_READ_TEST" 'BEGIN { print a + b }')
-#
-#		I=$(( $I + 1 ))
-#	done	
-#	DISK_WRITE_TEST_AVG=$(awk -v a="$DISK_WRITE_TEST_AVG" 'BEGIN { print a / 3 }')
-#	DISK_READ_TEST_AVG=$(awk -v a="$DISK_READ_TEST_AVG" 'BEGIN { print a / 3 }')
-#}
+function disk_test () {
+	I=0
+	DISK_WRITE_TEST_RES=()
+	DISK_READ_TEST_RES=()
+	DISK_WRITE_TEST_AVG=0
+	DISK_READ_TEST_AVG=0
+	DATE=`date -Iseconds | sed -e "s/:/_/g"`
+	OS=$(awk -F= '/^NAME/{print $2}' /etc/os-release)
+	while [ $I -lt 3 ]
+	do
+		DISK_WRITE_TEST=$(dd if=/dev/zero of=$DISK_PATH/$DATE.test bs=64k count=16k oflag=direct |& grep copied | awk '{ print $(NF-1) " " $(NF)}')
+		VAL=$(echo $DISK_WRITE_TEST | cut -d " " -f 1)
+		[[ "$DISK_WRITE_TEST" == *"GB"* ]] && VAL=$(awk -v a="$VAL" 'BEGIN { print a * 1000 }')
+		DISK_WRITE_TEST_RES+=( "$VAL" )
+		DISK_WRITE_TEST_AVG=$(awk -v a="$DISK_WRITE_TEST_AVG" -v b="$VAL" 'BEGIN { print a + b }')
 
-#ioping() {
-#	echo -e "Performing disk performance test. This may take a couple minutes to complete..."
-#
-#	DISK_PATH=$HOME/disk
-#	mkdir -p $DISK_PATH
-#	curl -s https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/ioping -o $DISK_PATH/ioping
-#	chmod +x $DISK_PATH/ioping
-#
-#	disk_test
-#
-#	if [ $(echo $DISK_WRITE_TEST_AVG | cut -d "." -f 1) -ge 1000 ]; then
-#		DISK_WRITE_TEST_AVG=$(awk -v a="$DISK_WRITE_TEST_AVG" 'BEGIN { print a / 1000 }')
-#		DISK_WRITE_TEST_UNIT="GB/s"
-#	else
-#		DISK_WRITE_TEST_UNIT="MB/s"
-#	fi
-#	if [ $(echo $DISK_READ_TEST_AVG | cut -d "." -f 1) -ge 1000 ]; then
-#		DISK_READ_TEST_AVG=$(awk -v a="$DISK_READ_TEST_AVG" 'BEGIN { print a / 1000 }')
-#		DISK_READ_TEST_UNIT="GB/s"
-#	else
-#		DISK_READ_TEST_UNIT="MB/s"
-#	fi
-#
-#	echo -ne "\e[1A"; echo -ne "\033[0K\r"
-#	echostyle "Disk Write Speed:"
-#	echo -e ""
-#	echo -e "   1st run    : ${DISK_WRITE_TEST_RES[0]} MB/s" 
-#	echo -e "   2dn run    : ${DISK_WRITE_TEST_RES[1]} MB/s"
-#	echo -e "   3rd run    : ${DISK_WRITE_TEST_RES[2]} MB/s"
-#	echo -e "   -----------------------"
-#	echo -e "   Average    : ${DISK_WRITE_TEST_AVG} ${DISK_WRITE_TEST_UNIT}" | tee -a $log
-#	echo -e ""
-#	echostyle "Disk Read Speed:"
-#	echo -e ""
-#	echo -e "   1st run    : ${DISK_READ_TEST_RES[0]} MB/s" 
-#	echo -e "   2dn run    : ${DISK_READ_TEST_RES[1]} MB/s"
-#	echo -e "   3rd run    : ${DISK_READ_TEST_RES[2]} MB/s"
-#	echo -e "   -----------------------"
-#	echo -e "   Average    : ${DISK_READ_TEST_AVG} ${DISK_READ_TEST_UNIT}" | tee -a $log
-#	echo -e ""
-#	rm -rf $DISK_PATH;
-#	rm -f speedtest.sh
-#}
+		DISK_READ_TEST=$($DISK_PATH/ioping -R -L -D -B -w 6 . | awk '{ print $4 / 1000 / 1000 }')
+		DISK_READ_TEST_RES+=( "$DISK_READ_TEST" )
+		DISK_READ_TEST_AVG=$(awk -v a="$DISK_READ_TEST_AVG" -v b="$DISK_READ_TEST" 'BEGIN { print a + b }')
+
+		I=$(( $I + 1 ))
+	done	
+	DISK_WRITE_TEST_AVG=$(awk -v a="$DISK_WRITE_TEST_AVG" 'BEGIN { print a / 3 }')
+	DISK_READ_TEST_AVG=$(awk -v a="$DISK_READ_TEST_AVG" 'BEGIN { print a / 3 }')
+}
+
+ioping() {
+	echo -e "Performing disk performance test. This may take a couple minutes to complete..."
+
+	DISK_PATH=$HOME/disk
+	mkdir -p $DISK_PATH
+	curl -s https://raw.githubusercontent.com/masonr/yet-another-bench-script/master/ioping -o $DISK_PATH/ioping
+	chmod +x $DISK_PATH/ioping
+
+	disk_test
+
+	if [ $(echo $DISK_WRITE_TEST_AVG | cut -d "." -f 1) -ge 1000 ]; then
+		DISK_WRITE_TEST_AVG=$(awk -v a="$DISK_WRITE_TEST_AVG" 'BEGIN { print a / 1000 }')
+		DISK_WRITE_TEST_UNIT="GB/s"
+	else
+		DISK_WRITE_TEST_UNIT="MB/s"
+	fi
+	if [ $(echo $DISK_READ_TEST_AVG | cut -d "." -f 1) -ge 1000 ]; then
+		DISK_READ_TEST_AVG=$(awk -v a="$DISK_READ_TEST_AVG" 'BEGIN { print a / 1000 }')
+		DISK_READ_TEST_UNIT="GB/s"
+	else
+		DISK_READ_TEST_UNIT="MB/s"
+	fi
+
+	echo -ne "\e[1A"; echo -ne "\033[0K\r"
+	echostyle "Disk Write Speed:"
+	echo -e ""
+	echo -e "   1st run    : ${DISK_WRITE_TEST_RES[0]} MB/s" 
+	echo -e "   2dn run    : ${DISK_WRITE_TEST_RES[1]} MB/s"
+	echo -e "   3rd run    : ${DISK_WRITE_TEST_RES[2]} MB/s"
+	echo -e "   -----------------------"
+	echo -e "   Average    : ${DISK_WRITE_TEST_AVG} ${DISK_WRITE_TEST_UNIT}" | tee -a $log
+	echo -e ""
+	echostyle "Disk Read Speed:"
+	echo -e ""
+	echo -e "   1st run    : ${DISK_READ_TEST_RES[0]} MB/s" 
+	echo -e "   2dn run    : ${DISK_READ_TEST_RES[1]} MB/s"
+	echo -e "   3rd run    : ${DISK_READ_TEST_RES[2]} MB/s"
+	echo -e "   -----------------------"
+	echo -e "   Average    : ${DISK_READ_TEST_AVG} ${DISK_READ_TEST_UNIT}" | tee -a $log
+	echo -e ""
+	rm -rf $DISK_PATH;
+	rm -f speedtest.sh
+}
 
 print_end_time() {
 	echo "" | tee -a $log
@@ -959,9 +959,8 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.4.4 2019-10-09 \n' | tee -a $log
+	printf ' Speedtest Monster v.1.4.5 2019-10-13 \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
-	printf " Usage : curl -LsO bench.monster/speedtest.sh; sh speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
 }
 
