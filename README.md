@@ -2,4 +2,4 @@
 
 coming soon
 
-`curl -LsO bench.monster/speedtest.sh; sh speedtest.sh`
+`curl -LsO bench.monster/speedtest.sh; bash speedtest.sh`
