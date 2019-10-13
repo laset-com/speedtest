@@ -916,22 +916,22 @@ ioping() {
 	fi
 
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
-	echostyle "Disk Write Speed:"
-	echo -e ""
-	echo -e "   1st run    : ${DISK_WRITE_TEST_RES[0]} MB/s" 
-	echo -e "   2dn run    : ${DISK_WRITE_TEST_RES[1]} MB/s"
-	echo -e "   3rd run    : ${DISK_WRITE_TEST_RES[2]} MB/s"
-	echo -e "   -----------------------"
+	echostyle "Disk Write Speed:" | tee -a $log
+	echo -e "" | tee -a $log
+	echo -e "   1st run    : ${DISK_WRITE_TEST_RES[0]} MB/s" | tee -a $log
+	echo -e "   2dn run    : ${DISK_WRITE_TEST_RES[1]} MB/s" | tee -a $log
+	echo -e "   3rd run    : ${DISK_WRITE_TEST_RES[2]} MB/s" | tee -a $log
+	echo -e "   -----------------------" | tee -a $log
 	echo -e "   Average    : ${DISK_WRITE_TEST_AVG} ${DISK_WRITE_TEST_UNIT}" | tee -a $log
-	echo -e ""
-	echostyle "Disk Read Speed:"
-	echo -e ""
-	echo -e "   1st run    : ${DISK_READ_TEST_RES[0]} MB/s" 
-	echo -e "   2dn run    : ${DISK_READ_TEST_RES[1]} MB/s"
-	echo -e "   3rd run    : ${DISK_READ_TEST_RES[2]} MB/s"
-	echo -e "   -----------------------"
+	echo -e "" | tee -a $log
+	echostyle "Disk Read Speed:" | tee -a $log
+	echo -e "" | tee -a $log
+	echo -e "   1st run    : ${DISK_READ_TEST_RES[0]} MB/s" | tee -a $log
+	echo -e "   2dn run    : ${DISK_READ_TEST_RES[1]} MB/s" | tee -a $log
+	echo -e "   3rd run    : ${DISK_READ_TEST_RES[2]} MB/s" | tee -a $log
+	echo -e "   -----------------------" | tee -a $log
 	echo -e "   Average    : ${DISK_READ_TEST_AVG} ${DISK_READ_TEST_UNIT}" | tee -a $log
-	echo -e ""
+	echo -e "" | tee -a $log
 	rm -rf $DISK_PATH;
 	rm -f speedtest.sh
 }
@@ -1211,8 +1211,6 @@ case $1 in
 		next;geekbench4;next;cleanup;;
 	'io'|'-io'|'--io'|'ioping'|'-ioping'|'--ioping' )
 		next;iotest;write_io;next;;
-#	'ioping'|'-ioping'|'--ioping' )
-#		next;ioping;next;;
 	'dd'|'-dd'|'--dd'|'disk'|'-disk'|'--disk' )
 		about;ioping;next2;;
 	'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
