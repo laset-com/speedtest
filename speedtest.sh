@@ -268,7 +268,7 @@ print_speedtest_usa() {
 	speed_test '5026' 'USA, San Francisco (AT&T)     ' 'http://sfo.speedtest.sbcglobal.net'
 	speed_test '16974' 'USA, Los Angeles (Spectrum)   ' 'http://speedtest.west.rr.com'
 	speed_test '980' 'USA, Anchorage (Alaska Com)   ' 'http://speedtest.anc.acsalaska.net'
-	speed_test '7334' 'USA, Honolulu, HI (T-Mobile)  ' 'http://hon.speedtest.t-mobile.com'
+	speed_test '22494' 'USA, Honolulu, HI (Dialogix)  ' 'http://speedtest.hawaiidt.com'
 	 
 	rm -rf speedtest.py
 }
