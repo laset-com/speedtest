@@ -932,7 +932,7 @@ ioping() {
 	echostyle "Disk Write Speed:" | tee -a $log
 	echo -e "" | tee -a $log
 	echo -e "   1st run    : ${DISK_WRITE_TEST_RES[0]} MB/s" | tee -a $log
-	echo -e "   2dn run    : ${DISK_WRITE_TEST_RES[1]} MB/s" | tee -a $log
+	echo -e "   2nd run    : ${DISK_WRITE_TEST_RES[1]} MB/s" | tee -a $log
 	echo -e "   3rd run    : ${DISK_WRITE_TEST_RES[2]} MB/s" | tee -a $log
 	echo -e "   -----------------------" | tee -a $log
 	echo -e "   Average    : ${DISK_WRITE_TEST_AVG} ${DISK_WRITE_TEST_UNIT}" | tee -a $log
@@ -940,7 +940,7 @@ ioping() {
 	echostyle "Disk Read Speed:" | tee -a $log
 	echo -e "" | tee -a $log
 	echo -e "   1st run    : ${DISK_READ_TEST_RES[0]} MB/s" | tee -a $log
-	echo -e "   2dn run    : ${DISK_READ_TEST_RES[1]} MB/s" | tee -a $log
+	echo -e "   2nd run    : ${DISK_READ_TEST_RES[1]} MB/s" | tee -a $log
 	echo -e "   3rd run    : ${DISK_READ_TEST_RES[2]} MB/s" | tee -a $log
 	echo -e "   -----------------------" | tee -a $log
 	echo -e "   Average    : ${DISK_READ_TEST_AVG} ${DISK_READ_TEST_UNIT}" | tee -a $log
