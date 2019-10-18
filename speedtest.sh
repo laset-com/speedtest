@@ -252,7 +252,7 @@ print_speedtest_usa() {
 	echo "" | tee -a $log
 	echostyle "## USA Speedtest"
 	echo "" | tee -a $log
-	printf "%-36s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
+	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net                 '
 	speed_test '5029' 'USA, New York (AT&T)          ' 'http://nyc.speedtest.sbcglobal.net'
