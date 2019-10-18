@@ -857,7 +857,7 @@ write_io() {
 		echo -n "   1st run    : " | tee -a $log
 		io1=$( write_test $writemb )
 		echo -e "$io1" | tee -a $log
-		echo -n "   2dn run    : " | tee -a $log
+		echo -n "   2nd run    : " | tee -a $log
 		io2=$( write_test $writemb )
 		echo -e "$io2" | tee -a $log
 		echo -n "   3rd run    : " | tee -a $log
