@@ -276,7 +276,7 @@ print_speedtest_usa() {
 	speed_test '16613' 'USA, Phoenix (Cox)            ' 'http://speedtest.rd.ph.cox.net'
 	speed_test '2206' 'USA, Salt Lake City (UTOPIA)  ' 'http://speedtest2.utopiafiber.net'
 	speed_test '7878' 'USA, Helena, MT (The Fusion)  ' 'http://helenast2.northcentraltower.com'
-	speed_test '16622' 'USA, Las Vegas (Cox)          ' 'http://speedtest.rd.lv.cox.net'
+	speed_test '9056' 'USA, Las Vegas (LV.Net)       ' 'http://speedtest.lasvegas.net'
 	speed_test '8879' 'USA, Seattle (Sprint)         ' 'http://perftools2.sttlwa.sprintadp.net'
 	speed_test '5026' 'USA, San Francisco (AT&T)     ' 'http://sfo.speedtest.sbcglobal.net'
 	speed_test '16974' 'USA, Los Angeles (Spectrum)   ' 'http://speedtest.west.rr.com'
