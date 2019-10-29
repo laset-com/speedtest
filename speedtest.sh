@@ -296,7 +296,7 @@ print_speedtest_europe() {
 	speed_test '8160' 'Portugal, Lisbon (Evolute)      ' 'http://speedtest1.evolute.pt'
 	speed_test '395' 'Italy, Rome (Unidata)           ' 'http://speedtest2.unidata.it'
 	speed_test '21194' 'Czechia, Prague (365internet)   ' 'http://speedtest.365internet.cz'
-	speed_test '15152' 'Austria, Vienna (Fonira)        ' 'http://speedtest.fonira.at'
+	speed_test '5351' 'Austria, Vienna (Magenta)       ' 'http://speedtest-2.upc.at'
 	speed_test '4166' 'Poland, Warsaw (Orange)         ' 'http://war-o2.speedtest.orange.pl'
 	speed_test '691' 'Slovakia, Kosice (ANTIK)        ' 'http://speedtest.antik.sk'
 	speed_test '6446' 'Ukraine, Kyiv (KyivStar)        ' 'http://www.speedtest2.kyivstar.ua'
@@ -843,7 +843,7 @@ write_io() {
 	fi
 
 	if [[ $writemb != "1" ]]; then
-		echostyle "Disk Write Speed:"
+		echostyle "Disk Read Speed:"
 		echo -n "   1st run    : " | tee -a $log
 		io1=$( write_test $writemb )
 		echo -e "$io1" | tee -a $log
