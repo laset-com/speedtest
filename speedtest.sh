@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.4.5   2019-10-13                  / "
+	echo " \                  v1.4.6   2019-10-29                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -70,11 +70,9 @@ benchinit() {
 	if  [ ! -e '/usr/bin/python' ]; then
 	        echo " Installing Python2 ..."
 	            if [ "${release}" == "centos" ]; then
-	                    yum update > /dev/null 2>&1
 	                    yum -y install python2 > /dev/null 2>&1
 			    alternatives --set python /usr/bin/python2 > /dev/null 2>&1
 	                else
-	                	apt-get update > /dev/null 2>&1
 	                    apt-get -y install python > /dev/null 2>&1
 	                fi
 	        echo -ne "\e[1A"; echo -ne "\e[0K\r" 
@@ -84,10 +82,8 @@ benchinit() {
 	if  [ ! -e '/usr/bin/curl' ]; then
 	        echo " Installing Curl ..."
 	            if [ "${release}" == "centos" ]; then
-	                yum update > /dev/null 2>&1
 	                yum -y install curl > /dev/null 2>&1
 	            else
-	                apt-get update > /dev/null 2>&1
 	                apt-get -y install curl > /dev/null 2>&1
 	            fi
 		echo -ne "\e[1A"; echo -ne "\e[0K\r"
@@ -97,10 +93,8 @@ benchinit() {
 	if  [ ! -e '/usr/bin/wget' ]; then
 	        echo " Installing Wget ..."
 	            if [ "${release}" == "centos" ]; then
-	                yum update > /dev/null 2>&1
 	                yum -y install wget > /dev/null 2>&1
 	            else
-	                apt-get update > /dev/null 2>&1
 	                apt-get -y install wget > /dev/null 2>&1
 	            fi
 		echo -ne "\e[1A"; echo -ne "\e[0K\r"
@@ -110,10 +104,8 @@ benchinit() {
 	if  [ ! -e '/usr/bin/bzip2' ]; then
 	        echo " Installing bzip2 ..."
 	            if [ "${release}" == "centos" ]; then
-	                yum update > /dev/null 2>&1
 	                yum -y install bzip2 > /dev/null 2>&1
 	            else
-	                apt-get update > /dev/null 2>&1
 	                apt-get -y install bzip2 > /dev/null 2>&1
 	            fi
 		echo -ne "\e[1A"; echo -ne "\e[0K\r"
@@ -123,10 +115,8 @@ benchinit() {
 	if  [ ! -e '/usr/bin/tar' ]; then
 	        echo " Installing tar ..."
 	            if [ "${release}" == "centos" ]; then
-	                yum update > /dev/null 2>&1
 	                yum -y install tar > /dev/null 2>&1
 	            else
-	                apt-get update > /dev/null 2>&1
 	                apt-get -y install tar > /dev/null 2>&1
 	            fi
 		echo -ne "\e[1A"; echo -ne "\e[0K\r"
@@ -972,7 +962,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.4.5 2019-10-13 \n' | tee -a $log
+	printf ' Speedtest Monster v.1.4.6 2019-10-29 \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
@@ -1168,6 +1158,7 @@ lviv_bench(){
 	geekbench4;
 	iotest;
 	write_io;
+	print_speedtest_lviv;
 	next;
 	print_end_time;
 	cleanup;
