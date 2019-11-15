@@ -954,7 +954,7 @@ print_end_time() {
 	#echo $(date +%Y-%m-%d" "%H:%M:%S)
 	printf '\n'
 	utc_time=$(date -u '+%F %T')
-	echo " Timestamp   : $utc_time UTC" | tee -a $log
+	echo " Timestamp   : $utc_time GMT" | tee -a $log
 	#echo " Finished!"
 	echo " Saved in    : $log"
 	echo "" | tee -a $log
