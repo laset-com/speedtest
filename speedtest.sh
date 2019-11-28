@@ -322,8 +322,6 @@ print_speedtest_asia() {
 	speed_test '23722' 'India, Bengaluru (DBroadband)   ' 'http://speedtest.dbroadband.in'
 	speed_test '1131' 'Sri Lanka, Colombo (Telecom PLC)' 'http://speedtest2.sltnet.lk'
 	speed_test '21188' 'Pakistan, Islamabad (Jazz)      ' 'http://speedtest-isb1.jazz.com.pk'
-	speed_test '2802' 'Kazakhstan, Astana (KCell)      ' 'http://ast-st-02.kcell.kz'
-	speed_test '3212' 'Tajikistan, Dushanbe (Babilon-M)' 'http://ispeedtest.babilon-m.tj'
 	speed_test '5792' 'Mongolia, Ulaanbaatar (Mobicom) ' 'http://coverage.mobicom.mn'
 	speed_test '7147' 'Bangladesh, Dhaka (Skytel)      ' 'http://speedtest2.skytelbd.com'
 	speed_test '14901' 'Bhutan, Thimphu (Bhutan Telecom)' 'http://speedtest.bt.bt'
@@ -331,7 +329,7 @@ print_speedtest_asia() {
 	speed_test '26845' 'Laos, Vientaine (Mangkone)      ' 'http://speedtest.mangkone.com'
 	speed_test '4347' 'Thailand, Bangkok (CAT Telecom) ' 'http://www.catspeedtest.com'
 	speed_test '12545' 'Cambodia, Phnom Penh (Smart)    ' 'http://speedtest.smart.com.kh'
-	speed_test '2552' 'Vietnam, Hanoi (FPT Telecom)    ' 'http://speedtesthn.rad.fpt.net'
+	speed_test '9903' 'Vietnam, Hanoi (Viettel)        ' 'http://speedtestkv1b.viettel.vn'
 	speed_test '27261' 'Malaysia, Kuala Lumpur (Extreme)' 'http://kl-speedtest.ebb.my'
 	speed_test '7556' 'Singapore (PT FirstMedia)       ' 'http://sg-speedtest.link.net.id'
 	speed_test '17516' 'Indonesia, Jakarta (Desnet)     ' 'http://speedtest.desnet.id'
@@ -1216,7 +1214,7 @@ case $1 in
 	'io'|'-io'|'--io'|'ioping'|'-ioping'|'--ioping' )
 		next;iotest;write_io;next;;
 	'dd'|'-dd'|'--dd'|'disk'|'-disk'|'--disk' )
-		about;ioping;next2;;
+		next;ioping;next2;;
 	'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
 		about;benchinit;next;print_speedtest;next;cleanup;;
 	'ip'|'-ip'|'--ip'|'geoip'|'-geoip'|'--geoip' )
