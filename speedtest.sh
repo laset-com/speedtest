@@ -323,7 +323,7 @@ print_speedtest_asia() {
 	speed_test '1131' 'Sri Lanka, Colombo (Telecom PLC)' 'http://speedtest2.sltnet.lk'
 	speed_test '21188' 'Pakistan, Islamabad (Jazz)      ' 'http://speedtest-isb1.jazz.com.pk'
 	speed_test '5792' 'Mongolia, Ulaanbaatar (Mobicom) ' 'http://coverage.mobicom.mn'
-	speed_test '7147' 'Bangladesh, Dhaka (Skytel)      ' 'http://speedtest2.skytelbd.com'
+	speed_test '7147' 'Bangladesh, Dhaka (Skytel)      ' 'http://speedtest1.skytelbd.com'
 	speed_test '14901' 'Bhutan, Thimphu (Bhutan Telecom)' 'http://speedtest.bt.bt'
 	speed_test '20882' 'Myanmar, Mandalay (Ooredoo)     ' 'http://speedtest.ooredoo.com.mm'
 	speed_test '26845' 'Laos, Vientaine (Mangkone)      ' 'http://speedtest.mangkone.com'
