@@ -430,9 +430,9 @@ print_speedtest_ru() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net                     '
 	speed_test '1907' 'Russia, Moscow (MTS)              ' 'http://librarian.comstar.ru'
-	speed_test '10987' 'Russia, Moscow (Beeline)          ' 'http://librarian.comstar.ru'
+	speed_test '3682' 'Russia, Moscow (Rostelecom)       ' 'http://moscow.speedtest.rt.ru'
 	speed_test '6562' 'Russia, Moscow (Tele2)            ' 'http://176.59.63.150'
-	speed_test '2599' 'Russia, St.Petersburg (Rostelecom)' 'http://sankt-peterburg2.speedtest.rt.ru'
+	speed_test '4247' 'Russia, St.Petersburg (MTS)       ' 'http://speedtest-it.spb.mts.ru'
 	speed_test '4231' 'Russia, St.Petersburg (Prometey)  ' 'http://speedtest1.ptspb.net'
 	speed_test '1497' 'Russia, Voronezh (Kvant-Telecom)  ' 'http://speedtest.kvant-telecom.ru'
 	speed_test '5623' 'Russia, Krasnodar (Beeline)       ' 'http://krr1.speedtest.corbina.net'
