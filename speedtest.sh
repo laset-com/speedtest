@@ -6,7 +6,7 @@ about() {
 	echo " \               Speedtest Bench.Monster                 / "
 	echo " \         https://bench.monster/speedtest.html          / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.4.6   2019-10-29                  / "
+	echo " \                  v1.4.7   2019-12-11                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -224,7 +224,7 @@ print_speedtest() {
 	speed_test '18189' 'UK, London (Community Fibre)  ' 'http://sp01.ld8.lon.eng.communityfibre.co.uk'
 	speed_test '27852' 'France, Lyon (SFR)            ' 'http://cor2.speedtest.mire.sfr.net'
 	speed_test '20507' 'Germany, Berlin (DNS:NET)     ' 'http://speedtest01.dns-net.de'
-	speed_test '1680' 'Spain, Madrid (Adamo)         ' 'http://speedtest.mad.adamo.es'
+	speed_test '21378' 'Spain, Madrid (MasMovil)      ' 'http://speedtest-mad.masmovil.com'
 	speed_test '395' 'Italy, Rome (Unidata)         ' 'http://speedtest2.unidata.it'
 	speed_test '1907' 'Russia, Moscow (MTS)          ' 'http://librarian.comstar.ru'
 	speed_test '2434' 'Israel, Haifa (013Netvision)  ' 'http://speed2.013.net'
@@ -960,7 +960,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Speedtest Monster v.1.4.6 2019-10-29 \n' | tee -a $log
+	printf ' Speedtest Monster v.1.4.7 2019-12-11 \n' | tee -a $log
 	printf " Region: %s  https://bench.monster/speedtest.html\n" $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
