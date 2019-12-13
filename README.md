@@ -1,5 +1,5 @@
 # Speedtest
 
-https://bench.monster/speedtest.html
+https://bench.monster
 
 `curl -LsO bench.monster/speedtest.sh; bash speedtest.sh`
