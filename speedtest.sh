@@ -959,7 +959,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' %s  https://bench.monster v.1.4.8 2019-12-12 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster v.1.4.8 2019-12-12 \n' $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
 }
