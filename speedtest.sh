@@ -433,7 +433,7 @@ print_speedtest_ru() {
 	speed_test '6562' 'Russia, Moscow (Tele2)          ' 'http://176.59.63.150'
 	speed_test '4247' 'Russia, St.Petersburg (MTS)     ' 'http://speedtest-it.spb.mts.ru'
 	speed_test '4231' 'Russia, St.Petersburg (Prometey)' 'http://speedtest1.ptspb.net'
-	speed_test '1497' 'Russia, Voronezh (Kvant-Telecom)' 'http://speedtest.kvant-telecom.ru'
+	speed_test '13616' 'Russia, Voronezh (FreeDom)      ' 'http://speedtest.vrn.ru'
 	speed_test '5623' 'Russia, Krasnodar (Beeline)     ' 'http://krr1.speedtest.corbina.net'
 	speed_test '26823' 'Russia, Volgograd (Beeline)     ' 'http://volgograd-speedtest.corbina.net'
 	speed_test '3256' 'Russia, Samara (TTK)            ' 'http://test.samara-ttk.ru'
