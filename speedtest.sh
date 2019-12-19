@@ -425,7 +425,7 @@ print_speedtest_ru() {
 	echo "" | tee -a $log
 	echostyle "## Russian Federation Speedtest"
 	echo "" | tee -a $log
-	printf "%-36s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
+	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net                     '
 	speed_test '1907' 'Russia, Moscow (MTS)            ' 'http://librarian.comstar.ru'
