@@ -427,7 +427,7 @@ print_speedtest_ru() {
 	echo "" | tee -a $log
 	printf "%-36s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-        speed_test '' 'Speedtest.net                    '
+        speed_test '' 'Speedtest.net                     '
 	speed_test '1907' 'Russia, Moscow (MTS)            ' 'http://librarian.comstar.ru'
 	speed_test '3682' 'Russia, Moscow (Rostelecom)     ' 'http://moscow.speedtest.rt.ru'
 	speed_test '6562' 'Russia, Moscow (Tele2)          ' 'http://176.59.63.150'
