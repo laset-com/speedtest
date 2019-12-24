@@ -227,7 +227,7 @@ print_speedtest() {
 	speed_test '395' 'Italy, Rome (Unidata)         ' 'http://speedtest2.unidata.it'
 	speed_test '1907' 'Russia, Moscow (MTS)          ' 'http://librarian.comstar.ru'
 	speed_test '2434' 'Israel, Haifa (013Netvision)  ' 'http://speed2.013.net'
-	speed_test '9930' 'India, New Delhi (Airtel)     ' 'http://speedtestggn2.airtel.in'
+	speed_test '10952' 'India, New Delhi (GIGATEL)    ' 'http://speedtest.gigatel.in'
 	speed_test '7556' 'Singapore (FirstMedia)        ' 'http://sg-speedtest.link.net.id'
 	speed_test '7139' 'Japan, Tsukuba (SoftEther)    ' 'http://speedtest2.softether.co.jp'
 	speed_test '1267' 'Australia, Sydney (Yes Optus) ' 'http://s1.speedtest.syd.optusnet.com.au'
@@ -316,7 +316,7 @@ print_speedtest_asia() {
 	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net                   '
-	speed_test '9930' 'India, New Delhi (Airtel)       ' 'http://speedtestggn2.airtel.in'
+	speed_test '10952' 'India, New Delhi (GIGATEL)      ' 'http://speedtest.gigatel.in'
 	speed_test '6746' 'India, Mumbai (SevenStar)       ' 'http://speed2.7starnetworks.com'
 	speed_test '23722' 'India, Bengaluru (DBroadband)   ' 'http://speedtest.dbroadband.in'
 	speed_test '1131' 'Sri Lanka, Colombo (Telecom PLC)' 'http://speedtest2.sltnet.lk'
