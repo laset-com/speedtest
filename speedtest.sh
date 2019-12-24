@@ -695,8 +695,8 @@ print_system_info() {
 	echo -e " CPU Flags    : $cpu_aes & $cpu_virt" | tee -a $log
 	echo -e " Load Average : $load" | tee -a $log
 	echo -e " Total Space  : $hdd ($hddused ~$hddfree used)" | tee -a $log
-	echo -e " Total RAM    : $tram MB ($uram MB + $bram MB Buff used)" | tee -a $log
-	echo -e " Total SWAP   : $swap MB ($uswap MB used)" | tee -a $log
+	echo -e " Total RAM    : $tram MB ($uram MB + $bram MB Buff in use)" | tee -a $log
+	echo -e " Total SWAP   : $swap MB ($uswap MB in use)" | tee -a $log
 	echo -e " Uptime       : $up" | tee -a $log
 	#echo -e " TCP CC       : $tcpctrl" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
