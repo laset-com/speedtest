@@ -298,7 +298,7 @@ print_speedtest_europe() {
 	speed_test '5351' 'Austria, Vienna (Magenta)       ' 'http://speedtest-2.upc.at'
 	speed_test '4166' 'Poland, Warsaw (Orange)         ' 'http://war-o2.speedtest.orange.pl'
 	speed_test '691' 'Slovakia, Kosice (ANTIK)        ' 'http://speedtest.antik.sk'
-	speed_test '6446' 'Ukraine, Kyiv (KyivStar)        ' 'http://www.speedtest2.kyivstar.ua'
+	speed_test '30813' 'Ukraine, Kyiv (KyivStar)        ' 'http://srv01-okl-kv.kyivstar.ua'
 	speed_test '5834' 'Latvia, Riga (Bite)             ' 'http://speedtest2.bite.lv'
 	speed_test '4231' 'Russia, St.Petersburg (Prometey)' 'http://speedtest1.ptspb.net'
 	speed_test '1907' 'Russia, Moscow (MTS)            ' 'http://librarian.comstar.ru'
@@ -368,7 +368,7 @@ print_speedtest_ukraine() {
 	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Speedtest.net                 '
-	speed_test '6446' 'Ukraine, Kyiv (KyivStar)      ' 'http://www.speedtest2.kyivstar.ua'
+	speed_test '30813' 'Ukraine, Kyiv (KyivStar)      ' 'http://srv01-okl-kv.kyivstar.ua'
 	speed_test '2518' 'Ukraine, Kyiv (Volia)         ' 'http://speedtest2.volia.com'
 	speed_test '14887' 'Ukraine, Lviv (UARNet)        ' 'http://speedtest.uar.net'
 	speed_test '29259' 'Ukraine, Lviv (KyivStar)      ' 'http://srv01-okl-lvv.kyivstar.ua'
