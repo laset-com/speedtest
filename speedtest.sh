@@ -396,7 +396,7 @@ print_speedtest_lviv() {
 	speed_test '2445' 'Ukraine, Lviv (KOMiTEX) ' 'http://speedtest.komitex.net'
 	speed_test '12786' 'Ukraine, Lviv (ASTRA)   ' 'http://speedtest.astra.in.ua'
 	speed_test '17398' 'Ukraine, Lviv (Kopiyka) ' 'http://speedtest.kopiyka.org'
-	speed_test '6225' 'Ukraine, Lviv (ZNet)    ' 'http://178.212.102.70'
+	speed_test '29147' 'Ukraine, Lviv (LANNET)  ' 'http://speed.lannet.lviv.ua'
 	speed_test '1204' 'Ukraine, Lviv (Network) ' 'http://speedtest.network.lviv.ua'
 	speed_test '21900' 'Ukraine, Lviv (LimNet)  ' 'http://speedtest.limnet.com.ua'
 	 
