@@ -124,7 +124,7 @@ benchinit() {
 	# install speedtest-cli
 	if  [ ! -e 'speedtest.py' ]; then
 		echo " Installing Speedtest-cli ..."
-		wget --no-check-certificate https://raw.github.com/sivel/speedtest-cli/master/speedtest.py > /dev/null 2>&1
+		wget --no-check-certificate https://raw.githubusercontent.com/laset-com/speedtest-cli/master/speedtest.py > /dev/null 2>&1
 		echo -ne "\e[1A"; echo -ne "\e[0K\r"
 	fi
 	chmod a+rx speedtest.py
