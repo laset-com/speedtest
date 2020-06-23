@@ -215,6 +215,7 @@ print_speedtest() {
 	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                        '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '10546' 'USA, New York (Sprint)        ' 'http://ookla1.nycmny.sprintadp.net'
 	speed_test '17384' 'USA, Chicago (Windstream)     ' 'http://chicago02.speedtest.windstream.net'
 	speed_test '14238' 'USA, Dallas (Frontier)        ' 'http://dallas.tx.speedtest.frontier.com'
@@ -244,6 +245,7 @@ print_speedtest_usa() {
 	printf "%-33s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                         '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '10546' 'USA, New York (Sprint)         ' 'http://ookla1.nycmny.sprintadp.net'
 	speed_test '13429' 'USA, Boston (Starry, Inc.)     ' 'http://speedtest-server.starry.com'
 	speed_test '15790' 'USA, Washington, DC (Sprint)   ' 'http://ookla1.washdc.sprintadp.net'
@@ -281,7 +283,8 @@ print_speedtest_europe() {
 	echo "" | tee -a $log
 	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-        speed_test '' 'Speedtest.net                   '
+        speed_test '' 'Nearby                          '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '1041' 'Ireland, Dublin (Digiweb)       ' 'http://speedtest.digiweb.ie'
 	speed_test '26922' 'UK, London (toob Ltd)           ' 'http://st1.octopustelecom.co.uk'
 	speed_test '26764' 'Netherlands, Amsterdam (MaxiTEL)' 'http://speedtest.as61349.net'
@@ -315,25 +318,26 @@ print_speedtest_asia() {
 	echo "" | tee -a $log
 	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-        speed_test '' 'Speedtest.net                   '
+        speed_test '' 'Nearby                          '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '10952' 'India, New Delhi (GIGATEL)      ' 'http://speedtest.gigatel.in'
 	speed_test '6746' 'India, Mumbai (SevenStar)       ' 'http://speed2.7starnetworks.com'
-	speed_test '23722' 'India, Bengaluru (DBroadband)   ' 'http://speedtest.dbroadband.in'
+	speed_test '13919' 'India, Bengaluru (I-ON)         ' 'http://speedtestb.dvois.com'
 	speed_test '1131' 'Sri Lanka, Colombo (Telecom PLC)' 'http://speedtest2.sltnet.lk'
-	speed_test '21188' 'Pakistan, Islamabad (Jazz)      ' 'http://speedtest-isb1.jazz.com.pk'
+	speed_test '4774' 'Pakistan, Islamabad (Telenor)   ' 'http://speedtest1.telenor.com.pk'
 	speed_test '5792' 'Mongolia, Ulaanbaatar (Mobicom) ' 'http://coverage.mobicom.mn'
-	speed_test '7147' 'Bangladesh, Dhaka (Skytel)      ' 'http://speedtest1.skytelbd.com'
+	speed_test '7147' 'Bangladesh, Dhaka (Skytel)      ' 'http://sp1.cosmocom.net'
 	speed_test '14901' 'Bhutan, Thimphu (Bhutan Telecom)' 'http://speedtest.bt.bt'
 	speed_test '20882' 'Myanmar, Mandalay (Ooredoo)     ' 'http://speedtest.ooredoo.com.mm'
 	speed_test '26845' 'Laos, Vientaine (Mangkone)      ' 'http://speedtest.mangkone.com'
-	speed_test '4347' 'Thailand, Bangkok (CAT Telecom) ' 'http://www.catspeedtest.com'
+	speed_test '13871' 'Thailand, Bangkok (CAT Telecom) ' 'http://catspeedtest.net'
 	speed_test '12545' 'Cambodia, Phnom Penh (Smart)    ' 'http://speedtest.smart.com.kh'
 	speed_test '9903' 'Vietnam, Hanoi (Viettel)        ' 'http://speedtestkv1b.viettel.vn'
 	speed_test '27261' 'Malaysia, Kuala Lumpur (Extreme)' 'http://kl-speedtest.ebb.my'
 	speed_test '7556' 'Singapore (PT FirstMedia)       ' 'http://sg-speedtest.link.net.id'
 	speed_test '17516' 'Indonesia, Jakarta (Desnet)     ' 'http://speedtest.desnet.id'
-	speed_test '26048' 'Philippines, Manila (Sky Fiber) ' 'http://mnl-speedtest.globe.com.ph'
-	speed_test '24375' 'Hong Kong (GTT)                 ' 'http://hon.speedtest.gtt.net'
+	speed_test '20273' 'Philippines, Manila (Globe Tel) ' 'http://mnl-speedtest.globe.com.ph'
+	speed_test '28912' 'Hong Kong (fdcservers)          ' 'http://lg-hkg.fdcservers.net'
 	speed_test '13506' 'Taiwan, Taipei (TAIFO)          ' 'http://speedtest.taifo.com.tw'
 	speed_test '7139' 'Japan, Tsukuba (SoftEther)      ' 'http://speedtest2.softether.co.jp'
 	 
