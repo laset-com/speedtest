@@ -307,7 +307,7 @@ print_speedtest_europe() {
 	speed_test '1907' 'Russia, Moscow (MTS)            ' 'http://librarian.comstar.ru'
 	speed_test '4590' 'Romania, Bucharest (Orange)     ' 'http://speedtestbuc.orangero.net'
 	speed_test '1727' 'Greece, Athens (GRNET)          ' 'http://speed-test.gr-ix.gr'
-	speed_test '23316' 'Turkey, Istanbul (Radore)       ' 'http://speedtest.radore.com'
+	speed_test '10994' 'Turkey, Istanbul (Radore)       ' 'http://speedtest.radore.com'
 	 
 	rm -rf speedtest.py
 }
@@ -350,7 +350,8 @@ print_speedtest_sa() {
 	echo "" | tee -a $log
 	printf "%-38s%-17s%-16s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-        speed_test '' 'Speedtest.net                       '
+        speed_test '' 'Nearby                              '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '9948' 'Brazil, Sao Paulo (Vogel Telecom)   ' 'http://speedtestsp1.stech.net.br'
 	speed_test '18890' 'Brazil, Fortaleza (Claro)           ' 'http://spd1.claro.com.br'
 	speed_test '11683' 'Colombia, Bogota (Level 3)          ' 'http://speedtest.globalcrossing.com.co'
@@ -371,7 +372,8 @@ print_speedtest_ukraine() {
 	echo "" | tee -a $log
 	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-        speed_test '' 'Speedtest.net                 '
+        speed_test '' 'Nearby                        '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '30813' 'Ukraine, Kyiv (KyivStar)      ' 'http://srv01-okl-kv.kyivstar.ua'
 	speed_test '2518' 'Ukraine, Kyiv (Volia)         ' 'http://speedtest2.volia.com'
 	speed_test '14887' 'Ukraine, Lviv (UARNet)        ' 'http://speedtest.uar.net'
@@ -394,7 +396,8 @@ print_speedtest_lviv() {
 	echo "" | tee -a $log
 	printf "%-26s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-        speed_test '' 'Speedtest.net           '
+        speed_test '' 'Nearby                  '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '14887' 'Ukraine, Lviv (UARNet)  ' 'http://speedtest.uar.net'
 	speed_test '29259' 'Ukraine, Lviv (KyivStar)' 'http://srv01-okl-lvv.kyivstar.ua'
 	speed_test '2445' 'Ukraine, Lviv (KOMiTEX) ' 'http://speedtest.komitex.net'
@@ -413,7 +416,8 @@ print_speedtest_meast() {
 	echo "" | tee -a $log
 	printf "%-30s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-        speed_test '' 'Speedtest.net               '
+        speed_test '' 'Nearby                      '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '16595' 'Cyprus, Larnaca (skywisp)   ' 'http://speedtest1.skywisp.com.cy'
 	speed_test '2434' 'Israel, Haifa (013Netvision)' 'http://speed2.013.net'
 	speed_test '1689' 'Egypt, Cairo (Vodafone)     ' 'http://speedtest.vodafone.com.eg'
@@ -433,7 +437,8 @@ print_speedtest_ru() {
 	echo "" | tee -a $log
 	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-        speed_test '' 'Speedtest.net                   '
+        speed_test '' 'Nearby                          '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '1907' 'Russia, Moscow (MTS)            ' 'http://librarian.comstar.ru'
 	speed_test '3682' 'Russia, Moscow (Rostelecom)     ' 'http://moscow.speedtest.rt.ru'
 	speed_test '6562' 'Russia, Moscow (Tele2)          ' 'http://176.59.63.150'
