@@ -421,7 +421,7 @@ print_speedtest_meast() {
 	speed_test '7120' 'Cyprus, Limassol (DragonNET)' 'http://speedtest1.dragonnet.eu'
 	speed_test '2434' 'Israel, Haifa (013Netvision)' 'http://speed2.013.net'
 	speed_test '1689' 'Egypt, Cairo (Vodafone)     ' 'http://speedtest.vodafone.com.eg'
-	speed_test '12498' 'Lebanon, Tripoli (BItarNet) ' 'http://speedtest.bitarnet.net'
+	speed_test '12498' 'Lebanon, Tripoli (BItarNet) ' 'http://speedtest1.wavenet-lb.net'
 	speed_test '17398' 'UAE, Dubai (Orixcom)        ' 'http://speedtest.orixcom.net'
 	speed_test '14888' 'Qatar, Doha (Vodafone)      ' 'http://speedtest01.vodafone.com.qa'
 	speed_test '12887' 'SA, Riyadh (GO)             ' 'http://speedtest.go.com.sa'
