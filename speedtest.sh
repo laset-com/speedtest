@@ -5,7 +5,7 @@ about() {
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.5.0   2020-01-11                  / "
+	echo " \                  v1.5.1   2020-06-23                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -438,14 +438,13 @@ print_speedtest_ru() {
 	speed_test '13616' 'Russia, Voronezh (FreeDom)      ' 'http://speedtest.vrn.ru'
 	speed_test '5623' 'Russia, Krasnodar (Beeline)     ' 'http://krr1.speedtest.corbina.net'
 	speed_test '26823' 'Russia, Volgograd (Beeline)     ' 'http://volgograd-speedtest.corbina.net'
-	speed_test '3256' 'Russia, Samara (TTK)            ' 'http://test.samara-ttk.ru'
+	speed_test '2603' 'Russia, Samara (Rostelecom)     ' 'http://samara.speedtest.rt.ru'
 	speed_test '4503' 'Russia, Nizhny Novgorod (MTS)   ' 'http://speedtest.nnov.mts.ru'
 	speed_test '1930' 'Russia, Ekaterinburg (Ural WES) ' 'http://tarvalon.ural.net'
 	speed_test '5127' 'Russia, Omsk (Beeline)          ' 'http://omsk2.speedtest.corbina.net'
 	speed_test '2313' 'Russia, Surgut (METROSET)       ' 'http://speedtest.sg.metro-set.ru'
 	speed_test '6430' 'Russia, Novosibirsk (Tele2)     ' 'http://176.59.159.158'
 	speed_test '4541' 'Russia, Irkutsk (TransTeleCom)  ' 'http://5.254.224.9'
-	speed_test '5647' 'Russia, Yakutsk (MegaFon)       ' 'http://ykt.speedtest-dvf.megafon.ru'
 	speed_test '25204' 'Russia, Vladivostok (Rostelecom)' 'http://speedtest.inetvl.ru'
 	 
 	rm -rf speedtest.py
@@ -890,7 +889,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster v.1.5.0 2020-01-11 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster v.1.5.1 2020-06-23 \n' $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
 }
