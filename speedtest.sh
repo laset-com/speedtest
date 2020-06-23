@@ -418,14 +418,14 @@ print_speedtest_meast() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                      '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '16595' 'Cyprus, Larnaca (skywisp)   ' 'http://speedtest1.skywisp.com.cy'
+	speed_test '7120' 'Cyprus, Limassol (DragonNET)' 'http://speedtest1.dragonnet.eu'
 	speed_test '2434' 'Israel, Haifa (013Netvision)' 'http://speed2.013.net'
 	speed_test '1689' 'Egypt, Cairo (Vodafone)     ' 'http://speedtest.vodafone.com.eg'
 	speed_test '12498' 'Lebanon, Tripoli (BItarNet) ' 'http://speedtest.bitarnet.net'
 	speed_test '17398' 'UAE, Dubai (Orixcom)        ' 'http://speedtest.orixcom.net'
 	speed_test '14888' 'Qatar, Doha (Vodafone)      ' 'http://speedtest01.vodafone.com.qa'
-	speed_test '608' 'SA, Riyadh (Saudi Telecom)  ' 'http://speedtest.saudi.net.sa'
-	speed_test '17574' 'Bahrain, Manama (Zain)      ' 'http://speedtest.saudi.net.sa'
+	speed_test '12887' 'SA, Riyadh (GO)             ' 'http://speedtest.go.com.sa'
+	speed_test '1912' 'Bahrain, Manama (Zain)      ' 'http://62.209.25.182'
 	speed_test '13583' 'Iran, Tehran (Fanap Telecom)' 'http://speedtest.fanaptelecom.ir'
 	 
 	rm -rf speedtest.py
