@@ -354,13 +354,15 @@ print_speedtest_sa() {
 	printf "%-81s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '9948' 'Brazil, Sao Paulo (Vogel Telecom)   ' 'http://speedtestsp1.stech.net.br'
 	speed_test '11435' 'Brazil, Fortaleza (Netonda)         ' 'http://speedtest.netonda.com.br'
+	speed_test '22085' 'Brazil, Manaus (Action Fibra)       ' 'http://ookla.actionevoce.com.br'
 	speed_test '11683' 'Colombia, Bogota (Level 3)          ' 'http://speedtest.globalcrossing.com.co'
 	speed_test '10511' 'Ecuador, Quito (Iplanet)            ' 'http://sp1.iplanet.ec'
 	speed_test '5272' 'Peru, Lima (Fiberluxperu)           ' 'http://medidor.fiberluxperu.com'
 	speed_test '14099' 'Bolivia, La Paz (AXS)               ' 'http://speedtest.axsbolivia.com'
-	speed_test '2830' 'Paraguay, Asuncion (Personal)       ' 'http://speedtest1.personal.com.py'
-	speed_test '24622' 'Chile, Santiago (Netglobalis)       ' 'http://speedtest.netglobalis.net'
+	speed_test '6776' 'Paraguay, Asuncion (TEISA)          ' 'http://sp1.teisa.com.py'
+	speed_test '13065' 'Chile, Santiago (Netglobalis)       ' 'http://speedtest.netglobalis.net'
 	speed_test '6825' 'Argentina, Buenos Aires (Telefonica)' 'http://speedtest2.gics.telefonica.com.ar'
+	speed_test '10315' 'Argentina, Cordoba (Personal)       ' 'http://st1res.personal.com.ar'
 	speed_test '1546' 'Uruguay, Montevideo (Antel)         ' 'http://speedtest.movistar.com.uy'
 	 
 	rm -rf speedtest.py
