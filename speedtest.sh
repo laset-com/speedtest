@@ -455,6 +455,7 @@ print_speedtest_ru() {
 	speed_test '5127' 'Russia, Omsk (Beeline)          ' 'http://omsk2.speedtest.corbina.net'
 	speed_test '2313' 'Russia, Surgut (METROSET)       ' 'http://speedtest.sg.metro-set.ru'
 	speed_test '6430' 'Russia, Novosibirsk (Tele2)     ' 'http://176.59.159.158'
+	speed_test '4480' 'Russia, Yakutsk (Rostelecom)    ' 'http://yakutsk.speedtest.rt.ru'
 	speed_test '4541' 'Russia, Irkutsk (TransTeleCom)  ' 'http://5.254.224.9'
 	speed_test '25204' 'Russia, Vladivostok (Rostelecom)' 'http://speedtest.inetvl.ru'
 	 
