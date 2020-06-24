@@ -352,7 +352,7 @@ print_speedtest_sa() {
 	printf "%-81s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                              '
 	printf "%-81s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '9948' 'Brazil, Sao Paulo (Vogel Telecom)   ' 'http://speedtestsp1.stech.net.br'
+	speed_test '11488' 'Brazil, Sao Paulo (Criare)          ' 'http://ookla.spcom.net.br'
 	speed_test '11435' 'Brazil, Fortaleza (Netonda)         ' 'http://speedtest.netonda.com.br'
 	speed_test '18126' 'Brazil, Manaus (Claro)              ' 'http://spd7.claro.com.br'
 	speed_test '11683' 'Colombia, Bogota (Level 3)          ' 'http://speedtest.globalcrossing.com.co'
