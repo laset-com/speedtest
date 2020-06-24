@@ -349,9 +349,9 @@ print_speedtest_sa() {
 	echostyle "## South America Speedtest"
 	echo "" | tee -a $log
 	printf "%-38s%-17s%-16s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	printf "%-81s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                              '
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	printf "%-81s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '9948' 'Brazil, Sao Paulo (Vogel Telecom)   ' 'http://speedtestsp1.stech.net.br'
 	speed_test '11435' 'Brazil, Fortaleza (Netonda)         ' 'http://speedtest.netonda.com.br'
 	speed_test '11683' 'Colombia, Bogota (Level 3)          ' 'http://speedtest.globalcrossing.com.co'
