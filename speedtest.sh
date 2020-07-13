@@ -463,6 +463,9 @@ print_speedtest_ru() {
 }
 
 geekbench5() {
+	if [[ $ARCH = *x86* ]]; then # 32-bit
+	echo -e "\nGeekbench 5 cannot run on 32-bit architectures. Skipping the test"
+	else
 	echo "" | tee -a $log
 	echo -e " Performing Geekbench v5 CPU Benchmark test. Please wait..."
 
@@ -503,6 +506,7 @@ geekbench5() {
 	echo -e " Ready to continue..."
 	sleep 3
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
+	fi
 }
 
 calc_disk() {
