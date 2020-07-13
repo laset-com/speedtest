@@ -336,7 +336,7 @@ print_speedtest_asia() {
 	speed_test '27261' 'Malaysia, Kuala Lumpur (Extreme)' 'http://kl-speedtest.ebb.my'
 	speed_test '7556' 'Singapore (PT FirstMedia)       ' 'http://sg-speedtest.link.net.id'
 	speed_test '17516' 'Indonesia, Jakarta (Desnet)     ' 'http://speedtest.desnet.id'
-	speed_test '20273' 'Philippines, Manila (Globe Tel) ' 'http://mnl-speedtest.globe.com.ph'
+	speed_test '20273' 'Philippines, Manila (Globe Tel) ' 'http://119.92.238.90'
 	speed_test '28912' 'Hong Kong (fdcservers)          ' 'http://lg-hkg.fdcservers.net'
 	speed_test '13506' 'Taiwan, Taipei (TAIFO)          ' 'http://speedtest.taifo.com.tw'
 	speed_test '7139' 'Japan, Tsukuba (SoftEther)      ' 'http://speedtest2.softether.co.jp'
