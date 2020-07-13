@@ -960,7 +960,7 @@ cleanup() {
 	rm -f speedtest.sh;
 	rm -f tools.py;
 	rm -f ip_json.json;
-	rm -f geekbench4_claim.url;
+	rm -f geekbench_claim.url;
 	rm -rf geekbench;
 }
 
