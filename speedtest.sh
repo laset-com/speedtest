@@ -25,6 +25,20 @@ trap cancel SIGINT
 benchram="$HOME/tmpbenchram"
 NULL="/dev/null"
 
+# determine architecture of host
+ARCH=$(uname -m)
+if [[ $ARCH = *x86_64* ]]; then
+	# host is running a 64-bit kernel
+	ARCH="x64"
+elif [[ $ARCH = *i?86* ]]; then
+	# host is running a 32-bit kernel
+	ARCH="x86"
+else
+	# host is running a non-supported kernel
+	echo -e "Architecture not supported."
+	exit 1
+fi
+
 echostyle(){
 	if hash tput 2>$NULL; then
 		echo " $(tput setaf 6)$1$(tput sgr0)"
