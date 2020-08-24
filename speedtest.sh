@@ -230,7 +230,7 @@ print_speedtest() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                        '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '10546' 'USA, New York (Sprint)        ' 'http://ookla1.nycmny.sprintadp.net'
+	speed_test '30514' 'USA, New York (Optimum)       ' 'http://speedgauge2.optonline.net'
 	speed_test '17384' 'USA, Chicago (Windstream)     ' 'http://chicago02.speedtest.windstream.net'
 	speed_test '14238' 'USA, Dallas (Frontier)        ' 'http://dallas.tx.speedtest.frontier.com'
 	speed_test '14237' 'USA, Miami (Frontier)         ' 'http://miami.fl.speedtest.frontier.com'
@@ -260,7 +260,7 @@ print_speedtest_usa() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                         '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '10546' 'USA, New York (Sprint)         ' 'http://ookla1.nycmny.sprintadp.net'
+	speed_test '30514' 'USA, New York (Optimum)        ' 'http://speedgauge2.optonline.net'
 	speed_test '13429' 'USA, Boston (Starry, Inc.)     ' 'http://speedtest-server.starry.com'
 	speed_test '15790' 'USA, Washington, DC (Sprint)   ' 'http://ookla1.washdc.sprintadp.net'
 	speed_test '27833' 'USA, Charlotte, NC (Windstream)' 'http://charlotte02.speedtest.windstream.net'
