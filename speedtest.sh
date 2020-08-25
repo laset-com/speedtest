@@ -394,6 +394,7 @@ print_speedtest_ukraine() {
 	speed_test '2518' 'Ukraine, Kyiv (Volia)         ' 'http://speedtest2.volia.com'
 	speed_test '14887' 'Ukraine, Lviv (UARNet)        ' 'http://speedtest.uar.net'
 	speed_test '29259' 'Ukraine, Lviv (KyivStar)      ' 'http://srv01-okl-lvv.kyivstar.ua'
+	speed_test '2445' 'Ukraine, Lviv (KOMiTEX)       ' 'http://speedtest.komitex.net'
 	speed_test '3022' 'Ukraine, Uzhgorod (TransCom)  ' 'http://speedtest.tcom.uz.ua'
 	speed_test '19332' 'Ukraine, Chernivtsi (C.T.Net) ' 'http://speedtest.ctn.cv.ua'
 	speed_test '3861' 'Ukraine, Zhytomyr (DKS)       ' 'http://speedtest1.dks.com.ua'
@@ -422,6 +423,7 @@ print_speedtest_lviv() {
 	speed_test '29147' 'Ukraine, Lviv (LANNET)  ' 'http://speed.lannet.lviv.ua'
 	speed_test '1204' 'Ukraine, Lviv (Network) ' 'http://speedtest.network.lviv.ua'
 	speed_test '21900' 'Ukraine, Lviv (LimNet)  ' 'http://speedtest.limnet.com.ua'
+	speed_test '34751' 'Ukraine, Lviv (Wenet)   ' 'http://vds.wenet.lviv.ua'
 	 
 	rm -rf speedtest.py
 }
