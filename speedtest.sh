@@ -478,6 +478,53 @@ print_speedtest_ru() {
 	rm -rf speedtest.py
 }
 
+geekbench4() {
+	if [[ $ARCH = *x86* ]]; then # 32-bit
+	echo -e "\nGeekbench 5 cannot run on 32-bit architectures. Skipping the test"
+	else
+	echo "" | tee -a $log
+	echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..."
+
+	GEEKBENCH_PATH=$HOME/geekbench
+	mkdir -p $GEEKBENCH_PATH
+	curl -s http://cdn.geekbench.com/Geekbench-4.4.2-Linux.tar.gz  | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
+	GEEKBENCH_TEST=$($GEEKBENCH_PATH/geekbench4 2>/dev/null | grep "https://browser")
+	GEEKBENCH_URL=$(echo -e $GEEKBENCH_TEST | head -1)
+	GEEKBENCH_URL_CLAIM=$(echo $GEEKBENCH_URL | awk '{ print $2 }')
+	GEEKBENCH_URL=$(echo $GEEKBENCH_URL | awk '{ print $1 }')
+	sleep 20
+	GEEKBENCH_SCORES=$(curl -s $GEEKBENCH_URL | grep "span class='score'")
+	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
+	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $7 }')
+	
+	if [[ $GEEKBENCH_SCORES_SINGLE -le 1800 ]]; then
+		grank="(POOR)"
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1800 && $GEEKBENCH_SCORES_SINGLE -le 2500 ]]; then
+		grank="(FAIR)"
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2500 && $GEEKBENCH_SCORES_SINGLE -le 3000 ]]; then
+		grank="(GOOD)"
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 3000 && $GEEKBENCH_SCORES_SINGLE -le 3800 ]]; then
+		grank="(VERY GOOD)"
+	else
+		grank="(EXCELLENT)"
+	fi
+	
+	echo -ne "\e[1A"; echo -ne "\033[0K\r"
+	echostyle "## Geekbench v4 CPU Benchmark:"
+	echo "" | tee -a $log
+	echo -e "  Single Core : $GEEKBENCH_SCORES_SINGLE  $grank" | tee -a $log
+	echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
+	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" >> geekbench_claim.url 2> /dev/null
+	echo "" | tee -a $log
+	echo -e " Cooling down..."
+	sleep 9
+	echo -ne "\e[1A"; echo -ne "\033[0K\r"
+	echo -e " Ready to continue..."
+	sleep 3
+	echo -ne "\e[1A"; echo -ne "\033[0K\r"
+	fi
+}
+
 geekbench5() {
 	if [[ $ARCH = *x86* ]]; then # 32-bit
 	echo -e "\nGeekbench 5 cannot run on 32-bit architectures. Skipping the test"
@@ -492,7 +539,7 @@ geekbench5() {
 	GEEKBENCH_URL=$(echo -e $GEEKBENCH_TEST | head -1)
 	GEEKBENCH_URL_CLAIM=$(echo $GEEKBENCH_URL | awk '{ print $2 }')
 	GEEKBENCH_URL=$(echo $GEEKBENCH_URL | awk '{ print $1 }')
-	sleep 10
+	sleep 20
 	GEEKBENCH_SCORES=$(curl -s $GEEKBENCH_URL | grep "div class='score'")
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
@@ -1171,6 +1218,8 @@ case $1 in
 		next;about;next;;
    	'gb'|'-gb'|'--gb'|'geek'|'-geek'|'--geek' )
 		next;geekbench5;next;cleanup;;
+	'gb4'|'-gb4'|'--gb4'|'geek4'|'-geek4'|'--geek4' )
+		next;geekbench4;next;cleanup;;
 	'io'|'-io'|'--io'|'ioping'|'-ioping'|'--ioping' )
 		next;iotest;write_io;next;;
 	'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
