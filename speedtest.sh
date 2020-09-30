@@ -497,13 +497,13 @@ geekbench4() {
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $7 }')
 	
-	if [[ $GEEKBENCH_SCORES_SINGLE -le 1800 ]]; then
+	if [[ $GEEKBENCH_SCORES_SINGLE -le 1700 ]]; then
 		grank="(POOR)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1800 && $GEEKBENCH_SCORES_SINGLE -le 2500 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1700 && $GEEKBENCH_SCORES_SINGLE -le 2300 ]]; then
 		grank="(FAIR)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2500 && $GEEKBENCH_SCORES_SINGLE -le 3000 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2300 && $GEEKBENCH_SCORES_SINGLE -le 3000 ]]; then
 		grank="(GOOD)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 3000 && $GEEKBENCH_SCORES_SINGLE -le 3800 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 3000 && $GEEKBENCH_SCORES_SINGLE -le 4000 ]]; then
 		grank="(VERY GOOD)"
 	else
 		grank="(EXCELLENT)"
