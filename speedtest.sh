@@ -5,7 +5,7 @@ about() {
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.5.3   2020-07-13                  / "
+	echo " \                  v1.5.4   2020-09-30                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -968,7 +968,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster v.1.5.3 2020-07-13 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster v.1.5.4 2020-09-30 \n' $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
 }
@@ -1041,7 +1041,7 @@ bench_all(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench4;
 	iotest;
 	write_io;
 	print_speedtest;
@@ -1061,7 +1061,7 @@ usa_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench4;
 	iotest;
 	write_io;
 	print_speedtest_usa;
@@ -1081,7 +1081,7 @@ europe_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench4;
 	iotest;
 	write_io;
 	print_speedtest_europe;
@@ -1101,7 +1101,7 @@ asia_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench4;
 	iotest;
 	write_io;
 	print_speedtest_asia;
@@ -1121,7 +1121,7 @@ sa_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench4;
 	iotest;
 	write_io;
 	print_speedtest_sa;
@@ -1141,7 +1141,7 @@ ukraine_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench4;
 	iotest;
 	write_io;
 	print_speedtest_ukraine;
@@ -1160,7 +1160,7 @@ lviv_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench4;
 	iotest;
 	write_io;
 	print_speedtest_lviv;
@@ -1179,7 +1179,7 @@ meast_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench4;
 	iotest;
 	write_io;
 	print_speedtest_meast;
@@ -1198,7 +1198,7 @@ ru_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench4;
 	iotest;
 	write_io;
 	print_speedtest_ru;
@@ -1216,9 +1216,9 @@ case $1 in
 		about;sleep 3;next;get_system_info;print_system_info;;
 	'version'|'-v'|'--v'|'-version'|'--version')
 		next;about;next;;
-   	'gb'|'-gb'|'--gb'|'geek'|'-geek'|'--geek' )
+   	'gb5'|'-gb5'|'--gb5'|'geek5'|'-geek5'|'--geek5' )
 		next;geekbench5;next;cleanup;;
-	'gb4'|'-gb4'|'--gb4'|'geek4'|'-geek4'|'--geek4' )
+	'gb'|'-gb'|'--gb'|'geek'|'-geek'|'--geek' )
 		next;geekbench4;next;cleanup;;
 	'io'|'-io'|'--io'|'ioping'|'-ioping'|'--ioping' )
 		next;iotest;write_io;next;;
