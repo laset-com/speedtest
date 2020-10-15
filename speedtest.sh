@@ -460,7 +460,7 @@ print_speedtest_ru() {
 	speed_test '3682' 'Russia, Moscow (Rostelecom)     ' 'http://moscow.speedtest.rt.ru'
 	speed_test '6562' 'Russia, Moscow (Tele2)          ' 'http://176.59.63.150'
 	speed_test '4247' 'Russia, St.Petersburg (MTS)     ' 'http://speedtest-it.spb.mts.ru'
-	speed_test '18570' 'Russia, St.Petersburg (RETN)    ' 'http://speedtest-spb.retn.net'
+	speed_test '31126' 'Russia, St.Petersburg (Nevalink)' 'http://speedtest.nevalink.net'
 	speed_test '13616' 'Russia, Voronezh (FreeDom)      ' 'http://speedtest.vrn.ru'
 	speed_test '4503' 'Russia, Nizhny Novgorod (MTS)   ' 'http://speedtest.nnov.mts.ru'
 	speed_test '2603' 'Russia, Samara (Rostelecom)     ' 'http://samara.speedtest.rt.ru'
