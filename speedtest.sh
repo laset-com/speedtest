@@ -240,7 +240,7 @@ print_speedtest() {
 	speed_test '20507' 'Germany, Berlin (DNS:NET)     ' 'http://speedtest01.dns-net.de'
 	speed_test '21378' 'Spain, Madrid (MasMovil)      ' 'http://speedtest-mad.masmovil.com'
 	speed_test '395' 'Italy, Rome (Unidata)         ' 'http://speedtest2.unidata.it'
-	speed_test '1907' 'Russia, Moscow (MTS)          ' 'http://librarian.comstar.ru'
+	speed_test '3682' 'Russia, Moscow (Rostelecom)   ' 'http://moscow.speedtest.rt.ru'
 	speed_test '2434' 'Israel, Haifa (013Netvision)  ' 'http://speed2.013.net'
 	speed_test '15028' 'India, New Delhi (Spectra)    ' 'http://speedtest.spectra.co'
 	speed_test '7556' 'Singapore (FirstMedia)        ' 'http://sg-speedtest.link.net.id'
