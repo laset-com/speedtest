@@ -456,7 +456,7 @@ print_speedtest_ru() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                          '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '22050' 'Russia, Moscow (RETN)           ' 'http://speedtest-msk.retn.net'
+	speed_test '11266' 'Russia, Moscow (INETCOM)        ' 'http://speedtest1.inetcom.ru'
 	speed_test '3682' 'Russia, Moscow (Rostelecom)     ' 'http://moscow.speedtest.rt.ru'
 	speed_test '6562' 'Russia, Moscow (Tele2)          ' 'http://176.59.63.150'
 	speed_test '4247' 'Russia, St.Petersburg (MTS)     ' 'http://speedtest-it.spb.mts.ru'
