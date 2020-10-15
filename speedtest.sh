@@ -317,8 +317,7 @@ print_speedtest_europe() {
 	speed_test '691' 'Slovakia, Kosice (ANTIK)        ' 'http://speedtest.antik.sk'
 	speed_test '30813' 'Ukraine, Kyiv (KyivStar)        ' 'http://srv01-okl-kv.kyivstar.ua'
 	speed_test '5834' 'Latvia, Riga (Bite)             ' 'http://speedtest2.bite.lv'
-	speed_test '4231' 'Russia, St.Petersburg (Prometey)' 'http://speedtest1.ptspb.net'
-	speed_test '1907' 'Russia, Moscow (MTS)            ' 'http://librarian.comstar.ru'
+	speed_test '3682' 'Russia, Moscow (Rostelecom)     ' 'http://moscow.speedtest.rt.ru'
 	speed_test '7609' 'Romania, Bucharest (DOTRO Tel)  ' 'http://sp1.dotrotelecom.ro'
 	speed_test '1727' 'Greece, Athens (GRNET)          ' 'http://speed-test.gr-ix.gr'
 	speed_test '10994' 'Turkey, Istanbul (Radore)       ' 'http://speedtest.radore.com'
@@ -457,11 +456,11 @@ print_speedtest_ru() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                          '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '1907' 'Russia, Moscow (MTS)            ' 'http://librarian.comstar.ru'
+	speed_test '22050' 'Russia, Moscow (RETN)           ' 'http://speedtest-msk.retn.net'
 	speed_test '3682' 'Russia, Moscow (Rostelecom)     ' 'http://moscow.speedtest.rt.ru'
 	speed_test '6562' 'Russia, Moscow (Tele2)          ' 'http://176.59.63.150'
 	speed_test '4247' 'Russia, St.Petersburg (MTS)     ' 'http://speedtest-it.spb.mts.ru'
-	speed_test '4231' 'Russia, St.Petersburg (Prometey)' 'http://speedtest1.ptspb.net'
+	speed_test '18570' 'Russia, St.Petersburg (RETN)    ' 'http://speedtest-spb.retn.net'
 	speed_test '13616' 'Russia, Voronezh (FreeDom)      ' 'http://speedtest.vrn.ru'
 	speed_test '4503' 'Russia, Nizhny Novgorod (MTS)   ' 'http://speedtest.nnov.mts.ru'
 	speed_test '2603' 'Russia, Samara (Rostelecom)     ' 'http://samara.speedtest.rt.ru'
