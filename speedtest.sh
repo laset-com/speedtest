@@ -1270,6 +1270,8 @@ case $1 in
 		about;;
 	'usa'|'-usa'|'--usa'|'us'|'-us'|'--us'|'USA'|'-USA'|'--USA' )
 		usa_bench;;
+	'in'|'-india'|'--in'|'in'|'-in'|'IN'|'-IN'|'--IN' )
+		in_bench;;
 	'europe'|'-europe'|'--europe'|'eu'|'-eu'|'--eu'|'Europe'|'-Europe'|'--Europe' )
 		europe_bench;;
 	'asia'|'-asia'|'--asia'|'as'|'-as'|'--as'|'Asia'|'-Asia'|'--Asia' )
