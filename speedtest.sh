@@ -291,6 +291,24 @@ print_speedtest_usa() {
 	rm -rf speedtest.py
 }
 
+print_speedtest_in() {
+	echo "" | tee -a $log
+	echostyle "## India Speedtest"
+	echo "" | tee -a $log
+	printf "%-33s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+        speed_test '' 'Nearby                         '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	speed_test '27386' 'India, New Delhi (GIGATEL)     ' 'http://speedtest2.gigatel.in'
+	speed_test '16475' 'India, New Delhi (Weebo)       ' 'http://sp1.weebo.in'
+	speed_test '6746' 'India, Mumbai (SevenStar)      ' 'http://speed2.7starnetworks.com'
+	speed_test '10637' 'India, Mumbai (OneBroadband)   ' 'http://in2net.in2cable.com'
+	speed_test '6746' 'India, Mumbai (SevenStar)      ' 'http://speed.7starnetworks.com'
+	speed_test '13919' 'India, Bengaluru (I-ON)        ' 'http://speedtestb.dvois.com'
+	speed_test '33374' 'India, Bengaluru (Activline)   ' 'http://speedtest.activline.in'
+	rm -rf speedtest.py
+}
+
 print_speedtest_europe() {
 	echo "" | tee -a $log
 	echostyle "## Europe Speedtest"
@@ -1065,6 +1083,26 @@ usa_bench(){
 	iotest;
 	write_io;
 	print_speedtest_usa;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+
+in_bench(){
+	region_name="India"
+	print_intro;
+	benchinit;
+	clear
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	geekbench4;
+	iotest;
+	write_io;
+	print_speedtest_in;
 	next;
 	print_end_time;
 	cleanup;
