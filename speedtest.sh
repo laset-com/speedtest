@@ -234,7 +234,7 @@ print_speedtest() {
 	speed_test '17384' 'USA, Chicago (Windstream)     ' 'http://chicago02.speedtest.windstream.net'
 	speed_test '14238' 'USA, Dallas (Frontier)        ' 'http://dallas.tx.speedtest.frontier.com'
 	speed_test '14237' 'USA, Miami (Frontier)         ' 'http://miami.fl.speedtest.frontier.com'
-	speed_test '16974' 'USA, Los Angeles (Spectrum)   ' 'http://speedtest.west.rr.com'
+	speed_test '18401' 'USA, Los Angeles (Windstream) ' 'http://la02.speedtest.windstream.net'
 	speed_test '26922' 'UK, London (toob Ltd)         ' 'http://st1.octopustelecom.co.uk'
 	speed_test '27852' 'France, Lyon (SFR)            ' 'http://cor2.speedtest.mire.sfr.net'
 	speed_test '20507' 'Germany, Berlin (DNS:NET)     ' 'http://speedtest01.dns-net.de'
@@ -284,7 +284,7 @@ print_speedtest_usa() {
 	speed_test '9056' 'USA, Las Vegas (LV.Net)        ' 'http://speedtest.lasvegas.net'
 	speed_test '18271' 'USA, Seattle (Bluespan)        ' 'http://seattle.speedtest.bluespanwireless.com'
 	speed_test '17587' 'USA, San Francisco (Wiline)    ' 'http://sfosfookla.wiline.com'
-	speed_test '16974' 'USA, Los Angeles (Spectrum)    ' 'http://speedtest.west.rr.com'
+	speed_test '18401' 'USA, Los Angeles (Windstream)  ' 'http://la02.speedtest.windstream.net'
 	speed_test '980' 'USA, Anchorage (Alaska Com)    ' 'http://speedtest.anc.acsalaska.net'
 	speed_test '33382' 'USA, Honolulu (Pacific Wave)   ' 'http://sp1.pac-wave.net'
 	 
