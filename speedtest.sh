@@ -5,7 +5,7 @@ about() {
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.5.4   2020-09-30                  / "
+	echo " \                  v1.5.5   2020-12-10                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -224,7 +224,7 @@ speed_test(){
 
 print_speedtest() {
 	echo "" | tee -a $log
-	echostyle "## Global Speedtest"
+	echostyle "## Global Speedtest.net"
 	echo "" | tee -a $log
 	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -254,7 +254,7 @@ print_speedtest() {
 
 print_speedtest_usa() {
 	echo "" | tee -a $log
-	echostyle "## USA Speedtest"
+	echostyle "## USA Speedtest.net"
 	echo "" | tee -a $log
 	printf "%-33s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -293,7 +293,7 @@ print_speedtest_usa() {
 
 print_speedtest_in() {
 	echo "" | tee -a $log
-	echostyle "## India Speedtest"
+	echostyle "## India Speedtest.net"
 	echo "" | tee -a $log
 	printf "%-33s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -311,7 +311,7 @@ print_speedtest_in() {
 
 print_speedtest_europe() {
 	echo "" | tee -a $log
-	echostyle "## Europe Speedtest"
+	echostyle "## Europe Speedtest.net"
 	echo "" | tee -a $log
 	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -345,7 +345,7 @@ print_speedtest_europe() {
 
 print_speedtest_asia() {
 	echo "" | tee -a $log
-	echostyle "## Asia Speedtest"
+	echostyle "## Asia Speedtest.net"
 	echo "" | tee -a $log
 	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -377,7 +377,7 @@ print_speedtest_asia() {
 
 print_speedtest_sa() {
 	echo "" | tee -a $log
-	echostyle "## South America Speedtest"
+	echostyle "## South America Speedtest.net"
 	echo "" | tee -a $log
 	printf "%-38s%-17s%-16s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-81s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -399,9 +399,31 @@ print_speedtest_sa() {
 	rm -rf speedtest.py
 }
 
+print_speedtest_au() {
+	echo "" | tee -a $log
+	echostyle "## Australia & New Zealand Speedtest.net"
+	echo "" | tee -a $log
+	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+        speed_test '' 'Nearby                        '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	speed_test '1267' 'Australia, Sydney (Optus)     ' 'http://s1.speedtest.syd.optusnet.com.au'
+	speed_test '2225' 'Australia, Melbourne (Telstra)' 'http://mel1.speedtest.telstra.net'
+	speed_test '6757' 'Australia, Darwin (AARNet)    ' 'http://nt-drwn-speedtest.aarnet.net.au'
+	speed_test '6359' 'Australia, Adelaide (AARNet)  ' 'http://s1.speedtest.syd.optusnet.com.au'
+	speed_test '8847' 'Australia, Brisbane (Foxtel)  ' 'http://ws1.isp.foxtel.net.au'
+	speed_test '8976' 'Australia, Hobart (Optus)     ' 'http://speedtest.tas.optusnet.com.au'
+	speed_test '2627' 'Australia, Perth (Telstra)    ' 'http://per1.speedtest.telstra.net'
+	speed_test '2627' 'NZ, Auckland (MyRepublic)     ' 'http://per1.speedtest.telstra.net'
+	speed_test '11326' 'NZ, Wellington (Spark)        ' 'http://speedtest-wellington.spark.co.nz'
+	speed_test '4934' 'NZ, Christchurch (Vodafone)   ' 'http://christchurch.speedtest.vodafone.co.nz'
+	 
+	rm -rf speedtest.py
+}
+
 print_speedtest_ukraine() {
 	echo "" | tee -a $log
-	echostyle "## Ukraine Speedtest"
+	echostyle "## Ukraine Speedtest.net"
 	echo "" | tee -a $log
 	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -427,7 +449,7 @@ print_speedtest_ukraine() {
 
 print_speedtest_lviv() {
 	echo "" | tee -a $log
-	echostyle "## Lviv Speedtest"
+	echostyle "## Lviv Speedtest.net"
 	echo "" | tee -a $log
 	printf "%-26s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -448,7 +470,7 @@ print_speedtest_lviv() {
 
 print_speedtest_meast() {
 	echo "" | tee -a $log
-	echostyle "## Middle East Speedtest"
+	echostyle "## Middle East Speedtest.net"
 	echo "" | tee -a $log
 	printf "%-30s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -469,7 +491,7 @@ print_speedtest_meast() {
 
 print_speedtest_ru() {
 	echo "" | tee -a $log
-	echostyle "## Russian Federation Speedtest"
+	echostyle "## Russian Federation Speedtest.net"
 	echo "" | tee -a $log
 	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -1163,6 +1185,26 @@ sa_bench(){
 	iotest;
 	write_io;
 	print_speedtest_sa;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+
+au_bench(){
+	region_name="AU-NZ"
+	print_intro;
+	benchinit;
+	clear
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	geekbench4;
+	iotest;
+	write_io;
+	print_speedtest_au;
 	next;
 	print_end_time;
 	cleanup;
