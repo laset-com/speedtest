@@ -409,10 +409,10 @@ print_speedtest_au() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '1267' 'Australia, Sydney (Optus)     ' 'http://s1.speedtest.syd.optusnet.com.au'
 	speed_test '2225' 'Australia, Melbourne (Telstra)' 'http://mel1.speedtest.telstra.net'
-	speed_test '6757' 'Australia, Darwin (AARNet)    ' 'http://nt-drwn-speedtest.aarnet.net.au'
-	speed_test '6359' 'Australia, Adelaide (AARNet)  ' 'http://s1.speedtest.syd.optusnet.com.au'
-	speed_test '8847' 'Australia, Brisbane (Foxtel)  ' 'http://ws1.isp.foxtel.net.au'
+	speed_test '2604' 'Australia, Brisbane (Telstra) ' 'http://brs1.speedtest.telstra.net'
+	speed_test '6359' 'Australia, Adelaide (AARNet)  ' 'http://sa-prka-speedtest.aarnet.net.au'
 	speed_test '8976' 'Australia, Hobart (Optus)     ' 'http://speedtest.tas.optusnet.com.au'
+	speed_test '6757' 'Australia, Darwin (AARNet)    ' 'http://nt-drwn-speedtest.aarnet.net.au'
 	speed_test '2627' 'Australia, Perth (Telstra)    ' 'http://per1.speedtest.telstra.net'
 	speed_test '2627' 'NZ, Auckland (MyRepublic)     ' 'http://per1.speedtest.telstra.net'
 	speed_test '11326' 'NZ, Wellington (Spark)        ' 'http://speedtest-wellington.spark.co.nz'
@@ -1008,7 +1008,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster v.1.5.4 2020-09-30 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster v.1.5.5 2020-12-10 \n' $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
 }
