@@ -286,7 +286,7 @@ print_speedtest_usa() {
 	speed_test '17587' 'USA, San Francisco (Wiline)    ' 'http://sfosfookla.wiline.com'
 	speed_test '18401' 'USA, Los Angeles (Windstream)  ' 'http://la02.speedtest.windstream.net'
 	speed_test '980' 'USA, Anchorage (Alaska Com)    ' 'http://speedtest.anc.acsalaska.net'
-	speed_test '33382' 'USA, Honolulu (Pacific Wave)   ' 'http://sp1.pac-wave.net'
+	speed_test '24031' 'USA, Honolulu (Hawaiian Telcom)' 'http://htspeed.hawaiiantel.net'
 	 
 	rm -rf speedtest.py
 }
