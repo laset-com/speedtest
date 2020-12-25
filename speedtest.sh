@@ -332,7 +332,6 @@ print_speedtest_europe() {
 	speed_test '20411' 'Czechia, Prague (Dial Telecom)  ' 'http://speedtest-praha.dialtelecom.cz'
 	speed_test '5351' 'Austria, Vienna (Magenta)       ' 'http://speedtest-2.upc.at'
 	speed_test '4166' 'Poland, Warsaw (Orange)         ' 'http://war-o2.speedtest.orange.pl'
-	speed_test '31792' 'Slovakia, Kosice (TUKe)         ' 'http://speedtest.tuke.sk'
 	speed_test '30813' 'Ukraine, Kyiv (KyivStar)        ' 'http://srv01-okl-kv.kyivstar.ua'
 	speed_test '5834' 'Latvia, Riga (Bite)             ' 'http://speedtest2.bite.lv'
 	speed_test '3682' 'Russia, Moscow (Rostelecom)     ' 'http://moscow.speedtest.rt.ru'
