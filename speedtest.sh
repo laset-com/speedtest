@@ -1304,6 +1304,8 @@ case $1 in
 		next;iotest;write_io;next;;
 	'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
 		about;benchinit;next;print_speedtest;next;cleanup;;
+	'as'|'-as'|'--aspeed'|'-aspeedtest'|'--aspeedtest'|'-aspeedcheck'|'--aspeedcheck' )
+		about;benchinit;next;print_speedtest_asia;next;cleanup;;
 	'ip'|'-ip'|'--ip'|'geoip'|'-geoip'|'--geoip' )
 		about;benchinit;next;ip_info4;next;cleanup;;
 	'bench'|'-a'|'--a'|'-all'|'--all'|'-bench'|'--bench'|'-Global' )
