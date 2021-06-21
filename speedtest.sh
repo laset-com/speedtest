@@ -5,7 +5,7 @@ about() {
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.5.5   2020-12-10                  / "
+	echo " \                  v1.5.6   2021-06-21                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -303,9 +303,14 @@ print_speedtest_in() {
 	speed_test '16475' 'India, New Delhi (Weebo)       ' 'http://sp1.weebo.in'
 	speed_test '6746' 'India, Mumbai (SevenStar)      ' 'http://speed2.7starnetworks.com'
 	speed_test '10637' 'India, Mumbai (OneBroadband)   ' 'http://in2net.in2cable.com'
-	speed_test '6746' 'India, Mumbai (SevenStar)      ' 'http://speed.7starnetworks.com'
 	speed_test '13919' 'India, Bengaluru (I-ON)        ' 'http://speedtestb.dvois.com'
 	speed_test '33374' 'India, Bengaluru (Activline)   ' 'http://speedtest.activline.in'
+	speed_test '16086' 'India, Nagpur (optbb)          ' 'http://speedtest.optbb.in'
+	speed_test '23244' 'India, Patna (Airtel)          ' 'http://speedtestbhr1.airtel.in'
+	speed_test '4064' 'India, Kolkata (Vodafone)      ' 'http://speedtestkol.vodafone.ind.in'
+	speed_test '27524' 'India, Visakhapatnam (Alliance)' 'http://speedtestvtz.alliancebroadband.in'
+	speed_test '13785' 'India, Hyderabad (I-ON)        ' 'http://testspeed.vainavi.net'
+	speed_test '10024' 'India, Madurai (Niss Broadband)' 'http://madurai.nissbroadband.com'
 	rm -rf speedtest.py
 }
 
@@ -348,7 +353,7 @@ print_speedtest_asia() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                          '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '27386' 'India, New Delhi (GIGATEL)      ' 'http://speedtest2.gigatel.in'
+	speed_test '16475' 'India, New Delhi (Weebo)        ' 'http://sp1.weebo.in'
 	speed_test '6746' 'India, Mumbai (SevenStar)       ' 'http://speed2.7starnetworks.com'
 	speed_test '13919' 'India, Bengaluru (I-ON)         ' 'http://speedtestb.dvois.com'
 	speed_test '1131' 'Sri Lanka, Colombo (Telecom PLC)' 'http://speedtest2.sltnet.lk'
@@ -1006,7 +1011,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster v.1.5.5 2020-12-10 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster v.1.5.6 2020-06-21 \n' $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
 }
