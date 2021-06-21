@@ -304,7 +304,6 @@ print_speedtest_in() {
 	speed_test '6746' 'India, Mumbai (SevenStar)      ' 'http://speed2.7starnetworks.com'
 	speed_test '10637' 'India, Mumbai (OneBroadband)   ' 'http://in2net.in2cable.com'
 	speed_test '13919' 'India, Bengaluru (I-ON)        ' 'http://speedtestb.dvois.com'
-	speed_test '33374' 'India, Bengaluru (Activline)   ' 'http://speedtest.activline.in'
 	speed_test '16086' 'India, Nagpur (optbb)          ' 'http://speedtest.optbb.in'
 	speed_test '23244' 'India, Patna (Airtel)          ' 'http://speedtestbhr1.airtel.in'
 	speed_test '4064' 'India, Kolkata (Vodafone)      ' 'http://speedtestkol.vodafone.ind.in'
