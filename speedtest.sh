@@ -463,7 +463,6 @@ print_speedtest_lviv() {
 	speed_test '29147' 'Ukraine, Lviv (LANNET)  ' 'http://speed.lannet.lviv.ua'
 	speed_test '1204' 'Ukraine, Lviv (Network) ' 'http://speedtest.network.lviv.ua'
 	speed_test '26293' 'Ukraine, Lviv (LinkCom) ' 'http://st.lc.lviv.ua'
-	speed_test '27850' 'Ukraine, Lviv (Telcom)  ' 'http://speedtest.telcom.net.ua'
 	speed_test '33969' 'Ukraine, Lviv (ARKADA-X)' 'http://speedtest.arkada-x.com'
 	speed_test '34751' 'Ukraine, Lviv (Wenet)   ' 'http://vds.wenet.lviv.ua'
 	 
