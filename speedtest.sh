@@ -5,7 +5,7 @@ about() {
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.5.6   2021-06-21                  / "
+	echo " \                  v1.5.7   2021-10-06                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -1011,7 +1011,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster v.1.5.6 2020-06-21 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster v.1.5.7 2020-10-06 \n' $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
 }
