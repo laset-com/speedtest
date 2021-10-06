@@ -540,14 +540,16 @@ geekbench4() {
 	
 	if [[ $GEEKBENCH_SCORES_SINGLE -le 1700 ]]; then
 		grank="(POOR)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1700 && $GEEKBENCH_SCORES_SINGLE -le 2300 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1700 && $GEEKBENCH_SCORES_SINGLE -le 2500 ]]; then
 		grank="(FAIR)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2300 && $GEEKBENCH_SCORES_SINGLE -le 3000 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2500 && $GEEKBENCH_SCORES_SINGLE -le 3500 ]]; then
 		grank="(GOOD)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 3000 && $GEEKBENCH_SCORES_SINGLE -le 4000 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 3500 && $GEEKBENCH_SCORES_SINGLE -le 4500 ]]; then
 		grank="(VERY GOOD)"
-	else
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 4500 && $GEEKBENCH_SCORES_SINGLE -le 6000 ]]; then
 		grank="(EXCELLENT)"
+	else
+		grank="(THE BEAST)"
 	fi
 	
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
