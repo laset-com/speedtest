@@ -330,7 +330,7 @@ print_speedtest_europe() {
 	speed_test '21378' 'Spain, Madrid (MasMovil)        ' 'http://speedtest-mad.masmovil.com'
 	speed_test '395' 'Italy, Rome (Unidata)           ' 'http://speedtest2.unidata.it'
 	speed_test '20411' 'Czechia, Prague (Dial Telecom)  ' 'http://speedtest-praha.dialtelecom.cz'
-	speed_test '5351' 'Austria, Vienna (Magenta)       ' 'http://speedtest-2.upc.at'
+	speed_test '12390' 'Austria, Vienna (A1)            ' 'http://speedtest.a1.net'
 	speed_test '4166' 'Poland, Warsaw (Orange)         ' 'http://war-o2.speedtest.orange.pl'
 	speed_test '30813' 'Ukraine, Kyiv (KyivStar)        ' 'http://srv01-okl-kv.kyivstar.ua'
 	speed_test '5834' 'Latvia, Riga (Bite)             ' 'http://speedtest2.bite.lv'
