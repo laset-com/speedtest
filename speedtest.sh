@@ -281,7 +281,7 @@ print_speedtest_usa() {
 	speed_test '16613' 'USA, Phoenix (Cox)             ' 'http://speedtest.rd.ph.cox.net'
 	speed_test '2206' 'USA, Salt Lake City (UTOPIA)   ' 'http://speedtest2.utopiafiber.net'
 	speed_test '7878' 'USA, Helena, MT (The Fusion)   ' 'http://helenast2.northcentraltower.com'
-	speed_test '9056' 'USA, Las Vegas (LV.Net)        ' 'http://speedtest.lasvegas.net'
+	speed_test '16446' 'USA, Las Vegas (CenturyLink)   ' 'http://las-vegas2.speedtest.centurylink.net'
 	speed_test '18271' 'USA, Seattle (Bluespan)        ' 'http://seattle.speedtest.bluespanwireless.com'
 	speed_test '17587' 'USA, San Francisco (Wiline)    ' 'http://sfosfookla.wiline.com'
 	speed_test '18401' 'USA, Los Angeles (Windstream)  ' 'http://la02.speedtest.windstream.net'
@@ -337,7 +337,7 @@ print_speedtest_europe() {
 	speed_test '3682' 'Russia, Moscow (Rostelecom)     ' 'http://moscow.speedtest.rt.ru'
 	speed_test '7609' 'Romania, Bucharest (DOTRO Tel)  ' 'http://sp1.dotrotelecom.ro'
 	speed_test '1727' 'Greece, Athens (GRNET)          ' 'http://speed-test.gr-ix.gr'
-	speed_test '10994' 'Turkey, Istanbul (Radore)       ' 'http://speedtest.radore.com'
+	speed_test '32575' 'Turkey, Urfa (Firatnet)         ' 'http://firatspeedtest.com'
 	 
 	rm -rf speedtest.py
 }
@@ -370,6 +370,7 @@ print_speedtest_asia() {
 	speed_test '28912' 'Hong Kong (fdcservers)          ' 'http://lg-hkg.fdcservers.net'
 	speed_test '13506' 'Taiwan, Taipei (TAIFO)          ' 'http://speedtest.taifo.com.tw'
 	speed_test '7139' 'Japan, Tsukuba (SoftEther)      ' 'http://speedtest2.softether.co.jp'
+	speed_test '3706' 'Russia, Khabarovsk (MegaFon)    ' 'http://khb.speedtest-dvf.megafon.ru'
 	 
 	rm -rf speedtest.py
 }
@@ -514,6 +515,7 @@ print_speedtest_ru() {
 	speed_test '6430' 'Russia, Novosibirsk (Tele2)     ' 'http://176.59.159.158'
 	speed_test '4541' 'Russia, Irkutsk (TransTeleCom)  ' 'http://5.254.224.9'
 	speed_test '4480' 'Russia, Yakutsk (Rostelecom)    ' 'http://yakutsk.speedtest.rt.ru'
+	speed_test '3706' 'Russia, Khabarovsk (MegaFon)    ' 'http://khb.speedtest-dvf.megafon.ru'
 	speed_test '25204' 'Russia, Vladivostok (Rostelecom)' 'http://speedtest.inetvl.ru'
 	 
 	rm -rf speedtest.py
