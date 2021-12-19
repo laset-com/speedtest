@@ -265,7 +265,7 @@ print_speedtest_usa() {
 	speed_test '15790' 'USA, Washington, DC (Sprint)   ' 'http://ookla1.washdc.sprintadp.net'
 	speed_test '27833' 'USA, Charlotte, NC (Windstream)' 'http://charlotte02.speedtest.windstream.net'
 	speed_test '14231' 'USA, Atlanta (Frontier)        ' 'http://atlanta.ga.speedtest.frontier.com'
-	speed_test '15781' 'USA, Miami (Sprint)            ' 'http://ookla1.miaufl.sprintadp.net'
+	speed_test '14237' 'USA, Miami (Frontier)          ' 'http://miami.fl.speedtest.frontier.com'
 	speed_test '15779' 'USA, Nashville (Sprint)        ' 'http://ookla1.nsvltn.sprintadp.net'
 	speed_test '9560' 'USA, Indianapolis (Metronet)   ' 'http://speedtest2.iplwin75.metronetinc.com'
 	speed_test '10138' 'USA, Cleveland (CenturyLink)   ' 'http://cleveland.speedtest.centurylink.net'
@@ -370,7 +370,7 @@ print_speedtest_asia() {
 	speed_test '28912' 'Hong Kong (fdcservers)          ' 'http://lg-hkg.fdcservers.net'
 	speed_test '13506' 'Taiwan, Taipei (TAIFO)          ' 'http://speedtest.taifo.com.tw'
 	speed_test '7139' 'Japan, Tsukuba (SoftEther)      ' 'http://speedtest2.softether.co.jp'
-	speed_test '3706' 'Russia, Khabarovsk (MegaFon)    ' 'http://khb.speedtest-dvf.megafon.ru'
+	speed_test '25204' 'Russia, Vladivostok (Rostelecom)' 'http://speedtest.inetvl.ru'
 	 
 	rm -rf speedtest.py
 }
@@ -591,14 +591,16 @@ geekbench5() {
 	
 	if [[ $GEEKBENCH_SCORES_SINGLE -le 300 ]]; then
 		grank="(POOR)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 300 && $GEEKBENCH_SCORES_SINGLE -le 450 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 300 && $GEEKBENCH_SCORES_SINGLE -le 500 ]]; then
 		grank="(FAIR)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 450 && $GEEKBENCH_SCORES_SINGLE -le 650 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 500 && $GEEKBENCH_SCORES_SINGLE -le 700 ]]; then
 		grank="(GOOD)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 650 && $GEEKBENCH_SCORES_SINGLE -le 900 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 700 && $GEEKBENCH_SCORES_SINGLE -le 1000 ]]; then
 		grank="(VERY GOOD)"
-	else
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1000 && $GEEKBENCH_SCORES_SINGLE -le 1500 ]]; then
 		grank="(EXCELLENT)"
+	else
+		grank="(THE BEAST)"
 	fi
 	
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
