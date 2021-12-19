@@ -281,7 +281,7 @@ print_speedtest_usa() {
 	speed_test '16613' 'USA, Phoenix (Cox)             ' 'http://speedtest.rd.ph.cox.net'
 	speed_test '2206' 'USA, Salt Lake City (UTOPIA)   ' 'http://speedtest2.utopiafiber.net'
 	speed_test '7878' 'USA, Helena, MT (The Fusion)   ' 'http://helenast2.northcentraltower.com'
-	speed_test '16446' 'USA, Las Vegas (CenturyLink)   ' 'http://las-vegas2.speedtest.centurylink.net'
+	speed_test '16622' 'USA, Las Vegas (Cox)           ' 'http://speedtest.rd.lv.cox.net'
 	speed_test '18271' 'USA, Seattle (Bluespan)        ' 'http://seattle.speedtest.bluespanwireless.com'
 	speed_test '17587' 'USA, San Francisco (Wiline)    ' 'http://sfosfookla.wiline.com'
 	speed_test '18401' 'USA, Los Angeles (Windstream)  ' 'http://la02.speedtest.windstream.net'
