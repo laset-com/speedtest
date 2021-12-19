@@ -5,7 +5,7 @@ about() {
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.5.7   2021-10-06                  / "
+	echo " \                  v1.5.8   2021-12-19                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -331,7 +331,7 @@ print_speedtest_europe() {
 	speed_test '395' 'Italy, Rome (Unidata)           ' 'http://speedtest2.unidata.it'
 	speed_test '20411' 'Czechia, Prague (Dial Telecom)  ' 'http://speedtest-praha.dialtelecom.cz'
 	speed_test '12390' 'Austria, Vienna (A1)            ' 'http://speedtest.a1.net'
-	speed_test '4166' 'Poland, Warsaw (Orange)         ' 'http://war-o2.speedtest.orange.pl'
+	speed_test '7103' 'Poland, Warsaw (ISP Emitel)     ' 'http://speedtest.emitel.pl'
 	speed_test '30813' 'Ukraine, Kyiv (KyivStar)        ' 'http://srv01-okl-kv.kyivstar.ua'
 	speed_test '5834' 'Latvia, Riga (Bite)             ' 'http://speedtest2.bite.lv'
 	speed_test '3682' 'Russia, Moscow (Rostelecom)     ' 'http://moscow.speedtest.rt.ru'
@@ -1015,7 +1015,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster v.1.5.7 2021-10-06 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster v.1.5.8 2021-12-19 \n' $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
 }
