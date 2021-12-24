@@ -5,7 +5,7 @@ about() {
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.5.8   2021-12-19                  / "
+	echo " \                  v1.5.9   2021-12-24                  / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -1030,7 +1030,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster v.1.5.8 2021-12-19 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster v.1.5.9 2021-12-24 \n' $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
 }
@@ -1363,7 +1363,7 @@ case $1 in
 	'asia'|'-asia'|'--asia'|'as'|'-as'|'--as'|'Asia'|'-Asia'|'--Asia' )
 		asia_bench;;
 	'china'|'-china'|'--china'|'mjj'|'-mjj'|'cn'|'-cn'|'--cn'|'China'|'-China'|'--China' )
-		asia_bench;;
+		china_bench;;
 	'au'|'-au'|'nz'|'-nz'|'AU'|'-AU'|'NZ'|'-NZ'|'-AU-NZ' )
 		au_bench;;
 	'sa'|'-sa'|'--sa'|'-South-America' )
