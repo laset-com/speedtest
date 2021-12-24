@@ -1362,7 +1362,7 @@ case $1 in
 		europe_bench;;
 	'asia'|'-asia'|'--asia'|'as'|'-as'|'--as'|'Asia'|'-Asia'|'--Asia' )
 		asia_bench;;
-	'china'|'-china'|'--china'|'mjj'|'cn'|'-cn'|'--cn'|'China'|'-China'|'--China' )
+	'china'|'-china'|'--china'|'mjj'|'-mjj'|'cn'|'-cn'|'--cn'|'China'|'-China'|'--China' )
 		asia_bench;;
 	'au'|'-au'|'nz'|'-nz'|'AU'|'-AU'|'NZ'|'-NZ'|'-AU-NZ' )
 		au_bench;;
