@@ -521,6 +521,21 @@ print_speedtest_ru() {
 	rm -rf speedtest.py
 }
 
+print_speedtest_china() {
+	echo "" | tee -a $log
+	echostyle "## China Speedtest.net"
+	echo "" | tee -a $log
+	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+        speed_test '' 'Nearby                      '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	speed_test '5505' 'BeiJing (Broadband Network)   ' 'http://bj3.unicomtest.com'
+	speed_test '32291' 'HangZhou (China Mobile 5G)    ' 'http://changzhou.bestlink.com.cn'
+	speed_test '6715' 'Ningbo (China Mobile 5G)      ' 'http://ltetest3.139site.com'
+	 
+	rm -rf speedtest.py
+}
+
 geekbench4() {
 	if [[ $ARCH = *x86* ]]; then # 32-bit
 	echo -e "\nGeekbench 5 cannot run on 32-bit architectures. Skipping the test"
@@ -1178,6 +1193,26 @@ asia_bench(){
 	sharetest clbin;
 }
 
+china_bench(){
+	region_name="China"
+	print_intro;
+	benchinit;
+	clear
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	geekbench4;
+	iotest;
+	write_io;
+	print_speedtest_china;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+
 sa_bench(){
 	region_name="South-America"
 	print_intro;
@@ -1326,6 +1361,8 @@ case $1 in
 	'europe'|'-europe'|'--europe'|'eu'|'-eu'|'--eu'|'Europe'|'-Europe'|'--Europe' )
 		europe_bench;;
 	'asia'|'-asia'|'--asia'|'as'|'-as'|'--as'|'Asia'|'-Asia'|'--Asia' )
+		asia_bench;;
+	'china'|'-china'|'--china'|'mjj'|'cn'|'-cn'|'--cn'|'China'|'-China'|'--China' )
 		asia_bench;;
 	'au'|'-au'|'nz'|'-nz'|'AU'|'-AU'|'NZ'|'-NZ'|'-AU-NZ' )
 		au_bench;;
