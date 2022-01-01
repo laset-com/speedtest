@@ -300,7 +300,7 @@ print_speedtest_in() {
         speed_test '' 'Nearby                         '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '16475' 'India, New Delhi (Weebo)       ' 'http://sp1.weebo.in'
-	speed_test '6746' 'India, Mumbai (SevenStar)      ' 'http://speed2.7starnetworks.com'
+	speed_test '10637' 'India, Mumbai (OneBroadband)   ' 'http://in2net.in2cable.com'
 	speed_test '13919' 'India, Bengaluru (I-ON)        ' 'http://speedtestb.dvois.com'
 	speed_test '16086' 'India, Nagpur (optbb)          ' 'http://speedtest.optbb.in'
 	speed_test '23244' 'India, Patna (Airtel)          ' 'http://speedtestbhr1.airtel.in'
@@ -351,7 +351,7 @@ print_speedtest_asia() {
         speed_test '' 'Nearby                          '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '16475' 'India, New Delhi (Weebo)        ' 'http://sp1.weebo.in'
-	speed_test '6746' 'India, Mumbai (SevenStar)       ' 'http://speed2.7starnetworks.com'
+	speed_test '10637' 'India, Mumbai (OneBroadband)    ' 'http://in2net.in2cable.com'
 	speed_test '13919' 'India, Bengaluru (I-ON)         ' 'http://speedtestb.dvois.com'
 	speed_test '1131' 'Sri Lanka, Colombo (Telecom PLC)' 'http://speedtest2.sltnet.lk'
 	speed_test '4774' 'Pakistan, Islamabad (Telenor)   ' 'http://speedtest1.telenor.com.pk'
