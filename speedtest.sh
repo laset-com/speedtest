@@ -241,7 +241,6 @@ print_speedtest() {
 	speed_test '21378' 'Spain, Madrid (MasMovil)      ' 'http://speedtest-mad.masmovil.com'
 	speed_test '395' 'Italy, Rome (Unidata)         ' 'http://speedtest2.unidata.it'
 	speed_test '3682' 'Russia, Moscow (Rostelecom)   ' 'http://moscow.speedtest.rt.ru'
-	speed_test '2434' 'Israel, Haifa (013Netvision)  ' 'http://speed2.013.net'
 	speed_test '16475' 'India, New Delhi (Weebo)      ' 'http://sp1.weebo.in'
 	speed_test '7556' 'Singapore (FirstMedia)        ' 'http://sg-speedtest.link.net.id'
 	speed_test '7139' 'Japan, Tsukuba (SoftEther)    ' 'http://speedtest2.softether.co.jp'
@@ -545,7 +544,7 @@ geekbench4() {
 
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
-	curl -s http://cdn.geekbench.com/Geekbench-4.4.2-Linux.tar.gz  | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
+	curl -s http://cdn.geekbench.com/Geekbench-4.4.4-Linux.tar.gz  | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
 	GEEKBENCH_TEST=$($GEEKBENCH_PATH/geekbench4 2>/dev/null | grep "https://browser")
 	GEEKBENCH_URL=$(echo -e $GEEKBENCH_TEST | head -1)
 	GEEKBENCH_URL_CLAIM=$(echo $GEEKBENCH_URL | awk '{ print $2 }')
@@ -594,7 +593,7 @@ geekbench5() {
 
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
-	curl -s http://cdn.geekbench.com/Geekbench-5.2.0-Linux.tar.gz | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
+	curl -s http://cdn.geekbench.com/Geekbench-5.4.4-Linux.tar.gz | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
 	GEEKBENCH_TEST=$($GEEKBENCH_PATH/geekbench5 2>/dev/null | grep "https://browser")
 	GEEKBENCH_URL=$(echo -e $GEEKBENCH_TEST | head -1)
 	GEEKBENCH_URL_CLAIM=$(echo $GEEKBENCH_URL | awk '{ print $2 }')
