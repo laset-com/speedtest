@@ -303,7 +303,7 @@ print_speedtest_in() {
 	speed_test '13919' 'India, Bengaluru (I-ON)        ' 'http://speedtestb.dvois.com'
 	speed_test '16086' 'India, Nagpur (optbb)          ' 'http://speedtest.optbb.in'
 	speed_test '23244' 'India, Patna (Airtel)          ' 'http://speedtestbhr1.airtel.in'
-	speed_test '4064' 'India, Kolkata (Vodafone)      ' 'http://speedtestkol.vodafone.ind.in'
+	speed_test '15697' 'India, Kolkata (RailTel)       ' 'http://kol.speedtest.rcil.gov.in'
 	speed_test '27524' 'India, Visakhapatnam (Alliance)' 'http://speedtestvtz.alliancebroadband.in'
 	speed_test '13785' 'India, Hyderabad (I-ON)        ' 'http://testspeed.vainavi.net'
 	speed_test '10024' 'India, Madurai (Niss Broadband)' 'http://madurai.nissbroadband.com'
