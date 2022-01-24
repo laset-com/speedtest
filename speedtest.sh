@@ -241,7 +241,7 @@ print_speedtest() {
 	speed_test '21378' 'Spain, Madrid (MasMovil)      ' 'http://speedtest-mad.masmovil.com'
 	speed_test '395' 'Italy, Rome (Unidata)         ' 'http://speedtest2.unidata.it'
 	speed_test '3682' 'Russia, Moscow (Rostelecom)   ' 'http://moscow.speedtest.rt.ru'
-	speed_test '7236' 'India, New Delhi (iForce)      ' 'http://speed.iforcenetworks.co.in'
+	speed_test '10637' 'India, Mumbai (OneBroadband)  ' 'http://in2net.in2cable.com'
 	speed_test '7556' 'Singapore (FirstMedia)        ' 'http://sg-speedtest.link.net.id'
 	speed_test '7139' 'Japan, Tsukuba (SoftEther)    ' 'http://speedtest2.softether.co.jp'
 	speed_test '1267' 'Australia, Sydney (Optus)     ' 'http://s1.speedtest.syd.optusnet.com.au'
