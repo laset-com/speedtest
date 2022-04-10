@@ -487,36 +487,6 @@ print_speedtest_meast() {
 	rm -rf speedtest.py
 }
 
-print_speedtest_ru() {
-	echo "" | tee -a $log
-	echostyle "## Russian Federation Speedtest.net"
-	echo "" | tee -a $log
-	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-        speed_test '' 'Nearby                          '
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '11266' 'Russia, Moscow (INETCOM)        ' 'http://speedtest1.inetcom.ru'
-	speed_test '3682' 'Russia, Moscow (Rostelecom)     ' 'http://moscow.speedtest.rt.ru'
-	speed_test '6562' 'Russia, Moscow (Tele2)          ' 'http://176.59.63.150'
-	speed_test '4247' 'Russia, St.Petersburg (MTS)     ' 'http://speedtest-it.spb.mts.ru'
-	speed_test '31126' 'Russia, St.Petersburg (Nevalink)' 'http://speedtest.nevalink.net'
-	speed_test '13616' 'Russia, Voronezh (FreeDom)      ' 'http://speedtest.vrn.ru'
-	speed_test '2563' 'Russia, Nizhny Novgorod (Rostel)' 'http://nizhnynovgorod1.speedtest.rt.ru'
-	speed_test '2603' 'Russia, Samara (Rostelecom)     ' 'http://samara.speedtest.rt.ru'
-	speed_test '5623' 'Russia, Krasnodar (Beeline)     ' 'http://krr1.speedtest.corbina.net'
-	speed_test '26823' 'Russia, Volgograd (Beeline)     ' 'http://volgograd-speedtest.corbina.net'
-	speed_test '1930' 'Russia, Ekaterinburg (Ural WES) ' 'http://tarvalon.ural.net'
-	speed_test '5127' 'Russia, Omsk (Beeline)          ' 'http://omsk2.speedtest.corbina.net'
-	speed_test '2313' 'Russia, Surgut (METROSET)       ' 'http://speedtest.sg.metro-set.ru'
-	speed_test '6430' 'Russia, Novosibirsk (Tele2)     ' 'http://176.59.159.158'
-	speed_test '4541' 'Russia, Irkutsk (TransTeleCom)  ' 'http://5.254.224.9'
-	speed_test '4480' 'Russia, Yakutsk (Rostelecom)    ' 'http://yakutsk.speedtest.rt.ru'
-	speed_test '3706' 'Russia, Khabarovsk (MegaFon)    ' 'http://khb.speedtest-dvf.megafon.ru'
-	speed_test '25204' 'Russia, Vladivostok (Rostelecom)' 'http://speedtest.inetvl.ru'
-	 
-	rm -rf speedtest.py
-}
-
 print_speedtest_china() {
 	echo "" | tee -a $log
 	echostyle "## China Speedtest.net"
@@ -1306,25 +1276,6 @@ meast_bench(){
 	cleanup;
 	sharetest clbin;
 }
-ru_bench(){
-	region_name="Russia"
-	print_intro;
-	benchinit;
-	clear
-	next;
-	get_system_info;
-	print_system_info;
-	ip_info4;
-	next;
-	geekbench4;
-	iotest;
-	write_io;
-	print_speedtest_ru;
-	next;
-	print_end_time;
-	cleanup;
-	sharetest clbin;
-}
 
 log="$HOME/speedtest.log"
 true > $log
@@ -1370,8 +1321,6 @@ case $1 in
 		lviv_bench;;
 	'M-East'|'-M-East'|'--M-East'|'-m-east'|'--m-east'|'-meast'|'--meast'|'-Middle-East'|'-me' )
 		meast_bench;;
-	'ru'|'-ru'|'--ru'|'rus'|'-rus'|'--rus'|'russia'|'-russia'|'--russia'|'Russia'|'-Russia'|'--Russia' )
-		ru_bench;;
 	'-s'|'--s'|'share'|'-share'|'--share' )
 		bench_all;
 		is_share="share"
