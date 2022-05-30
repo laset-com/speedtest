@@ -5,7 +5,7 @@ about() {
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.5.9   2021-12-24                  / "
+	echo " \                  v1.5.10   2022-05-30                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -318,7 +318,7 @@ print_speedtest_europe() {
         speed_test '' 'Nearby                          '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '26922' 'UK, London (toob Ltd)           ' 'http://speedtest.ukbroadband.com'
-	speed_test '26764' 'Netherlands, Amsterdam (MaxiTEL)' 'http://speedtest.as61349.net'
+	speed_test '13218' 'Netherlands, Amsterdam (XS4ALL) ' 'http://speedtest.xs4all.nl'
 	speed_test '20507' 'Germany, Berlin (DNS:NET)       ' 'http://speedtest01.dns-net.de'
 	speed_test '27345' 'Germany, Munich (InterNetX)     ' 'http://speedtest.internetx.de'
 	speed_test '8751' 'Denmark, Copenhagen (Fiberby)   ' 'http://speedtest.internetx.de'
@@ -327,7 +327,7 @@ print_speedtest_europe() {
 	speed_test '27852' 'France, Lyon (SFR)              ' 'http://cor2.speedtest.mire.sfr.net'
 	speed_test '21378' 'Spain, Madrid (MasMovil)        ' 'http://speedtest-mad.masmovil.com'
 	speed_test '395' 'Italy, Rome (Unidata)           ' 'http://speedtest2.unidata.it'
-	speed_test '20411' 'Czechia, Prague (Dial Telecom)  ' 'http://speedtest-praha.dialtelecom.cz'
+	speed_test '21975' 'Czechia, Prague (Nordic Telecom)' 'http://ookla.nordictelecom.cz'
 	speed_test '12390' 'Austria, Vienna (A1)            ' 'http://speedtest.a1.net'
 	speed_test '7103' 'Poland, Warsaw (ISP Emitel)     ' 'http://speedtest.emitel.pl'
 	speed_test '30813' 'Ukraine, Kyiv (KyivStar)        ' 'http://srv01-okl-kv.kyivstar.ua'
@@ -996,7 +996,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster v.1.5.9 2021-12-24 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster v.1.5.10 2022-05-30 \n' $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
 }
