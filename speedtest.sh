@@ -263,7 +263,7 @@ print_speedtest_usa() {
 	speed_test '15790' 'USA, Washington, DC (Sprint)   ' 'http://ookla1.washdc.sprintadp.net'
 	speed_test '27833' 'USA, Charlotte, NC (Windstream)' 'http://charlotte02.speedtest.windstream.net'
 	speed_test '16611' 'USA, Atlanta (Cox)             ' 'http://speedtest.rd.at.cox.net'
-	speed_test '1779' 'USA, Miami (Comcast)           ' 'http://be-33923-cs02.miami.fl.ibone.comcast.net'
+	speed_test '1779' 'USA, Miami (Comcast)           ' 'http://68.86.199.101'
 	speed_test '15779' 'USA, Nashville (Sprint)        ' 'http://ookla1.nsvltn.sprintadp.net'
 	speed_test '9560' 'USA, Indianapolis (Metronet)   ' 'http://speedtest2.iplwin75.metronetinc.com'
 	speed_test '10138' 'USA, Cleveland (CenturyLink)   ' 'http://cleveland.speedtest.centurylink.net'
