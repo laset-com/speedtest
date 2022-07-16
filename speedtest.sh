@@ -410,7 +410,7 @@ print_speedtest_au() {
 	speed_test '8976' 'Australia, Hobart (Optus)     ' 'http://speedtest.tas.optusnet.com.au'
 	speed_test '6757' 'Australia, Darwin (AARNet)    ' 'http://nt-drwn-speedtest.aarnet.net.au'
 	speed_test '2627' 'Australia, Perth (Telstra)    ' 'http://per1.speedtest.telstra.net'
-	speed_test '2627' 'NZ, Auckland (MyRepublic)     ' 'http://per1.speedtest.telstra.net'
+	speed_test '2627' 'NZ, Auckland (MyRepublic)     ' 'http://speedtest.myrepublic.co.nz'
 	speed_test '11326' 'NZ, Wellington (Spark)        ' 'http://speedtest-wellington.spark.co.nz'
 	speed_test '4934' 'NZ, Christchurch (Vodafone)   ' 'http://christchurch.speedtest.vodafone.co.nz'
 	 
