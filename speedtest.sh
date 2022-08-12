@@ -241,7 +241,7 @@ print_speedtest() {
 	speed_test '21378' 'Spain, Madrid (MasMovil)      ' 'http://speedtest-mad.masmovil.com'
 	speed_test '395' 'Italy, Rome (Unidata)         ' 'http://speedtest2.unidata.it'
 	speed_test '10637' 'India, Mumbai (OneBroadband)  ' 'http://in2net.in2cable.com'
-	speed_test '50406' 'Singapore (Verizon)           ' 'http://sgn-nperf.verizon.net'
+	speed_test '51914' 'Singapore (StarHub)           ' 'http://co2dsvr03.speedtest.starhub.com'
 	speed_test '7139' 'Japan, Tsukuba (SoftEther)    ' 'http://speedtest2.softether.co.jp'
 	speed_test '1267' 'Australia, Sydney (Optus)     ' 'http://s1.speedtest.syd.optusnet.com.au'
 	speed_test '6591' 'RSA, Randburg (Cool Ideas)    ' 'http://sp2.cisp.co.za'
