@@ -5,7 +5,7 @@ about() {
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.5.11   2022-06-19                 / "
+	echo " \                  v1.5.12   2022-08-12                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -236,7 +236,7 @@ print_speedtest() {
 	speed_test '15781' 'USA, Miami (Sprint)           ' 'http://ookla1.miaufl.sprintadp.net'
 	speed_test '18401' 'USA, Los Angeles (Windstream) ' 'http://la02.speedtest.windstream.net'
 	speed_test '26922' 'UK, London (toob Ltd)         ' 'http://speedtest.ukbroadband.com'
-	speed_test '27852' 'France, Lyon (SFR)            ' 'http://cor2.speedtest.mire.sfr.net'
+	speed_test '24215' 'France, Paris (Orange)        ' 'http://178.21.176.100'
 	speed_test '20507' 'Germany, Berlin (DNS:NET)     ' 'http://speedtest01.dns-net.de'
 	speed_test '21378' 'Spain, Madrid (MasMovil)      ' 'http://speedtest-mad.masmovil.com'
 	speed_test '395' 'Italy, Rome (Unidata)         ' 'http://speedtest2.unidata.it'
@@ -324,7 +324,7 @@ print_speedtest_europe() {
 	speed_test '8751' 'Denmark, Copenhagen (Fiberby)   ' 'http://speedtest.internetx.de'
 	speed_test '26852' 'Sweden, Stockholm (SUNET)       ' 'http://fd.sunet.se'
 	speed_test '8018' 'Norway, Oslo (NextGenTel)       ' 'http://sp2.nextgentel.no'
-	speed_test '27852' 'France, Lyon (SFR)              ' 'http://cor2.speedtest.mire.sfr.net'
+	speed_test '24215' 'France, Paris (Orange)          ' 'http://178.21.176.100'
 	speed_test '21378' 'Spain, Madrid (MasMovil)        ' 'http://speedtest-mad.masmovil.com'
 	speed_test '395' 'Italy, Rome (Unidata)           ' 'http://speedtest2.unidata.it'
 	speed_test '21975' 'Czechia, Prague (Nordic Telecom)' 'http://ookla.nordictelecom.cz'
@@ -996,7 +996,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster v.1.5.11 2022-06-19 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster v.1.5.12 2022-08-12 \n' $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
 }
