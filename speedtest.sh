@@ -5,7 +5,7 @@ about() {
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.5.12   2022-08-12                 / "
+	echo " \                  v1.5.13   2022-10-15                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -177,7 +177,7 @@ delete() {
 
 speed_test(){
 	if [[ $1 == '' ]]; then
-		temp=$(python speedtest.py --share 2>&1)
+		temp=$(python speedtest.py --secure --share 2>&1)
 		is_down=$(echo "$temp" | grep 'Download')
 		result_speed=$(echo "$temp" | awk -F ' ' '/results/{print $3}')
 		if [[ ${is_down} ]]; then
@@ -199,7 +199,7 @@ speed_test(){
 	        local cerror="ERROR"
 		fi
 	else
-		temp=$(python speedtest.py --server $1 --share 2>&1)
+		temp=$(python speedtest.py --secure --server $1 --share 2>&1)
 		is_down=$(echo "$temp" | grep 'Download') 
 		if [[ ${is_down} ]]; then
 	        local REDownload=$(echo "$temp" | awk -F ':' '/Download/{print $2}')
@@ -996,7 +996,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster v.1.5.12 2022-08-12 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster v.1.5.13 2022-10-15 \n' $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 	echo "" | tee -a $log
 }
