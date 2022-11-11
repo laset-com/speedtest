@@ -278,7 +278,6 @@ print_speedtest_usa() {
 	speed_test '16869' 'USA, Albuquerque (Plateau Tel) ' 'http://speedtest4.plateautel.net'
 	speed_test '15783' 'USA, Phoenix (Sprint)          ' 'http://ookla1.phnfaz.sprintadp.net'
 	speed_test '2206' 'USA, Salt Lake City (UTOPIA)   ' 'http://speedtest2.utopiafiber.net'
-	speed_test '7878' 'USA, Helena, MT (The Fusion)   ' 'http://helenast2.northcentraltower.com'
 	speed_test '16446' 'USA, Las Vegas (CenturyLink)   ' 'http://las-vegas2.speedtest.centurylink.net'
 	speed_test '18271' 'USA, Seattle (Bluespan)        ' 'http://seattle.speedtest.bluespanwireless.com'
 	speed_test '17587' 'USA, San Francisco (Wiline)    ' 'http://sfosfookla.wiline.com'
