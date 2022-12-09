@@ -235,7 +235,7 @@ print_speedtest() {
 	speed_test '14238' 'USA, Dallas (Frontier)        ' 'http://dallas.tx.speedtest.frontier.com'
 	speed_test '15781' 'USA, Miami (Sprint)           ' 'http://ookla1.miaufl.sprintadp.net'
 	speed_test '18401' 'USA, Los Angeles (Windstream) ' 'http://la02.speedtest.windstream.net'
-	speed_test '26922' 'UK, London (toob Ltd)         ' 'http://speedtest.ukbroadband.com'
+	speed_test '26922' 'UK, London (toob Ltd)         ' 'http://st1.octopustelecom.co.uk'
 	speed_test '24215' 'France, Paris (Orange)        ' 'http://178.21.176.100'
 	speed_test '20507' 'Germany, Berlin (DNS:NET)     ' 'http://speedtest01.dns-net.de'
 	speed_test '21378' 'Spain, Madrid (MasMovil)      ' 'http://speedtest-mad.masmovil.com'
@@ -316,7 +316,7 @@ print_speedtest_europe() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                          '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '26922' 'UK, London (toob Ltd)           ' 'http://speedtest.ukbroadband.com'
+	speed_test '26922' 'UK, London (toob Ltd)           ' 'http://st1.octopustelecom.co.uk'
 	speed_test '13218' 'Netherlands, Amsterdam (XS4ALL) ' 'http://speedtest.xs4all.nl'
 	speed_test '20507' 'Germany, Berlin (DNS:NET)       ' 'http://speedtest01.dns-net.de'
 	speed_test '27345' 'Germany, Munich (InterNetX)     ' 'http://speedtest.internetx.de'
