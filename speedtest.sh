@@ -5,7 +5,7 @@ about() {
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.5.13   2022-10-15                 / "
+	echo " \                  v1.5.14   2022-12-30                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -235,7 +235,7 @@ print_speedtest() {
 	speed_test '14238' 'USA, Dallas (Frontier)        ' 'http://dallas.tx.speedtest.frontier.com'
 	speed_test '15781' 'USA, Miami (Sprint)           ' 'http://ookla1.miaufl.sprintadp.net'
 	speed_test '18401' 'USA, Los Angeles (Windstream) ' 'http://la02.speedtest.windstream.net'
-	speed_test '26922' 'UK, London (toob Ltd)         ' 'http://st1.octopustelecom.co.uk'
+	speed_test '26922' 'UK, London (toob Ltd)         ' 'http://185.82.8.1'
 	speed_test '24215' 'France, Paris (Orange)        ' 'http://178.21.176.100'
 	speed_test '20507' 'Germany, Berlin (DNS:NET)     ' 'http://speedtest01.dns-net.de'
 	speed_test '21378' 'Spain, Madrid (MasMovil)      ' 'http://speedtest-mad.masmovil.com'
@@ -315,7 +315,7 @@ print_speedtest_europe() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                          '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '26922' 'UK, London (toob Ltd)           ' 'http://st1.octopustelecom.co.uk'
+	speed_test '26922' 'UK, London (toob Ltd)           ' 'http://185.82.8.1'
 	speed_test '13218' 'Netherlands, Amsterdam (XS4ALL) ' 'http://speedtest.xs4all.nl'
 	speed_test '20507' 'Germany, Berlin (DNS:NET)       ' 'http://speedtest01.dns-net.de'
 	speed_test '27345' 'Germany, Munich (InterNetX)     ' 'http://speedtest.internetx.de'
@@ -990,9 +990,8 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster v.1.5.13 2022-10-15 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster v.1.5.14 2022-12-30 \n' $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
-	echo "" | tee -a $log
 }
 
 sharetest() {
