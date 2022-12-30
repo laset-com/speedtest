@@ -371,7 +371,7 @@ print_speedtest_sa() {
 	echo "" | tee -a $log
 	echostyle "## South America Speedtest.net"
 	echo "" | tee -a $log
-	printf "%-38s%-17s%-16s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
+	printf "%-38s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-81s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                              '
 	printf "%-81s\n" "-" | sed 's/\s/-/g' | tee -a $log
@@ -1076,7 +1076,6 @@ usa_bench(){
 	region_name="USA"
 	print_intro;
 	benchinit;
-	clear
 	next;
 	get_system_info;
 	print_system_info;
@@ -1096,7 +1095,6 @@ in_bench(){
 	region_name="India"
 	print_intro;
 	benchinit;
-	clear
 	next;
 	get_system_info;
 	print_system_info;
@@ -1116,7 +1114,6 @@ europe_bench(){
 	region_name="Europe"
 	print_intro;
 	benchinit;
-	clear
 	next;
 	get_system_info;
 	print_system_info;
@@ -1136,7 +1133,6 @@ asia_bench(){
 	region_name="Asia"
 	print_intro;
 	benchinit;
-	clear
 	next;
 	get_system_info;
 	print_system_info;
@@ -1156,7 +1152,6 @@ china_bench(){
 	region_name="China"
 	print_intro;
 	benchinit;
-	clear
 	next;
 	get_system_info;
 	print_system_info;
@@ -1176,7 +1171,6 @@ sa_bench(){
 	region_name="South-America"
 	print_intro;
 	benchinit;
-	clear
 	next;
 	get_system_info;
 	print_system_info;
@@ -1196,7 +1190,6 @@ au_bench(){
 	region_name="AU-NZ"
 	print_intro;
 	benchinit;
-	clear
 	next;
 	get_system_info;
 	print_system_info;
@@ -1216,7 +1209,6 @@ ukraine_bench(){
 	region_name="Ukraine"
 	print_intro;
 	benchinit;
-	clear
 	next;
 	get_system_info;
 	print_system_info;
@@ -1235,7 +1227,6 @@ lviv_bench(){
 	region_name="Lviv"
 	print_intro;
 	benchinit;
-	clear
 	next;
 	get_system_info;
 	print_system_info;
@@ -1254,7 +1245,6 @@ meast_bench(){
 	region_name="Middle-East"
 	print_intro;
 	benchinit;
-	clear
 	next;
 	get_system_info;
 	print_system_info;
