@@ -373,7 +373,7 @@ print_speedtest_sa() {
 	echo "" | tee -a $log
 	printf "%-37s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
 	printf "%-80s\n" "-" | sed 's/\s/-/g' | tee -a $log
-        speed_test '' 'Nearby                              '
+        speed_test '' 'Nearby                             '
 	printf "%-80s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '11488' 'Brazil, Sao Paulo (Criare)         ' 'http://ookla.spcom.net.br'
 	speed_test '11435' 'Brazil, Fortaleza (Netonda)        ' 'http://speedtest.netonda.com.br'
