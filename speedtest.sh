@@ -379,7 +379,7 @@ print_speedtest_sa() {
 	speed_test '11435' 'Brazil, Fortaleza (Netonda)         ' 'http://speedtest.netonda.com.br'
 	speed_test '18126' 'Brazil, Manaus (Claro)              ' 'http://spd7.claro.com.br'
 	speed_test '11683' 'Colombia, Bogota (Level 3)          ' 'http://speedtest.globalcrossing.com.co'
-	speed_test '1280' 'Ecuador, Quito (CNT EP.)            ' 'http://speedtest.puntonet.ec'
+	speed_test '31043' 'Ecuador, Ambato (EXTREME)           ' 'http://speed.extreme.net.ec'
 	speed_test '5272' 'Peru, Lima (Fiberluxperu)           ' 'http://medidor.fiberluxperu.com'
 	speed_test '14099' 'Bolivia, La Paz (AXS)               ' 'http://speedtest.axsbolivia.com'
 	speed_test '6776' 'Paraguay, Asuncion (TEISA)          ' 'http://sp1.teisa.com.py'
