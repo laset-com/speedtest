@@ -716,6 +716,36 @@ ip_info4(){
 	rm -rf ip_json.json
 }
 
+machine_location(){
+	ip_date=$(curl -4 -s http://api.ip.la/en?json)
+	echo $ip_date > ip_json.json
+	isp=$(python tools.py geoip isp)
+	as_tmp=$(python tools.py geoip as)
+	asn=$(echo $as_tmp | awk -F ' ' '{print $1}')
+	org=$(python tools.py geoip org)
+	if [ -z "ip_date" ]; then
+		echo $ip_date
+		echo "hala"
+		country=$(python tools.py ipip country_name)
+		city=$(python tools.py ipip city)
+		countryCode=$(python tools.py ipip country_code)
+		region=$(python tools.py ipip province)
+	else
+		country=$(python tools.py geoip country)
+		city=$(python tools.py geoip city)
+		countryCode=$(python tools.py geoip countryCode)
+		region=$(python tools.py geoip regionName)	
+	fi
+	if [ -z "$city" ]; then
+		city=${region}
+	fi
+
+	echostyle " Machine location: $city, $country ($countryCode) $org"
+
+	rm -rf tools.py
+	rm -rf ip_json.json
+}
+
 virt_check(){
 	if hash ifconfig 2>/dev/null; then
 		eth=$(ifconfig)
@@ -996,7 +1026,7 @@ print_intro() {
 
 sharetest() {
 	echo " Share results:"
-	echo " - $result_speed"
+	echo " - $result_speed" | tee -a $log
 	log_preupload
 	case $1 in
 	'ubuntu')
@@ -1294,7 +1324,7 @@ case $1 in
 	'uas'|'-uas'|'uaspeed'|'-uaspeed' )
 		about;benchinit;print_speedtest_ukraine;next;cleanup;;
 	'lvivs'|'-lvivs' )
-		about;benchinit;print_speedtest_lviv;next;cleanup;;
+		about;benchinit;machine_location;print_speedtest_lviv;next;cleanup;;
 	'ip'|'-ip'|'--ip'|'geoip'|'-geoip'|'--geoip' )
 		about;benchinit;next;ip_info4;next;cleanup;;
 	'bench'|'-a'|'--a'|'-all'|'--all'|'-bench'|'--bench'|'-Global' )
