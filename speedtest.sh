@@ -1057,7 +1057,6 @@ bench_all(){
 	region_name="Global"
 	print_intro;
 	benchinit;
-	clear
 	next;
 	get_system_info;
 	print_system_info;
