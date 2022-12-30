@@ -468,15 +468,15 @@ print_speedtest_meast() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                      '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '7120' 'Cyprus, Limassol (DragonNET)' 'http://speedtest1.dragonnet.eu'
+	speed_test '610' 'Cyprus, Limassol (PrimeTel) ' 'http://speedtest-node.prime-tel.com'
 	speed_test '2434' 'Israel, Haifa (013Netvision)' 'http://speed2.013.net'
-	speed_test '1689' 'Egypt, Cairo (Vodafone)     ' 'http://speedtest.vodafone.com.eg'
+	speed_test '16139' 'Egypt, Cairo (Telecom Egypt)' 'http://speedtestob.orange.eg'
 	speed_test '12498' 'Lebanon, Tripoli (BItarNet) ' 'http://speedtest1.wavenet-lb.net'
-	speed_test '4845' 'UAE, Dubai (du)             ' 'http://speedtest.orixcom.net'
-	speed_test '14888' 'Qatar, Doha (Vodafone)      ' 'http://speedtest01.vodafone.com.qa'
-	speed_test '12887' 'SA, Riyadh (GO)             ' 'http://speedtest.go.com.sa'
+	speed_test '22129' 'UAE, Dubai (i3D)            ' 'http://ae.ap.speedtest.i3d.net'
+	speed_test '24742' 'Qatar, Doha (Ooredoo)       ' 'http://37.186.62.40'
+	speed_test '13610' 'SA, Riyadh (ITC)            ' 'http://87.101.181.146'
 	speed_test '1912' 'Bahrain, Manama (Zain)      ' 'http://62.209.25.182'
-	speed_test '13583' 'Iran, Tehran (Fanap Telecom)' 'http://speedtest.fanaptelecom.ir'
+	speed_test '18512' 'Iran, Tehran (MCI)          ' 'http://rhaspd2.mci.ir'
 	 
 	rm -rf speedtest.py
 }
@@ -1287,6 +1287,14 @@ case $1 in
 		about;benchinit;print_speedtest_sa;next;cleanup;;
 	'mes'|'-mes'|'mespeed'|'-mespeed' )
 		about;benchinit;print_speedtest_meast;next;cleanup;;
+	'ins'|'-ins'|'inspeed'|'-inspeed' )
+		about;benchinit;print_speedtest_in;next;cleanup;;
+	'cns'|'-cns'|'cnspeed'|'-cnspeed' )
+		about;benchinit;print_speedtest_china;next;cleanup;;
+	'uas'|'-uas'|'uaspeed'|'-uaspeed' )
+		about;benchinit;print_speedtest_ukraine;next;cleanup;;
+	'lvivs'|'-lvivs' )
+		about;benchinit;print_speedtest_lviv;next;cleanup;;
 	'ip'|'-ip'|'--ip'|'geoip'|'-geoip'|'--geoip' )
 		about;benchinit;next;ip_info4;next;cleanup;;
 	'bench'|'-a'|'--a'|'-all'|'--all'|'-bench'|'--bench'|'-Global' )
