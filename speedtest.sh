@@ -1274,11 +1274,19 @@ case $1 in
 	'io'|'-io'|'--io'|'ioping'|'-ioping'|'--ioping' )
 		next;iotest;write_io;next;;
 	'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
-		about;benchinit;next;print_speedtest;next;cleanup;;
-	'as'|'-as'|'--aspeed'|'-aspeedtest'|'--aspeedtest'|'-aspeedcheck'|'--aspeedcheck' )
-		about;benchinit;next;print_speedtest_asia;next;cleanup;;
-	'sas'|'-sas'|'--saspeed'|'-saspeedtest'|'--saspeedtest'|'-saspeedcheck'|'--saspeedcheck' )
-		about;benchinit;next;print_speedtest_sa;next;cleanup;;
+		about;benchinit;print_speedtest;next;cleanup;;
+	'usas'|'-usas'|'uss'|'-uss'|'uspeed'|'-uspeed' )
+		about;benchinit;print_speedtest_usa;next;cleanup;;
+	'eus'|'-eus'|'es'|'-es'|'espeed'|'-espeed' )
+		about;benchinit;print_speedtest_europe;next;cleanup;;
+	'as'|'-as'|'aspeed'|'-aspeed' )
+		about;benchinit;print_speedtest_asia;next;cleanup;;
+	'aus'|'-aus'|'auspeed'|'-auspeed' )
+		about;benchinit;print_speedtest_au;next;cleanup;;
+	'sas'|'-sas'|'saspeed'|'-saspeed' )
+		about;benchinit;print_speedtest_sa;next;cleanup;;
+	'mes'|'-mes'|'mespeed'|'-mespeed' )
+		about;benchinit;print_speedtest_meast;next;cleanup;;
 	'ip'|'-ip'|'--ip'|'geoip'|'-geoip'|'--geoip' )
 		about;benchinit;next;ip_info4;next;cleanup;;
 	'bench'|'-a'|'--a'|'-all'|'--all'|'-bench'|'--bench'|'-Global' )
