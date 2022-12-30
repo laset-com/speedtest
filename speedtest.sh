@@ -739,7 +739,7 @@ machine_location(){
 		city=${region}
 	fi
 
-	echo -e "Machine location: $country, $city ($org)"
+	echo -e " Machine location: $country, $city ($org)"
 
 	rm -rf tools.py
 	rm -rf ip_json.json
