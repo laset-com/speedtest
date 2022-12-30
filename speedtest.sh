@@ -452,7 +452,6 @@ print_speedtest_lviv() {
 	speed_test '29259' 'Ukraine, Lviv (KyivStar)' 'http://srv01-okl-lvv.kyivstar.ua'
 	speed_test '2445' 'Ukraine, Lviv (KOMiTEX) ' 'http://speedtest.komitex.net'
 	speed_test '12786' 'Ukraine, Lviv (ASTRA)   ' 'http://speedtest.astra.in.ua'
-	speed_test '17398' 'Ukraine, Lviv (Kopiyka) ' 'http://speedtest.kopiyka.org'
 	speed_test '1204' 'Ukraine, Lviv (Network) ' 'http://speedtest.network.lviv.ua'
 	speed_test '26293' 'Ukraine, Lviv (LinkCom) ' 'http://st.lc.lviv.ua'
 	speed_test '34751' 'Ukraine, Lviv (Wenet)   ' 'http://vds.wenet.lviv.ua'
@@ -740,7 +739,7 @@ machine_location(){
 		city=${region}
 	fi
 
-	echostyle " Machine location: $city, $country ($countryCode) $org"
+	echo -e "Machine location: $country, $city ($org)"
 
 	rm -rf tools.py
 	rm -rf ip_json.json
@@ -1304,25 +1303,25 @@ case $1 in
 	'io'|'-io'|'--io'|'ioping'|'-ioping'|'--ioping' )
 		next;iotest;write_io;next;;
 	'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
-		about;benchinit;print_speedtest;next;cleanup;;
+		about;benchinit;machine_location;print_speedtest;next;cleanup;;
 	'usas'|'-usas'|'uss'|'-uss'|'uspeed'|'-uspeed' )
-		about;benchinit;print_speedtest_usa;next;cleanup;;
+		about;benchinit;machine_location;print_speedtest_usa;next;cleanup;;
 	'eus'|'-eus'|'es'|'-es'|'espeed'|'-espeed' )
-		about;benchinit;print_speedtest_europe;next;cleanup;;
+		about;benchinit;machine_location;print_speedtest_europe;next;cleanup;;
 	'as'|'-as'|'aspeed'|'-aspeed' )
-		about;benchinit;print_speedtest_asia;next;cleanup;;
+		about;benchinit;machine_location;print_speedtest_asia;next;cleanup;;
 	'aus'|'-aus'|'auspeed'|'-auspeed' )
-		about;benchinit;print_speedtest_au;next;cleanup;;
+		about;benchinit;machine_location;print_speedtest_au;next;cleanup;;
 	'sas'|'-sas'|'saspeed'|'-saspeed' )
-		about;benchinit;print_speedtest_sa;next;cleanup;;
+		about;benchinit;machine_location;print_speedtest_sa;next;cleanup;;
 	'mes'|'-mes'|'mespeed'|'-mespeed' )
-		about;benchinit;print_speedtest_meast;next;cleanup;;
+		about;benchinit;machine_location;print_speedtest_meast;next;cleanup;;
 	'ins'|'-ins'|'inspeed'|'-inspeed' )
-		about;benchinit;print_speedtest_in;next;cleanup;;
+		about;benchinit;machine_location;print_speedtest_in;next;cleanup;;
 	'cns'|'-cns'|'cnspeed'|'-cnspeed' )
-		about;benchinit;print_speedtest_china;next;cleanup;;
+		about;benchinit;machine_location;print_speedtest_china;next;cleanup;;
 	'uas'|'-uas'|'uaspeed'|'-uaspeed' )
-		about;benchinit;print_speedtest_ukraine;next;cleanup;;
+		about;benchinit;machine_location;print_speedtest_ukraine;next;cleanup;;
 	'lvivs'|'-lvivs' )
 		about;benchinit;machine_location;print_speedtest_lviv;next;cleanup;;
 	'ip'|'-ip'|'--ip'|'geoip'|'-geoip'|'--geoip' )
