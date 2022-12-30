@@ -371,22 +371,22 @@ print_speedtest_sa() {
 	echo "" | tee -a $log
 	echostyle "## South America Speedtest.net"
 	echo "" | tee -a $log
-	printf "%-38s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
-	printf "%-81s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	printf "%-37s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
+	printf "%-80s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                              '
-	printf "%-81s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '11488' 'Brazil, Sao Paulo (Criare)          ' 'http://ookla.spcom.net.br'
-	speed_test '11435' 'Brazil, Fortaleza (Netonda)         ' 'http://speedtest.netonda.com.br'
-	speed_test '18126' 'Brazil, Manaus (Claro)              ' 'http://spd7.claro.com.br'
-	speed_test '11683' 'Colombia, Bogota (Level 3)          ' 'http://speedtest.globalcrossing.com.co'
-	speed_test '31043' 'Ecuador, Ambato (EXTREME)           ' 'http://speed.extreme.net.ec'
-	speed_test '5272' 'Peru, Lima (Fiberluxperu)           ' 'http://medidor.fiberluxperu.com'
-	speed_test '14099' 'Bolivia, La Paz (AXS)               ' 'http://speedtest.axsbolivia.com'
-	speed_test '6776' 'Paraguay, Asuncion (TEISA)          ' 'http://sp1.teisa.com.py'
-	speed_test '13065' 'Chile, Santiago (Netglobalis)       ' 'http://speedtest.netglobalis.net'
-	speed_test '6825' 'Argentina, Buenos Aires (Telefonica)' 'http://speedtest2.gics.telefonica.com.ar'
-	speed_test '10315' 'Argentina, Cordoba (Personal)       ' 'http://st1res.personal.com.ar'
-	speed_test '1546' 'Uruguay, Montevideo (Antel)         ' 'http://speedtest.movistar.com.uy'
+	printf "%-80s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	speed_test '11488' 'Brazil, Sao Paulo (Criare)         ' 'http://ookla.spcom.net.br'
+	speed_test '11435' 'Brazil, Fortaleza (Netonda)        ' 'http://speedtest.netonda.com.br'
+	speed_test '18126' 'Brazil, Manaus (Claro)             ' 'http://spd7.claro.com.br'
+	speed_test '11683' 'Colombia, Bogota (Level 3)         ' 'http://speedtest.globalcrossing.com.co'
+	speed_test '31043' 'Ecuador, Ambato (EXTREME)          ' 'http://speed.extreme.net.ec'
+	speed_test '5272' 'Peru, Lima (Fiberluxperu)          ' 'http://medidor.fiberluxperu.com'
+	speed_test '14099' 'Bolivia, La Paz (AXS)              ' 'http://speedtest.axsbolivia.com'
+	speed_test '6776' 'Paraguay, Asuncion (TEISA)         ' 'http://sp1.teisa.com.py'
+	speed_test '13065' 'Chile, Santiago (Netglobalis)      ' 'http://speedtest.netglobalis.net'
+	speed_test '6825' 'Argentina, Buenos Aires(Telefonica)' 'http://speedtest2.gics.telefonica.com.ar'
+	speed_test '10315' 'Argentina, Cordoba (Personal)      ' 'http://st1res.personal.com.ar'
+	speed_test '1546' 'Uruguay, Montevideo (Antel)        ' 'http://speedtest.movistar.com.uy'
 	 
 	rm -rf speedtest.py
 }
@@ -1277,6 +1277,8 @@ case $1 in
 		about;benchinit;next;print_speedtest;next;cleanup;;
 	'as'|'-as'|'--aspeed'|'-aspeedtest'|'--aspeedtest'|'-aspeedcheck'|'--aspeedcheck' )
 		about;benchinit;next;print_speedtest_asia;next;cleanup;;
+	'sas'|'-sas'|'--saspeed'|'-saspeedtest'|'--saspeedtest'|'-saspeedcheck'|'--saspeedcheck' )
+		about;benchinit;next;print_speedtest_sa;next;cleanup;;
 	'ip'|'-ip'|'--ip'|'geoip'|'-geoip'|'--geoip' )
 		about;benchinit;next;ip_info4;next;cleanup;;
 	'bench'|'-a'|'--a'|'-all'|'--all'|'-bench'|'--bench'|'-Global' )
