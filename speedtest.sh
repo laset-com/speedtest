@@ -316,7 +316,7 @@ print_speedtest_europe() {
         speed_test '' 'Nearby                          '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '26922' 'UK, London (toob Ltd)           ' 'http://185.82.8.1'
-	speed_test '13218' 'Netherlands, Amsterdam (XS4ALL) ' 'http://speedtest.xs4all.nl'
+	speed_test '29076' 'Netherlands, Amsterdam (XS News)' 'http://speedtest.xsnews.nl'
 	speed_test '20507' 'Germany, Berlin (DNS:NET)       ' 'http://speedtest01.dns-net.de'
 	speed_test '27345' 'Germany, Munich (InterNetX)     ' 'http://speedtest.internetx.de'
 	speed_test '8751' 'Denmark, Copenhagen (Fiberby)   ' 'http://speedtest.internetx.de'
@@ -381,7 +381,7 @@ print_speedtest_sa() {
 	speed_test '11683' 'Colombia, Bogota (Level 3)         ' 'http://speedtest.globalcrossing.com.co'
 	speed_test '31043' 'Ecuador, Ambato (EXTREME)          ' 'http://speed.extreme.net.ec'
 	speed_test '5272' 'Peru, Lima (Fiberluxperu)          ' 'http://medidor.fiberluxperu.com'
-	speed_test '14099' 'Bolivia, La Paz (AXS)              ' 'http://speedtest.axsbolivia.com'
+	speed_test '1053' 'Bolivia, La Paz (Nuevatel)         ' 'http://speedtest.nuevatel.com'
 	speed_test '6776' 'Paraguay, Asuncion (TEISA)         ' 'http://sp1.teisa.com.py'
 	speed_test '13065' 'Chile, Santiago (Netglobalis)      ' 'http://speedtest.netglobalis.net'
 	speed_test '6825' 'Argentina, Buenos Aires(Telefonica)' 'http://speedtest2.gics.telefonica.com.ar'
