@@ -740,7 +740,7 @@ machine_location(){
 	fi
 
 	echo -e " Machine location: $country, $city ($region)"
-	echo -e " Providers: $isp / $org"
+	echo -e " ISP / ORG: $isp / $org"
 
 	rm -rf tools.py
 	rm -rf ip_json.json
