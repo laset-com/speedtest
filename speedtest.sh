@@ -488,9 +488,12 @@ print_speedtest_china() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                      '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '5505' 'BeiJing (Broadband Network)   ' 'http://bj3.unicomtest.com'
-	speed_test '32291' 'HangZhou (China Mobile 5G)    ' 'http://changzhou.bestlink.com.cn'
-	speed_test '6715' 'Ningbo (China Mobile 5G)      ' 'http://ltetest3.139site.com'
+	speed_test '5396' 'Suzhou (China Telecom 5G)     ' 'http://4gsuzhou1.speedtest.jsinfo.net'
+	speed_test '24447' 'ShangHai (China Unicom 5G)    ' 'http://5g.shunicomtest.com'
+	speed_test '26331' 'Zhengzhou (Henan CMCC 5G)     ' 'http://5ghenan.ha.chinamobile.com'
+	speed_test '29105' 'Xi"an (China Mobile 5G)       ' 'http://122.77.240.140'
+	speed_test '4870' 'Changsha (China Unicom 5G)    ' 'http://220.202.152.178'
+	speed_test '26331' 'Zhengzhou (Henan CMCC 5G)     ' 'http://5ghenan.ha.chinamobile.com'
 	 
 	rm -rf speedtest.py
 }
@@ -627,7 +630,7 @@ install_smart() {
 	fi
 }
 
-ip_info2(){
+ip_info(){
 	# no jq
 	country=$(curl -s https://ipapi.co/country_name/)
 	city=$(curl -s https://ipapi.co/city/)
@@ -643,28 +646,14 @@ ip_info2(){
 }
 
 ip_info4(){
-	ip_date=$(curl -4 -s http://api.ip.la/en?json)
-	echo $ip_date > ip_json.json
 	isp=$(python tools.py geoip isp)
 	as_tmp=$(python tools.py geoip as)
 	asn=$(echo $as_tmp | awk -F ' ' '{print $1}')
 	org=$(python tools.py geoip org)
-	if [ -z "ip_date" ]; then
-		echo $ip_date
-		echo "hala"
-		country=$(python tools.py ipip country_name)
-		city=$(python tools.py ipip city)
-		countryCode=$(python tools.py ipip country_code)
-		region=$(python tools.py ipip province)
-	else
-		country=$(python tools.py geoip country)
-		city=$(python tools.py geoip city)
-		countryCode=$(python tools.py geoip countryCode)
-		region=$(python tools.py geoip regionName)	
-	fi
-	if [ -z "$city" ]; then
-		city=${region}
-	fi
+	country=$(python tools.py geoip country)
+	city=$(python tools.py geoip city)
+	countryCode=$(python tools.py geoip countryCode)
+	region=$(python tools.py geoip regionName)
 
 	echo -e " ASN & ISP    : $asn, $isp" | tee -a $log
 	echo -e " Organization : $org" | tee -a $log
@@ -672,7 +661,6 @@ ip_info4(){
 	echo -e " Region       : $region" | tee -a $log
 
 	rm -rf tools.py
-	rm -rf ip_json.json
 }
 
 machine_location(){
