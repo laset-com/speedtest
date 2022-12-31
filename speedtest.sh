@@ -493,7 +493,7 @@ print_speedtest_china() {
 	speed_test '26331' 'Zhengzhou (Henan CMCC 5G)     ' 'http://5ghenan.ha.chinamobile.com'
 	speed_test '29105' 'Xi"an (China Mobile 5G)       ' 'http://122.77.240.140'
 	speed_test '4870' 'Changsha (China Unicom 5G)    ' 'http://220.202.152.178'
-	speed_test '26331' 'Zhengzhou (Henan CMCC 5G)     ' 'http://5ghenan.ha.chinamobile.com'
+	speed_test '3633' 'Shanghai (China Telecom)      ' 'http://speedtest1.online.sh.cn'
 	 
 	rm -rf speedtest.py
 }
