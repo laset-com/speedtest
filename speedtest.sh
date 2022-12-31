@@ -684,10 +684,6 @@ machine_location(){
 	city=$(python tools.py geoip city)
 	countryCode=$(python tools.py geoip countryCode)
 	region=$(python tools.py geoip regionName)	
-	fi
-	if [ -z "$city" ]; then
-		city=${region}
-	fi
 
 	echo -e " Machine location: $country, $city ($region)"
 	echo -e " ISP & ORG: $isp / $org"
