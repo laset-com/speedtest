@@ -5,7 +5,7 @@ about() {
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.5.15   2022-12-30                 / "
+	echo " \                  v1.5.15   2022-12-31                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -739,7 +739,8 @@ machine_location(){
 		city=${region}
 	fi
 
-	echo -e " Machine location: $country, $city ($isp)"
+	echo -e " Machine location: $country, $city ($region)"
+	echo -e " Providers: $isp / $org"
 
 	rm -rf tools.py
 	rm -rf ip_json.json
@@ -1019,7 +1020,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster v.1.5.15 2022-12-30 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster v.1.5.15 2022-12-31 \n' $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 }
 
