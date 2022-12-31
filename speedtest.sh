@@ -255,9 +255,9 @@ print_speedtest_usa() {
 	echostyle "## USA Speedtest.net"
 	echo "" | tee -a $log
 	printf "%-33s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	printf "%-76s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                         '
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	printf "%-76s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '30514' 'USA, New York (Optimum)        ' 'http://speedgauge2.optonline.net'
 	speed_test '13429' 'USA, Boston (Starry, Inc.)     ' 'http://speedtest-server.starry.com'
 	speed_test '15790' 'USA, Washington, DC (Sprint)   ' 'http://ookla1.washdc.sprintadp.net'
@@ -627,27 +627,6 @@ install_smart() {
 	fi
 }
 
-ip_info(){
-	# use jq tool
-	result=$(curl -s 'http://ip-api.com/json')
-	country=$(echo $result | jq '.country' | sed 's/\"//g')
-	city=$(echo $result | jq '.city' | sed 's/\"//g')
-	isp=$(echo $result | jq '.isp' | sed 's/\"//g')
-	as_tmp=$(echo $result | jq '.as' | sed 's/\"//g')
-	asn=$(echo $as_tmp | awk -F ' ' '{print $1}')
-	org=$(echo $result | jq '.org' | sed 's/\"//g')
-	countryCode=$(echo $result | jq '.countryCode' | sed 's/\"//g')
-	region=$(echo $result | jq '.regionName' | sed 's/\"//g')
-	if [ -z "$city" ]; then
-		city=${region}
-	fi
-
-	echo -e " ASN & ISP    : $asn, $isp" | tee -a $log
-	echo -e " Organization : $org" | tee -a $log
-	echo -e " Location     : $city, $country / $countryCode" | tee -a $log
-	echo -e " Region       : $region" | tee -a $log
-}
-
 ip_info2(){
 	# no jq
 	country=$(curl -s https://ipapi.co/country_name/)
@@ -661,25 +640,6 @@ ip_info2(){
 	echo -e " Organization         : $org" | tee -a $log
 	echo -e " Location             : $city, $country / $countryCode" | tee -a $log
 	echo -e " Region               : $region" | tee -a $log
-}
-
-ip_info3(){
-	# use python tool
-	country=$(python ip_info.py country)
-	city=$(python ip_info.py city)
-	isp=$(python ip_info.py isp)
-	as_tmp=$(python ip_info.py as)
-	asn=$(echo $as_tmp | awk -F ' ' '{print $1}')
-	org=$(python ip_info.py org)
-	countryCode=$(python ip_info.py countryCode)
-	region=$(python ip_info.py regionName)
-
-	echo -e " ASN & ISP    : $asn, $isp" | tee -a $log
-	echo -e " Organization : $org" | tee -a $log
-	echo -e " Location     : $city, $country / $countryCode" | tee -a $log
-	echo -e " Region       : $region" | tee -a $log
-
-	rm -rf ip_info.py
 }
 
 ip_info4(){
@@ -716,34 +676,23 @@ ip_info4(){
 }
 
 machine_location(){
-	ip_date=$(curl -4 -s http://api.ip.la/en?json)
-	echo $ip_date > ip_json.json
 	isp=$(python tools.py geoip isp)
 	as_tmp=$(python tools.py geoip as)
 	asn=$(echo $as_tmp | awk -F ' ' '{print $1}')
 	org=$(python tools.py geoip org)
-	if [ -z "ip_date" ]; then
-		echo $ip_date
-		echo "hala"
-		country=$(python tools.py ipip country_name)
-		city=$(python tools.py ipip city)
-		countryCode=$(python tools.py ipip country_code)
-		region=$(python tools.py ipip province)
-	else
-		country=$(python tools.py geoip country)
-		city=$(python tools.py geoip city)
-		countryCode=$(python tools.py geoip countryCode)
-		region=$(python tools.py geoip regionName)	
+	country=$(python tools.py geoip country)
+	city=$(python tools.py geoip city)
+	countryCode=$(python tools.py geoip countryCode)
+	region=$(python tools.py geoip regionName)	
 	fi
 	if [ -z "$city" ]; then
 		city=${region}
 	fi
 
 	echo -e " Machine location: $country, $city ($region)"
-	echo -e " ISP / ORG: $isp / $org"
+	echo -e " ISP & ORG: $isp / $org"
 
 	rm -rf tools.py
-	rm -rf ip_json.json
 }
 
 virt_check(){
