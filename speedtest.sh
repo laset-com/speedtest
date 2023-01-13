@@ -476,8 +476,12 @@ print_speedtest_meast() {
 	speed_test '16139' 'Egypt, Cairo (Telecom Egypt)' 'http://speedtestob.orange.eg'
 	speed_test '12498' 'Lebanon, Tripoli (BItarNet) ' 'http://speedtest1.wavenet-lb.net'
 	speed_test '22129' 'UAE, Dubai (i3D)            ' 'http://ae.ap.speedtest.i3d.net'
+	speed_test '34240' 'UAE, Fujairah (etisalat)    ' 'http://speedtest7.etisalat.ae'
 	speed_test '24742' 'Qatar, Doha (Ooredoo)       ' 'http://37.186.62.40'
 	speed_test '13610' 'SA, Riyadh (ITC)            ' 'http://87.101.181.146'
+	speed_test '14580' 'SA, Jeddah (STC)            ' 'http://jed-speedtest.saudi.net.sa'
+	speed_test '1717' 'Oman, Muscat (OmanTel)       ' 'http://speedtest.omantel.om'
+	speed_test '15570' 'Yemen, Sanaa (YemenNet)     ' 'http://speedtest.yemen.net.ye/'
 	speed_test '1912' 'Bahrain, Manama (Zain)      ' 'http://62.209.25.182'
 	speed_test '18512' 'Iran, Tehran (MCI)          ' 'http://rhaspd2.mci.ir'
 	 
