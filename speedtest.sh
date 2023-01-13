@@ -296,14 +296,18 @@ print_speedtest_in() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                         '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '7236' 'India, New Delhi (iForce)      ' 'http://speed.iforcenetworks.co.in'
-	speed_test '10637' 'India, Mumbai (OneBroadband)   ' 'http://in2net.in2cable.com'
-	speed_test '16086' 'India, Nagpur (optbb)          ' 'http://speedtest.optbb.in'
+	speed_test '9214' 'India, New Delhi (ACT)      	' 'http://speed.iforcenetworks.co.in'
+	speed_test '47668' 'India, Mumbai (TATA Tele)   ' 'http://14.194.199.254'
+	speed_test '10426' 'India, Nagpur (OneBroadband) ' 'http://in2ngp.in2cable.com'
 	speed_test '23244' 'India, Patna (Airtel)          ' 'http://speedtestbhr1.airtel.in'
 	speed_test '15697' 'India, Kolkata (RailTel)       ' 'http://kol.speedtest.rcil.gov.in'
 	speed_test '27524' 'India, Visakhapatnam (Alliance)' 'http://speedtestvtz.alliancebroadband.in'
-	speed_test '13785' 'India, Hyderabad (I-ON)        ' 'http://testspeed.vainavi.net'
+	speed_test '18977' 'India, Hyderabad (Airtel BB)    ' 'http://speedtesthyd.airtelbroadband.in'
 	speed_test '10024' 'India, Madurai (Niss Broadband)' 'http://madurai.nissbroadband.com'
+	speed_test '10112' 'India, Cochin (Jio)' 'http://speedkch1.jioconnect.com'
+	speed_test '4663' 'India, Bengaluru (Hathaway)' 'http://bangspeed.hathway.com'
+	speed_test '9690' 'India, Chennai (Jio)' 'http://speedchn1.jioconnect.com'
+	speed_test '4352' 'India, Trivandrum (Asianet Broadband)' 'http://speedtest.asianetdataline.com'
 	rm -rf speedtest.py
 }
 
