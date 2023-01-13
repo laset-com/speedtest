@@ -296,7 +296,7 @@ print_speedtest_in() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                         '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '9214' 'India, New Delhi (ACT)      	' 'http://speed.iforcenetworks.co.in'
+	speed_test '9214' 'India, New Delhi (ACT)      	' 'http://speedtestdelhi.actcorp.in'
 	speed_test '47668' 'India, Mumbai (TATA Tele)   ' 'http://14.194.199.254'
 	speed_test '10426' 'India, Nagpur (OneBroadband) ' 'http://in2ngp.in2cable.com'
 	speed_test '23244' 'India, Patna (Airtel)          ' 'http://speedtestbhr1.airtel.in'
@@ -349,8 +349,8 @@ print_speedtest_asia() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                          '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '16475' 'India, New Delhi (Weebo)        ' 'http://sp1.weebo.in'
-	speed_test '10637' 'India, Mumbai (OneBroadband)    ' 'http://in2net.in2cable.com'
+	speed_test '18996' 'India, New Delhi (Airtel)       ' 'http://speedtestdel.airtelbroadband.in'
+	speed_test '4641' 'India, Mumbai (Jio)    			' 'http://speed1.jioconnect.com'
 	speed_test '1131' 'Sri Lanka, Colombo (Telecom PLC)' 'http://speedtest2.sltnet.lk'
 	speed_test '4774' 'Pakistan, Islamabad (Telenor)   ' 'http://speedtest1.telenor.com.pk'
 	speed_test '7147' 'Bangladesh, Dhaka (Skytel)      ' 'http://sp1.cosmocom.net'
