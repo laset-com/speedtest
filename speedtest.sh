@@ -330,7 +330,7 @@ print_speedtest_europe() {
 	speed_test '7103' 'Poland, Warsaw (ISP Emitel)     ' 'http://speedtest.emitel.pl'
 	speed_test '30813' 'Ukraine, Kyiv (KyivStar)        ' 'http://srv01-okl-kv.kyivstar.ua'
 	speed_test '5834' 'Latvia, Riga (Bite)             ' 'http://speedtest2.bite.lv'
-	speed_test '7609' 'Romania, Bucharest (DOTRO Tel)  ' 'http://sp1.dotrotelecom.ro'
+	speed_test '4290' 'Romania, Bucharest (iNES)       ' 'http://speed.ines.ro'
 	speed_test '1727' 'Greece, Athens (GRNET)          ' 'http://speed-test.gr-ix.gr'
 	speed_test '32575' 'Turkey, Urfa (Firatnet)         ' 'http://firatspeedtest.com'
 	 
