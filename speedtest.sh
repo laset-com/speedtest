@@ -527,8 +527,10 @@ geekbench4() {
 		grank="(VERY GOOD)"
 	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 4500 && $GEEKBENCH_SCORES_SINGLE -le 6000 ]]; then
 		grank="(EXCELLENT)"
-	else
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 6000 && $GEEKBENCH_SCORES_SINGLE -le 7000 ]]; then
 		grank="(THE BEAST)"
+	else
+		grank="(MONSTER)"
 	fi
 	
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
@@ -556,7 +558,7 @@ geekbench5() {
 
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
-	curl -s http://cdn.geekbench.com/Geekbench-5.4.4-Linux.tar.gz | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
+	curl -s http://cdn.geekbench.com/Geekbench-5.5.0-Linux.tar.gz | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
 	GEEKBENCH_TEST=$($GEEKBENCH_PATH/geekbench5 2>/dev/null | grep "https://browser")
 	GEEKBENCH_URL=$(echo -e $GEEKBENCH_TEST | head -1)
 	GEEKBENCH_URL_CLAIM=$(echo $GEEKBENCH_URL | awk '{ print $2 }')
@@ -576,8 +578,10 @@ geekbench5() {
 		grank="(VERY GOOD)"
 	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1000 && $GEEKBENCH_SCORES_SINGLE -le 1500 ]]; then
 		grank="(EXCELLENT)"
-	else
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1500 && $GEEKBENCH_SCORES_SINGLE -le 2000 ]]; then
 		grank="(THE BEAST)"
+	else
+		grank="(MONSTER)"
 	fi
 	
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
