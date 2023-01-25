@@ -5,7 +5,7 @@ about() {
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.5.15   2022-12-31                 / "
+	echo " \                  v1.5.16   2023-01-25                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -957,7 +957,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster v.1.5.15 2022-12-31 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster v.1.5.16 2023-01-25 \n' $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 }
 
@@ -1028,7 +1028,7 @@ bench_all(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench4;
+	geekbench5;
 	iotest;
 	write_io;
 	print_speedtest;
@@ -1047,7 +1047,7 @@ usa_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench4;
+	geekbench5;
 	iotest;
 	write_io;
 	print_speedtest_usa;
@@ -1066,7 +1066,7 @@ in_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench4;
+	geekbench5;
 	iotest;
 	write_io;
 	print_speedtest_in;
@@ -1085,7 +1085,7 @@ europe_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench4;
+	geekbench5;
 	iotest;
 	write_io;
 	print_speedtest_europe;
@@ -1104,7 +1104,7 @@ asia_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench4;
+	geekbench5;
 	iotest;
 	write_io;
 	print_speedtest_asia;
@@ -1123,7 +1123,7 @@ china_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench4;
+	geekbench5;
 	iotest;
 	write_io;
 	print_speedtest_china;
@@ -1142,7 +1142,7 @@ sa_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench4;
+	geekbench5;
 	iotest;
 	write_io;
 	print_speedtest_sa;
@@ -1161,7 +1161,7 @@ au_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench4;
+	geekbench5;
 	iotest;
 	write_io;
 	print_speedtest_au;
@@ -1180,7 +1180,7 @@ ukraine_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench4;
+	geekbench5;
 	iotest;
 	write_io;
 	print_speedtest_ukraine;
@@ -1198,7 +1198,7 @@ lviv_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench4;
+	geekbench5;
 	iotest;
 	write_io;
 	print_speedtest_lviv;
@@ -1216,7 +1216,7 @@ meast_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench4;
+	geekbench5;
 	iotest;
 	write_io;
 	print_speedtest_meast;
