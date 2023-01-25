@@ -1274,7 +1274,7 @@ case $1 in
 		in_bench;;
 	'europe'|'-europe'|'--europe'|'eu'|'-eu'|'--eu'|'Europe'|'-Europe'|'--Europe' )
 		europe_bench;;
-	'asia'|'-asia'|'--asia'|'as'|'-as'|'--as'|'Asia'|'-Asia'|'--Asia' )
+	'asia'|'-asia'|'--asia'|'Asia'|'-Asia'|'--Asia' )
 		asia_bench;;
 	'china'|'-china'|'--china'|'mjj'|'-mjj'|'cn'|'-cn'|'--cn'|'China'|'-China'|'--China' )
 		china_bench;;
