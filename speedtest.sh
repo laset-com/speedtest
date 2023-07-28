@@ -621,15 +621,15 @@ geekbench6() {
 	
 	if [[ $GEEKBENCH_SCORES_SINGLE -le 300 ]]; then
 		grank="(POOR)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 300 && $GEEKBENCH_SCORES_SINGLE -le 500 ]]; then
-		grank="(FAIR)"
 	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 500 && $GEEKBENCH_SCORES_SINGLE -le 700 ]]; then
+		grank="(FAIR)"
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 700 && $GEEKBENCH_SCORES_SINGLE -le 900 ]]; then
 		grank="(GOOD)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 700 && $GEEKBENCH_SCORES_SINGLE -le 1000 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 900 && $GEEKBENCH_SCORES_SINGLE -le 1200 ]]; then
 		grank="(VERY GOOD)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1000 && $GEEKBENCH_SCORES_SINGLE -le 1500 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1200 && $GEEKBENCH_SCORES_SINGLE -le 1700 ]]; then
 		grank="(EXCELLENT)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1500 && $GEEKBENCH_SCORES_SINGLE -le 2000 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1700 && $GEEKBENCH_SCORES_SINGLE -le 2200 ]]; then
 		grank="(THE BEAST)"
 	else
 		grank="(MONSTER)"
