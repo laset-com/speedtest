@@ -614,12 +614,12 @@ geekbench6() {
 	GEEKBENCH_URL=$(echo -e $GEEKBENCH_TEST | head -1)
 	GEEKBENCH_URL_CLAIM=$(echo $GEEKBENCH_URL | awk '{ print $2 }')
 	GEEKBENCH_URL=$(echo $GEEKBENCH_URL | awk '{ print $1 }')
-	sleep 20
+	sleep 15
 	GEEKBENCH_SCORES=$(curl -s $GEEKBENCH_URL | grep "div class='score'")
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 	
-	if [[ $GEEKBENCH_SCORES_SINGLE -le 300 ]]; then
+	if [[ $GEEKBENCH_SCORES_SINGLE -le 500 ]]; then
 		grank="(POOR)"
 	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 500 && $GEEKBENCH_SCORES_SINGLE -le 700 ]]; then
 		grank="(FAIR)"
