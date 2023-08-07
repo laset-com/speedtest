@@ -1249,7 +1249,7 @@ lviv_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench6;
+	geekbench5;
 	iotest;
 	write_io;
 	print_speedtest_lviv;
