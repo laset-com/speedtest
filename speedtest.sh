@@ -296,14 +296,18 @@ print_speedtest_in() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                         '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '7236' 'India, New Delhi (iForce)      ' 'http://speed.iforcenetworks.co.in'
-	speed_test '10637' 'India, Mumbai (OneBroadband)   ' 'http://in2net.in2cable.com'
-	speed_test '16086' 'India, Nagpur (optbb)          ' 'http://speedtest.optbb.in'
+	speed_test '9214' 'India, New Delhi (ACT)      	' 'http://speedtestdelhi.actcorp.in'
+	speed_test '9691' 'India, Mumbai (Jio)   		' 'http://speed3.jioconnect.com'
+	speed_test '10426' 'India, Nagpur (OneBroadband)   ' 'http://in2ngp.in2cable.com'
 	speed_test '23244' 'India, Patna (Airtel)          ' 'http://speedtestbhr1.airtel.in'
 	speed_test '15697' 'India, Kolkata (RailTel)       ' 'http://kol.speedtest.rcil.gov.in'
 	speed_test '27524' 'India, Visakhapatnam (Alliance)' 'http://speedtestvtz.alliancebroadband.in'
-	speed_test '13785' 'India, Hyderabad (I-ON)        ' 'http://testspeed.vainavi.net'
+	speed_test '18977' 'India, Hyderabad (Airtel BB)   ' 'http://speedtesthyd.airtelbroadband.in'
 	speed_test '10024' 'India, Madurai (Niss Broadband)' 'http://madurai.nissbroadband.com'
+	speed_test '10112' 'India, Cochin (Jio)   		' 'http://speedkch1.jioconnect.com'
+	speed_test '4663' 'India, Bengaluru (Hathaway)    ' 'http://bangspeed.hathway.com'
+	speed_test '18974' 'India, Chennai (Airtel BB)	' 'http://speedtestchn.airtelbroadband.in'
+	speed_test '4352' 'India, Trivandrum (Asianet)    ' 'http://speedtest.asianetdataline.com'
 	rm -rf speedtest.py
 }
 
@@ -345,8 +349,8 @@ print_speedtest_asia() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                          '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '16475' 'India, New Delhi (Weebo)        ' 'http://sp1.weebo.in'
-	speed_test '10637' 'India, Mumbai (OneBroadband)    ' 'http://in2net.in2cable.com'
+	speed_test '29658' 'India, New Delhi (TATA)       ' 'http://speedtest.tatadocomo.com'
+	speed_test '9691' 'India, Mumbai (Jio)   		' 'http://speed3.jioconnect.com'
 	speed_test '1131' 'Sri Lanka, Colombo (Telecom PLC)' 'http://speedtest2.sltnet.lk'
 	speed_test '4774' 'Pakistan, Islamabad (Telenor)   ' 'http://speedtest1.telenor.com.pk'
 	speed_test '7147' 'Bangladesh, Dhaka (Skytel)      ' 'http://sp1.cosmocom.net'
@@ -472,8 +476,12 @@ print_speedtest_meast() {
 	speed_test '16139' 'Egypt, Cairo (Telecom Egypt)' 'http://speedtestob.orange.eg'
 	speed_test '12498' 'Lebanon, Tripoli (BItarNet) ' 'http://speedtest1.wavenet-lb.net'
 	speed_test '22129' 'UAE, Dubai (i3D)            ' 'http://ae.ap.speedtest.i3d.net'
+	speed_test '4845' 'UAE, Abu Dhabi (du)         ' 'http://du1.speedtestcustom.com/'
 	speed_test '24742' 'Qatar, Doha (Ooredoo)       ' 'http://37.186.62.40'
 	speed_test '13610' 'SA, Riyadh (ITC)            ' 'http://87.101.181.146'
+	speed_test '14580' 'SA, Jeddah (STC)            ' 'http://jed-speedtest.saudi.net.sa'
+	speed_test '1717' 'Oman, Muscat (OmanTel)      ' 'http://speedtest.omantel.om'
+	speed_test '15570' 'Yemen, Sanaa (YemenNet)     ' 'http://speedtest.yemen.net.ye/'
 	speed_test '1912' 'Bahrain, Manama (Zain)      ' 'http://62.209.25.182'
 	speed_test '18512' 'Iran, Tehran (MCI)          ' 'http://rhaspd2.mci.ir'
 	 
