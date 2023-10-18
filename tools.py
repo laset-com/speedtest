@@ -40,7 +40,7 @@ def GetDiskInfo(para):
         if disk[5] in cuts:
             continue
         arr = {}
-        diskInfo = [disk[1], disk[2], disk[3], disk[4], disk[5]
+        diskInfo = [disk[1], disk[2], disk[3], disk[4], disk[5]]
 
     print(diskInfo[int(para)])
 
