@@ -5,7 +5,7 @@ about() {
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.6.0    2023-07-29                 / "
+	echo " \                  v1.7.0    2023-10-18                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -81,12 +81,12 @@ benchinit() {
 
 	# check python
 	if  [ ! -e '/usr/bin/python' ]; then
-	        echo " Installing Python2 ..."
+	        echo " Installing Python3 ..."
 	            if [ "${release}" == "centos" ]; then
-	                    yum -y install python2 > /dev/null 2>&1
-			    alternatives --set python /usr/bin/python2 > /dev/null 2>&1
+	                    yum -y install python3 > /dev/null 2>&1
+			    alternatives --set python /usr/bin/python3 > /dev/null 2>&1
 	                else
-	                    apt-get -y install python > /dev/null 2>&1
+	                    apt-get -y install python3 > /dev/null 2>&1
 	                fi
 	        echo -ne "\e[1A"; echo -ne "\e[0K\r" 
 	fi
@@ -177,7 +177,7 @@ delete() {
 
 speed_test(){
 	if [[ $1 == '' ]]; then
-		temp=$(python speedtest.py --secure --share 2>&1)
+		temp=$(python3 speedtest.py --secure --share 2>&1)
 		is_down=$(echo "$temp" | grep 'Download')
 		result_speed=$(echo "$temp" | awk -F ' ' '/results/{print $3}')
 		if [[ ${is_down} ]]; then
@@ -199,7 +199,7 @@ speed_test(){
 	        local cerror="ERROR"
 		fi
 	else
-		temp=$(python speedtest.py --secure --server $1 --share 2>&1)
+		temp=$(python3 speedtest.py --secure --server $1 --share 2>&1)
 		is_down=$(echo "$temp" | grep 'Download') 
 		if [[ ${is_down} ]]; then
 	        local REDownload=$(echo "$temp" | awk -F ':' '/Download/{print $2}')
@@ -701,14 +701,14 @@ ip_info(){
 }
 
 ip_info4(){
-	isp=$(python tools.py geoip isp)
-	as_tmp=$(python tools.py geoip as)
+	isp=$(python3 tools.py geoip isp)
+	as_tmp=$(python3 tools.py geoip as)
 	asn=$(echo $as_tmp | awk -F ' ' '{print $1}')
-	org=$(python tools.py geoip org)
-	country=$(python tools.py geoip country)
-	city=$(python tools.py geoip city)
-	countryCode=$(python tools.py geoip countryCode)
-	region=$(python tools.py geoip regionName)
+	org=$(python3 tools.py geoip org)
+	country=$(python3 tools.py geoip country)
+	city=$(python3 tools.py geoip city)
+	countryCode=$(python3 tools.py geoip countryCode)
+	region=$(python3 tools.py geoip regionName)
 
 	echo -e " ASN & ISP    : $asn, $isp" | tee -a $log
 	echo -e " Organization : $org" | tee -a $log
@@ -719,14 +719,14 @@ ip_info4(){
 }
 
 machine_location(){
-	isp=$(python tools.py geoip isp)
-	as_tmp=$(python tools.py geoip as)
+	isp=$(python3 tools.py geoip isp)
+	as_tmp=$(python3 tools.py geoip as)
 	asn=$(echo $as_tmp | awk -F ' ' '{print $1}')
-	org=$(python tools.py geoip org)
-	country=$(python tools.py geoip country)
-	city=$(python tools.py geoip city)
-	countryCode=$(python tools.py geoip countryCode)
-	region=$(python tools.py geoip regionName)	
+	org=$(python3 tools.py geoip org)
+	country=$(python3 tools.py geoip country)
+	city=$(python3 tools.py geoip city)
+	countryCode=$(python3 tools.py geoip countryCode)
+	region=$(python3 tools.py geoip regionName)	
 
 	echo -e " Machine location: $country, $city ($region)"
 	echo -e " ISP & ORG: $isp / $org"
@@ -853,9 +853,9 @@ get_system_info() {
 	#tcp congestion control
 	#tcpctrl=$( sysctl net.ipv4.tcp_congestion_control | awk -F ' ' '{print $3}' )
 
-	#tmp=$(python tools.py disk 0)
+	#tmp=$(python3 tools.py disk 0)
 	#disk_total_size=$(echo $tmp | sed s/G//)
-	#tmp=$(python tools.py disk 1)
+	#tmp=$(python3 tools.py disk 1)
 	#disk_used_size=$(echo $tmp | sed s/G//)
 
 	virt_check
@@ -1008,7 +1008,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster v.1.6.0 2023-07-29 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster v.1.7.0 2023-10-18 \n' $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 }
 
