@@ -347,7 +347,7 @@ print_speedtest_asia() {
 	speed_test '16475' 'India, New Delhi (Weebo)        ' 'http://sp1.weebo.in'
 	speed_test '23647' 'India, Mumbai (Tatasky)         ' 'http://speedtestmum.tataskybroadband.com'
 	speed_test '1131' 'Sri Lanka, Colombo (Telecom PLC)' 'http://speedtest2.sltnet.lk'
-	speed_test '4774' 'Pakistan, Islamabad (Telenor)   ' 'http://202.69.12.13'
+	speed_test '32898' 'Pakistan, Islamabad (Jazz)      ' 'http://speedtest-isb1.jazz.com.pk'
 	speed_test '7147' 'Bangladesh, Dhaka (Skytel)      ' 'http://sp1.cosmocom.net'
 	speed_test '14062' 'Myanmar, Yangon (5BB Broadband) ' 'http://5bbbroadband.com'
 	speed_test '26845' 'Laos, Vientaine (Mangkone)      ' 'http://speedtest.mangkone.com'
@@ -357,7 +357,7 @@ print_speedtest_asia() {
 	speed_test '27261' 'Malaysia, Kuala Lumpur (Extreme)' 'http://kl-speedtest.ebb.my'
 	speed_test '51914' 'Singapore (StarHub)             ' 'http://co2dsvr03.speedtest.starhub.com'
 	speed_test '11118' 'Indonesia, Jakarta (My Republic)' 'http://158.140.187.5'
-	speed_test '20273' 'Philippines, Manila (Globe Tel) ' 'http://119.92.238.90'
+	speed_test '7167' 'Philippines, Manila (PLDT)      ' 'http://119.92.238.50'
 	speed_test '16176' 'Hong Kong (HGC Global)          ' 'http://ookla-speedtest.hgconair.hgc.com.hk'
 	speed_test '13506' 'Taiwan, Taipei (TAIFO)          ' 'http://speedtest.taifo.com.tw'
 	speed_test '7139' 'Japan, Tsukuba (SoftEther)      ' 'http://speedtest2.softether.co.jp'
@@ -700,7 +700,7 @@ ip_info(){
 
 ip_info4(){
 	isp=$(python3 tools.py geoip isp)
-	#as_tmp=$(python3 tools.py geoip as)
+	as_tmp=$(python3 tools.py geoip as)
 	asn=$(echo $as_tmp | awk -F ' ' '{print $1}')
 	org=$(python3 tools.py geoip org)
 	country=$(python3 tools.py geoip country)
@@ -718,7 +718,7 @@ ip_info4(){
 
 machine_location(){
 	isp=$(python3 tools.py geoip isp)
-	#as_tmp=$(python3 tools.py geoip as)
+	as_tmp=$(python3 tools.py geoip as)
 	asn=$(echo $as_tmp | awk -F ' ' '{print $1}')
 	org=$(python3 tools.py geoip org)
 	country=$(python3 tools.py geoip country)
