@@ -400,7 +400,7 @@ print_speedtest_au() {
 	speed_test '1267' 'Australia, Sydney (Optus)     ' 'http://s1.speedtest.syd.optusnet.com.au'
 	speed_test '2225' 'Australia, Melbourne (Telstra)' 'http://mel1.speedtest.telstra.net'
 	speed_test '2604' 'Australia, Brisbane (Telstra) ' 'http://brs1.speedtest.telstra.net'
-	speed_test '18247' 'Australia, Adelaide (Vocus) ' 'http://speedtest-ade.vocus.net'
+	speed_test '18247' 'Australia, Adelaide (Vocus)   ' 'http://speedtest-ade.vocus.net'
 	speed_test '8976' 'Australia, Hobart (Optus)     ' 'http://speedtest.tas.optusnet.com.au'
 	speed_test '22036' 'Australia, Darwin (Telstra)   ' 'http://drw1.speedtest.telstra.net'
 	speed_test '2627' 'Australia, Perth (Telstra)    ' 'http://per1.speedtest.telstra.net'
