@@ -233,7 +233,7 @@ print_speedtest() {
 	speed_test '30514' 'USA, New York (Optimum)       ' 'http://speedgauge2.optonline.net'
 	speed_test '17384' 'USA, Chicago (Windstream)     ' 'http://chicago02.speedtest.windstream.net'
 	speed_test '14238' 'USA, Dallas (Frontier)        ' 'http://dallas.tx.speedtest.frontier.com'
-	speed_test '1779' 'USA, Miami (Comcast)           ' 'http://50.208.232.125'
+	speed_test '1779' 'USA, Miami (Comcast)          ' 'http://50.208.232.125'
 	speed_test '18401' 'USA, Los Angeles (Windstream) ' 'http://la02.speedtest.windstream.net'
 	speed_test '26922' 'UK, London (toob Ltd)         ' 'http://185.82.8.1'
 	speed_test '24215' 'France, Paris (Orange)        ' 'http://178.21.176.100'
