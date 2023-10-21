@@ -5,7 +5,7 @@ about() {
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.7.0    2023-10-18                 / "
+	echo " \                  v1.7.1    2023-10-21                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -319,7 +319,6 @@ print_speedtest_europe() {
 	speed_test '29076' 'Netherlands, Amsterdam (XS News)' 'http://speedtest.xsnews.nl'
 	speed_test '20507' 'Germany, Berlin (DNS:NET)       ' 'http://speedtest01.dns-net.de'
 	speed_test '27345' 'Germany, Munich (InterNetX)     ' 'http://speedtest.internetx.de'
-	speed_test '8751' 'Denmark, Copenhagen (Fiberby)   ' 'http://speedtest.internetx.de'
 	speed_test '26852' 'Sweden, Stockholm (SUNET)       ' 'http://fd.sunet.se'
 	speed_test '8018' 'Norway, Oslo (NextGenTel)       ' 'http://sp2.nextgentel.no'
 	speed_test '24215' 'France, Paris (Orange)          ' 'http://178.21.176.100'
@@ -346,21 +345,20 @@ print_speedtest_asia() {
         speed_test '' 'Nearby                          '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '16475' 'India, New Delhi (Weebo)        ' 'http://sp1.weebo.in'
-	speed_test '10637' 'India, Mumbai (OneBroadband)    ' 'http://in2net.in2cable.com'
+	speed_test '23647' 'India, Mumbai (Tatasky)         ' 'http://speedtestmum.tataskybroadband.com'
 	speed_test '1131' 'Sri Lanka, Colombo (Telecom PLC)' 'http://speedtest2.sltnet.lk'
-	speed_test '4774' 'Pakistan, Islamabad (Telenor)   ' 'http://speedtest1.telenor.com.pk'
+	speed_test '4774' 'Pakistan, Islamabad (Telenor)   ' 'http://202.69.12.13'
 	speed_test '7147' 'Bangladesh, Dhaka (Skytel)      ' 'http://sp1.cosmocom.net'
-	speed_test '14901' 'Bhutan, Thimphu (Bhutan Telecom)' 'http://speedtest.bt.bt'
 	speed_test '14062' 'Myanmar, Yangon (5BB Broadband) ' 'http://5bbbroadband.com'
 	speed_test '26845' 'Laos, Vientaine (Mangkone)      ' 'http://speedtest.mangkone.com'
 	speed_test '13871' 'Thailand, Bangkok (CAT Telecom) ' 'http://catspeedtest.net'
-	speed_test '12545' 'Cambodia, Phnom Penh (Smart)    ' 'http://speedtest.smart.com.kh'
-	speed_test '9903' 'Vietnam, Hanoi (Viettel)        ' 'http://speedtestkv1b.viettel.vn'
+	speed_test '10798' 'Cambodia, Phnom Penh (Today)    ' 'http://45.133.168.226'
+	speed_test '9174' 'Vietnam, Hanoi (MOBIFONE)       ' 'http://st1.mobifone.vn'
 	speed_test '27261' 'Malaysia, Kuala Lumpur (Extreme)' 'http://kl-speedtest.ebb.my'
 	speed_test '51914' 'Singapore (StarHub)             ' 'http://co2dsvr03.speedtest.starhub.com'
-	speed_test '17516' 'Indonesia, Jakarta (Desnet)     ' 'http://speedtest.desnet.id'
+	speed_test '11118' 'Indonesia, Jakarta (My Republic)' 'http://158.140.187.5'
 	speed_test '20273' 'Philippines, Manila (Globe Tel) ' 'http://119.92.238.90'
-	speed_test '28912' 'Hong Kong (fdcservers)          ' 'http://lg-hkg.fdcservers.net'
+	speed_test '16176' 'Hong Kong (HGC Global)          ' 'http://ookla-speedtest.hgconair.hgc.com.hk'
 	speed_test '13506' 'Taiwan, Taipei (TAIFO)          ' 'http://speedtest.taifo.com.tw'
 	speed_test '7139' 'Japan, Tsukuba (SoftEther)      ' 'http://speedtest2.softether.co.jp'
 	 
@@ -383,8 +381,8 @@ print_speedtest_sa() {
 	speed_test '5272' 'Peru, Lima (Fiberluxperu)          ' 'http://medidor.fiberluxperu.com'
 	speed_test '1053' 'Bolivia, La Paz (Nuevatel)         ' 'http://speedtest.nuevatel.com'
 	speed_test '6776' 'Paraguay, Asuncion (TEISA)         ' 'http://sp1.teisa.com.py'
-	speed_test '13065' 'Chile, Santiago (Netglobalis)      ' 'http://speedtest.netglobalis.net'
-	speed_test '6825' 'Argentina, Buenos Aires(Telefonica)' 'http://speedtest2.gics.telefonica.com.ar'
+	speed_test '21436' 'Chile, Santiago (Movistar)         ' 'http://speedtest-h5-10g.movistarplay.cl'
+	speed_test '5181' 'Argentina, Buenos Aires (Claro)    ' 'http://speedtest.claro.com.ar'
 	speed_test '10315' 'Argentina, Cordoba (Personal)      ' 'http://st1res.personal.com.ar'
 	speed_test '1546' 'Uruguay, Montevideo (Antel)        ' 'http://speedtest.movistar.com.uy'
 	 
@@ -402,11 +400,11 @@ print_speedtest_au() {
 	speed_test '1267' 'Australia, Sydney (Optus)     ' 'http://s1.speedtest.syd.optusnet.com.au'
 	speed_test '2225' 'Australia, Melbourne (Telstra)' 'http://mel1.speedtest.telstra.net'
 	speed_test '2604' 'Australia, Brisbane (Telstra) ' 'http://brs1.speedtest.telstra.net'
-	speed_test '16907' 'Australia, Adelaide (KernWiFi)' 'http://ookla.kernwifi.com.au'
+	speed_test '18247' 'Australia, Adelaide (Vocus) ' 'http://speedtest-ade.vocus.net'
 	speed_test '8976' 'Australia, Hobart (Optus)     ' 'http://speedtest.tas.optusnet.com.au'
 	speed_test '22036' 'Australia, Darwin (Telstra)   ' 'http://drw1.speedtest.telstra.net'
 	speed_test '2627' 'Australia, Perth (Telstra)    ' 'http://per1.speedtest.telstra.net'
-	speed_test '2627' 'NZ, Auckland (MyRepublic)     ' 'http://speedtest.myrepublic.co.nz'
+	speed_test '5539' 'NZ, Auckland (2degrees)       ' 'http://speed2.snap.net.nz'
 	speed_test '11326' 'NZ, Wellington (Spark)        ' 'http://speedtest-wellington.spark.co.nz'
 	speed_test '4934' 'NZ, Christchurch (Vodafone)   ' 'http://christchurch.speedtest.vodafone.co.nz'
 	 
@@ -500,14 +498,14 @@ print_speedtest_china() {
 
 geekbench4() {
 	if [[ $ARCH = *x86* ]]; then # 32-bit
-	echo -e "\nGeekbench 5 cannot run on 32-bit architectures. Skipping the test"
+	echo -e "\nGeekbench 4 cannot run on 32-bit architectures. Skipping the test"
 	else
 	echo "" | tee -a $log
 	echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..."
 
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
-	curl -s http://cdn.geekbench.com/Geekbench-4.4.4-Linux.tar.gz  | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
+	curl -s https://cdn.geekbench.com/Geekbench-4.4.4-Linux.tar.gz  | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
 	GEEKBENCH_TEST=$($GEEKBENCH_PATH/geekbench4 2>/dev/null | grep "https://browser")
 	GEEKBENCH_URL=$(echo -e $GEEKBENCH_TEST | head -1)
 	GEEKBENCH_URL_CLAIM=$(echo $GEEKBENCH_URL | awk '{ print $2 }')
@@ -558,7 +556,7 @@ geekbench5() {
 
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
-	curl -s http://cdn.geekbench.com/Geekbench-5.5.0-Linux.tar.gz | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
+	curl -s https://cdn.geekbench.com/Geekbench-5.5.1-Linux.tar.gz | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
 	GEEKBENCH_TEST=$($GEEKBENCH_PATH/geekbench5 2>/dev/null | grep "https://browser")
 	GEEKBENCH_URL=$(echo -e $GEEKBENCH_TEST | head -1)
 	GEEKBENCH_URL_CLAIM=$(echo $GEEKBENCH_URL | awk '{ print $2 }')
@@ -609,7 +607,7 @@ geekbench6() {
 
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
-	curl -s https://cdn.geekbench.com/Geekbench-6.1.0-Linux.tar.gz | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
+	curl -s https://cdn.geekbench.com/Geekbench-6.2.1-Linux.tar.gz | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
 	GEEKBENCH_TEST=$($GEEKBENCH_PATH/geekbench6 2>/dev/null | grep "https://browser")
 	GEEKBENCH_URL=$(echo -e $GEEKBENCH_TEST | head -1)
 	GEEKBENCH_URL_CLAIM=$(echo $GEEKBENCH_URL | awk '{ print $2 }')
@@ -696,40 +694,40 @@ ip_info(){
 
 	echo -e " ASN & ISP            : $asn" | tee -a $log
 	echo -e " Organization         : $org" | tee -a $log
-	echo -e " Location             : $city, $country / $countryCode" | tee -a $log
+	echo -e " Location             : $city, $country ($countryCode)" | tee -a $log
 	echo -e " Region               : $region" | tee -a $log
 }
 
 ip_info4(){
 	isp=$(python3 tools.py geoip isp)
-	as_tmp=$(python3 tools.py geoip as)
+	#as_tmp=$(python3 tools.py geoip as)
 	asn=$(echo $as_tmp | awk -F ' ' '{print $1}')
 	org=$(python3 tools.py geoip org)
 	country=$(python3 tools.py geoip country)
 	city=$(python3 tools.py geoip city)
-	countryCode=$(python3 tools.py geoip countryCode)
+	#countryCode=$(python3 tools.py geoip countryCode)
 	region=$(python3 tools.py geoip regionName)
 
-	echo -e " ASN & ISP    : $asn, $isp" | tee -a $log
-	echo -e " Organization : $org" | tee -a $log
-	echo -e " Location     : $city, $country / $countryCode" | tee -a $log
-	echo -e " Region       : $region" | tee -a $log
+	echo -e " ASN & ISP    : $asn, $isp / $org" | tee -a $log
+	#echo -e " Organization : $org" | tee -a $log
+	echo -e " Location     : $country, $city ($region)" | tee -a $log
+	#echo -e " Region       : $region" | tee -a $log
 
 	rm -rf tools.py
 }
 
 machine_location(){
 	isp=$(python3 tools.py geoip isp)
-	as_tmp=$(python3 tools.py geoip as)
+	#as_tmp=$(python3 tools.py geoip as)
 	asn=$(echo $as_tmp | awk -F ' ' '{print $1}')
 	org=$(python3 tools.py geoip org)
 	country=$(python3 tools.py geoip country)
 	city=$(python3 tools.py geoip city)
-	countryCode=$(python3 tools.py geoip countryCode)
+	#countryCode=$(python3 tools.py geoip countryCode)
 	region=$(python3 tools.py geoip regionName)	
 
 	echo -e " Machine location: $country, $city ($region)"
-	echo -e " ISP & ORG: $isp / $org"
+	echo -e " ISP & ORG: $asn, $isp / $org"
 
 	rm -rf tools.py
 }
@@ -1008,7 +1006,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster v.1.7.0 2023-10-18 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster v.1.7.1 2023-10-21 \n' $region_name | tee -a $log
 	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
 }
 
