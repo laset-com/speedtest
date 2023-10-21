@@ -233,14 +233,14 @@ print_speedtest() {
 	speed_test '30514' 'USA, New York (Optimum)       ' 'http://speedgauge2.optonline.net'
 	speed_test '17384' 'USA, Chicago (Windstream)     ' 'http://chicago02.speedtest.windstream.net'
 	speed_test '14238' 'USA, Dallas (Frontier)        ' 'http://dallas.tx.speedtest.frontier.com'
-	speed_test '15781' 'USA, Miami (Sprint)           ' 'http://ookla1.miaufl.sprintadp.net'
+	speed_test '1779' 'USA, Miami (Comcast)           ' 'http://50.208.232.125'
 	speed_test '18401' 'USA, Los Angeles (Windstream) ' 'http://la02.speedtest.windstream.net'
 	speed_test '26922' 'UK, London (toob Ltd)         ' 'http://185.82.8.1'
 	speed_test '24215' 'France, Paris (Orange)        ' 'http://178.21.176.100'
 	speed_test '20507' 'Germany, Berlin (DNS:NET)     ' 'http://speedtest01.dns-net.de'
 	speed_test '21378' 'Spain, Madrid (MasMovil)      ' 'http://speedtest-mad.masmovil.com'
 	speed_test '395' 'Italy, Rome (Unidata)         ' 'http://speedtest2.unidata.it'
-	speed_test '10637' 'India, Mumbai (OneBroadband)  ' 'http://in2net.in2cable.com'
+	speed_test '23647' 'India, Mumbai (Tatasky)       ' 'http://speedtestmum.tataskybroadband.com'
 	speed_test '51914' 'Singapore (StarHub)           ' 'http://co2dsvr03.speedtest.starhub.com'
 	speed_test '7139' 'Japan, Tsukuba (SoftEther)    ' 'http://speedtest2.softether.co.jp'
 	speed_test '1267' 'Australia, Sydney (Optus)     ' 'http://s1.speedtest.syd.optusnet.com.au'
@@ -263,7 +263,7 @@ print_speedtest_usa() {
 	speed_test '15790' 'USA, Washington, DC (Sprint)   ' 'http://ookla1.washdc.sprintadp.net'
 	speed_test '27833' 'USA, Charlotte, NC (Windstream)' 'http://charlotte02.speedtest.windstream.net'
 	speed_test '17387' 'USA, Atlanta (Windstream)      ' 'http://atlanta02.speedtest.windstream.net'
-	speed_test '1779' 'USA, Miami (Comcast)           ' 'http://68.86.199.101'
+	speed_test '1779' 'USA, Miami (Comcast)           ' 'http://50.208.232.125'
 	speed_test '15779' 'USA, Nashville (Sprint)        ' 'http://ookla1.nsvltn.sprintadp.net'
 	speed_test '10152' 'USA, Indianapolis (CenturyLink)' 'http://indianapolis.speedtest.centurylink.net'
 	speed_test '10138' 'USA, Cleveland (CenturyLink)   ' 'http://cleveland.speedtest.centurylink.net'
@@ -297,7 +297,7 @@ print_speedtest_in() {
         speed_test '' 'Nearby                         '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '7236' 'India, New Delhi (iForce)      ' 'http://speed.iforcenetworks.co.in'
-	speed_test '10637' 'India, Mumbai (OneBroadband)   ' 'http://in2net.in2cable.com'
+	speed_test '23647' 'India, Mumbai (Tatasky)        ' 'http://speedtestmum.tataskybroadband.com'
 	speed_test '16086' 'India, Nagpur (optbb)          ' 'http://speedtest.optbb.in'
 	speed_test '23244' 'India, Patna (Airtel)          ' 'http://speedtestbhr1.airtel.in'
 	speed_test '15697' 'India, Kolkata (RailTel)       ' 'http://kol.speedtest.rcil.gov.in'
@@ -708,10 +708,10 @@ ip_info4(){
 	#countryCode=$(python3 tools.py geoip countryCode)
 	region=$(python3 tools.py geoip regionName)
 
-	echo -e " ASN & ISP    : $asn, $isp / $org" | tee -a $log
-	#echo -e " Organization : $org" | tee -a $log
 	echo -e " Location     : $country, $city ($region)" | tee -a $log
 	#echo -e " Region       : $region" | tee -a $log
+	echo -e " ASN & ISP    : $asn, $isp / $org" | tee -a $log
+	#echo -e " Organization : $org" | tee -a $log
 
 	rm -rf tools.py
 }
