@@ -1007,7 +1007,7 @@ print_end_time() {
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
 	printf ' Region: %s  https://bench.monster v.1.7.1 2023-10-21 \n' $region_name | tee -a $log
-	printf " Usage : curl -LsO bench.monster/speedtest.sh; bash speedtest.sh -%s\n" $region_name | tee -a $log
+	printf " Usage : curl -sL bench.monster | bash -s -- -%s\n" $region_name | tee -a $log
 }
 
 sharetest() {
