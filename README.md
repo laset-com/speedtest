@@ -2,7 +2,7 @@
 
 https://bench.monster
 
-`curl -LsO bench.monster/speedtest.sh; bash speedtest.sh`
+`curl -sL bench.monster | bash`
 
 # Credits 
 
