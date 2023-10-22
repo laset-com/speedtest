@@ -232,7 +232,7 @@ print_speedtest() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '30514' 'USA, New York (Optimum)       ' 'http://speedgauge2.optonline.net'
 	speed_test '17384' 'USA, Chicago (Windstream)     ' 'http://chicago02.speedtest.windstream.net'
-	speed_test '14238' 'USA, Dallas (Frontier)        ' 'http://dallas.tx.speedtest.frontier.com'
+	speed_test '1763' 'USA, Houston (Comcast)        ' 'http://po-1-xar01.greenspoint.tx.houston.comcast.net'
 	speed_test '1779' 'USA, Miami (Comcast)          ' 'http://50.208.232.125'
 	speed_test '18401' 'USA, Los Angeles (Windstream) ' 'http://la02.speedtest.windstream.net'
 	speed_test '26922' 'UK, London (toob Ltd)         ' 'http://185.82.8.1'
@@ -261,7 +261,6 @@ print_speedtest_usa() {
 	speed_test '30514' 'USA, New York (Optimum)        ' 'http://speedgauge2.optonline.net'
 	speed_test '1774' 'USA, Boston (Comcast)          ' 'http://po-2-rur102.needham.ma.boston.comcast.net'
 	speed_test '1775' 'USA, Baltimore, MD (Comcast)   ' 'http://po-1-rur101.capitolhghts.md.bad.comcast.net'
-	speed_test '27833' 'USA, Charlotte, NC (Windstream)' 'http://charlotte02.speedtest.windstream.net'
 	speed_test '17387' 'USA, Atlanta (Windstream)      ' 'http://atlanta02.speedtest.windstream.net'
 	speed_test '1779' 'USA, Miami (Comcast)           ' 'http://be-111-pe12.nota.fl.ibone.comcast.net'
 	speed_test '1764' 'USA, Nashville (Comcast)       ' 'http://po-1-rur401.nashville.tn.nash.comcast.net'
