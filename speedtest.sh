@@ -80,11 +80,11 @@ benchinit() {
 	
 
 	# check python
-	if  [ ! -e '/usr/bin/python' ]; then
+	if  [ ! -e '/usr/bin/python3' ]; then
 	        echo " Installing Python3 ..."
 	            if [ "${release}" == "centos" ]; then
 	                    yum -y install python3 > /dev/null 2>&1
-			    alternatives --set python /usr/bin/python3 > /dev/null 2>&1
+			    alternatives --set python3 /usr/bin/python3 > /dev/null 2>&1
 	                else
 	                    apt-get -y install python3 > /dev/null 2>&1
 	                fi
@@ -259,28 +259,28 @@ print_speedtest_usa() {
         speed_test '' 'Nearby                         '
 	printf "%-76s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '30514' 'USA, New York (Optimum)        ' 'http://speedgauge2.optonline.net'
-	speed_test '13429' 'USA, Boston (Starry, Inc.)     ' 'http://speedtest-server.starry.com'
-	speed_test '15790' 'USA, Washington, DC (Sprint)   ' 'http://ookla1.washdc.sprintadp.net'
+	speed_test '1774' 'USA, Boston (Comcast)          ' 'http://po-2-rur102.needham.ma.boston.comcast.net'
+	speed_test '1775' 'USA, Baltimore, MD (Comcast)   ' 'http://po-1-rur101.capitolhghts.md.bad.comcast.net'
 	speed_test '27833' 'USA, Charlotte, NC (Windstream)' 'http://charlotte02.speedtest.windstream.net'
 	speed_test '17387' 'USA, Atlanta (Windstream)      ' 'http://atlanta02.speedtest.windstream.net'
-	speed_test '1779' 'USA, Miami (Comcast)           ' 'http://50.208.232.125'
+	speed_test '1779' 'USA, Miami (Comcast)           ' 'http://be-111-pe12.nota.fl.ibone.comcast.net'
 	speed_test '15779' 'USA, Nashville (Sprint)        ' 'http://ookla1.nsvltn.sprintadp.net'
 	speed_test '10152' 'USA, Indianapolis (CenturyLink)' 'http://indianapolis.speedtest.centurylink.net'
 	speed_test '10138' 'USA, Cleveland (CenturyLink)   ' 'http://cleveland.speedtest.centurylink.net'
+	speed_test '1778' 'USA, Detroit, MI (Comcast)     ' 'http://ae-97-rur101.taylor.mi.michigan.comcast.net'
 	speed_test '17384' 'USA, Chicago (Windstream)      ' 'http://chicago02.speedtest.windstream.net'
 	speed_test '4557' 'USA, St. Louis (Elite Fiber)   ' 'http://speed.elitesystemsllc.com'
 	speed_test '2917' 'USA, Minneapolis (US Internet) ' 'http://speedtest.usiwireless.com'
 	speed_test '17709' 'USA, Kansas City (UPNfiber)    ' 'http://speedtest.upnfiber.com'
-	speed_test '17751' 'USA, Oklahoma City (OneNet)    ' 'http://okc-speedtest.onenet.net'
 	speed_test '14238' 'USA, Dallas (Frontier)         ' 'http://dallas.tx.speedtest.frontier.com'
 	speed_test '11209' 'USA, San Antonio, TX (Sprint)  ' 'http://ookla1.snantx.sprintadp.net'
 	speed_test '8862' 'USA, Denver (CenturyLink)      ' 'http://denver.speedtest.centurylink.net'
 	speed_test '16869' 'USA, Albuquerque (Plateau Tel) ' 'http://speedtest4.plateautel.net'
 	speed_test '15783' 'USA, Phoenix (Sprint)          ' 'http://ookla1.phnfaz.sprintadp.net'
-	speed_test '2206' 'USA, Salt Lake City (UTOPIA)   ' 'http://speedtest2.utopiafiber.net'
+	speed_test '1781' 'USA, Salt Lake City (Comcast)  ' 'http://be-36711-ar01.saltlakecity.ut.utah.comcast.net'
 	speed_test '16446' 'USA, Las Vegas (CenturyLink)   ' 'http://las-vegas2.speedtest.centurylink.net'
-	speed_test '18271' 'USA, Seattle (Bluespan)        ' 'http://seattle.speedtest.bluespanwireless.com'
-	speed_test '17587' 'USA, San Francisco (Wiline)    ' 'http://sfosfookla.wiline.com'
+	speed_test '1782' 'USA, Seattle (Comcast)         ' 'http://po-1-xar02.seattle.wa.seattle.comcast.net'
+	speed_test '1783' 'USA, San Francisco (Comcast)   ' 'http://be-232-rur01.santaclara.ca.sfba.comcast.net'
 	speed_test '18401' 'USA, Los Angeles (Windstream)  ' 'http://la02.speedtest.windstream.net'
 	speed_test '980' 'USA, Anchorage (Alaska Com)    ' 'http://speedtest.anc.acsalaska.net'
 	speed_test '24031' 'USA, Honolulu (Hawaiian Telcom)' 'http://htspeed.hawaiiantel.net'
