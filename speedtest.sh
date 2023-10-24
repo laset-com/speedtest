@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
+bench_v="v1.7.1"
+bench_d="2023-10-21"
 about() {
 	echo ""
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  v1.7.1    2023-10-21                 / "
+	echo " \                  '$bench_v'    '$bench_d'                 / "
 	echo " ========================================================= "
 	echo ""
 }
@@ -263,7 +265,7 @@ print_speedtest_usa() {
 	speed_test '1775' 'USA, Baltimore, MD (Comcast)   ' 'http://po-1-rur101.capitolhghts.md.bad.comcast.net'
 	speed_test '17387' 'USA, Atlanta (Windstream)      ' 'http://atlanta02.speedtest.windstream.net'
 	speed_test '1779' 'USA, Miami (Comcast)           ' 'http://be-111-pe12.nota.fl.ibone.comcast.net'
-	speed_test '1764' 'USA, Nashville (Comcast)       ' 'http://po-1-rur401.nashville.tn.nash.comcast.net'
+	speed_test '1764' 'USA, Nashville (Comcast)       ' 'http://be-304-cr23.nashville.tn.ibone.comcast.net'
 	speed_test '10152' 'USA, Indianapolis (CenturyLink)' 'http://indianapolis.speedtest.centurylink.net'
 	speed_test '10138' 'USA, Cleveland (CenturyLink)   ' 'http://cleveland.speedtest.centurylink.net'
 	speed_test '1778' 'USA, Detroit, MI (Comcast)     ' 'http://ae-97-rur101.taylor.mi.michigan.comcast.net'
@@ -681,6 +683,15 @@ install_smart() {
 	fi
 }
 
+# test if the host has IPv4/IPv6 connectivity
+[[ ! -z $LOCAL_CURL ]] && IP_CHECK_CMD="curl -s -m 4" || IP_CHECK_CMD="wget -qO- -T 4"
+IPV4_CHECK=$((ping -4 -c 1 -W 4 ipv4.google.com >/dev/null 2>&1 && echo true) || $IP_CHECK_CMD -4 icanhazip.com 2> /dev/null)
+IPV6_CHECK=$((ping -6 -c 1 -W 4 ipv6.google.com >/dev/null 2>&1 && echo true) || $IP_CHECK_CMD -6 icanhazip.com 2> /dev/null)
+if [[ -z "$IPV4_CHECK" && -z "$IPV6_CHECK" ]]; then
+	echo -e
+	echo -e "Warning: Both IPv4 AND IPv6 connectivity were not detected. Check for DNS issues..."
+fi
+
 ip_info(){
 	# no jq
 	country=$(curl -s https://ipapi.co/country_name/)
@@ -814,7 +825,9 @@ print_system_info() {
 	echo -e " Total RAM    : $tram MB ($uram MB + $bram MB Buff in use)" | tee -a $log
 	echo -e " Total SWAP   : $swap MB ($uswap MB in use)" | tee -a $log
 	echo -e " Uptime       : $up" | tee -a $log
-	#echo -e " TCP CC       : $tcpctrl" | tee -a $log
+	[[ -z "$IPV4_CHECK" ]] && ONLINE="\xE2\x9D\x8C Offline / " || ONLINE="\xE2\x9C\x94 Online / "
+	[[ -z "$IPV6_CHECK" ]] && ONLINE+="\xE2\x9D\x8C Offline" || ONLINE+="\xE2\x9C\x94 Online"
+	echo -e " IPv4/IPv6    : $ONLINE"
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 }
 
@@ -1004,7 +1017,7 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster v.1.7.1 2023-10-21 \n' $region_name | tee -a $log
+	printf ' Region: %s  https://bench.monster '$bench_v' '$bench_d' \n' $region_name | tee -a $log
 	printf " Usage : curl -sL bench.monster | bash -s -- -%s\n" $region_name | tee -a $log
 }
 
