@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-bench_v="v1.7.1"
-bench_d="2023-10-21"
+bench_v="v1.7.2"
+bench_d="2023-10-25"
 about() {
 	echo ""
 	echo " ========================================================= "
@@ -617,17 +617,17 @@ geekbench6() {
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 	
-	if [[ $GEEKBENCH_SCORES_SINGLE -le 500 ]]; then
+	if [[ $GEEKBENCH_SCORES_SINGLE -le 400 ]]; then
 		grank="(POOR)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 500 && $GEEKBENCH_SCORES_SINGLE -le 700 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 400 && $GEEKBENCH_SCORES_SINGLE -le 660 ]]; then
 		grank="(FAIR)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 700 && $GEEKBENCH_SCORES_SINGLE -le 900 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 660 && $GEEKBENCH_SCORES_SINGLE -le 925 ]]; then
 		grank="(GOOD)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 900 && $GEEKBENCH_SCORES_SINGLE -le 1200 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 925 && $GEEKBENCH_SCORES_SINGLE -le 1350 ]]; then
 		grank="(VERY GOOD)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1200 && $GEEKBENCH_SCORES_SINGLE -le 1700 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1350 && $GEEKBENCH_SCORES_SINGLE -le 2000 ]]; then
 		grank="(EXCELLENT)"
-	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1700 && $GEEKBENCH_SCORES_SINGLE -le 2200 ]]; then
+	elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2000 && $GEEKBENCH_SCORES_SINGLE -le 2600 ]]; then
 		grank="(THE BEAST)"
 	else
 		grank="(MONSTER)"
@@ -824,10 +824,10 @@ print_system_info() {
 	echo -e " Total Space  : $hdd ($hddused ~$hddfree used)" | tee -a $log
 	echo -e " Total RAM    : $tram MB ($uram MB + $bram MB Buff in use)" | tee -a $log
 	echo -e " Total SWAP   : $swap MB ($uswap MB in use)" | tee -a $log
-	echo -e " Uptime       : $up" | tee -a $log
 	[[ -z "$IPV4_CHECK" ]] && ONLINE="\xE2\x9D\x8C Offline / " || ONLINE="\xE2\x9C\x94 Online / "
 	[[ -z "$IPV6_CHECK" ]] && ONLINE+="\xE2\x9D\x8C Offline" || ONLINE+="\xE2\x9C\x94 Online"
-	echo -e " IPv4/IPv6    : $ONLINE"
+	echo -e " IPv4/IPv6    : $ONLINE" | tee -a $log
+	echo -e " Uptime       : $up" | tee -a $log
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 }
 
