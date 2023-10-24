@@ -7,7 +7,7 @@ about() {
 	echo " ========================================================= "
 	echo " \            Speedtest https://bench.monster            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
-	echo " \                  '$bench_v'    '$bench_d'                 / "
+	echo " \                  $bench_v    $bench_d                 / "
 	echo " ========================================================= "
 	echo ""
 }
