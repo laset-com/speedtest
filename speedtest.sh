@@ -232,7 +232,7 @@ print_speedtest() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                        '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '30514' 'USA, New York (Optimum)       ' 'http://speedgauge2.optonline.net'
+	speed_test '18956' 'USA, New York (Hivelocity)    ' 'http://speedtest.nyc.hivelocity.net'
 	speed_test '17384' 'USA, Chicago (Windstream)     ' 'http://chicago02.speedtest.windstream.net'
 	speed_test '1763' 'USA, Houston (Comcast)        ' 'http://po-1-xar01.greenspoint.tx.houston.comcast.net'
 	speed_test '1779' 'USA, Miami (Comcast)          ' 'http://50.208.232.125'
@@ -260,7 +260,7 @@ print_speedtest_usa() {
 	printf "%-76s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                         '
 	printf "%-76s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '30514' 'USA, New York (Optimum)        ' 'http://speedgauge2.optonline.net'
+	speed_test '18956' 'USA, New York (Hivelocity)     ' 'http://speedtest.nyc.hivelocity.net'
 	speed_test '1774' 'USA, Boston (Comcast)          ' 'http://po-2-rur102.needham.ma.boston.comcast.net'
 	speed_test '1775' 'USA, Baltimore, MD (Comcast)   ' 'http://po-1-rur101.capitolhghts.md.bad.comcast.net'
 	speed_test '17387' 'USA, Atlanta (Windstream)      ' 'http://atlanta02.speedtest.windstream.net'
