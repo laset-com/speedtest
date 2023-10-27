@@ -648,6 +648,17 @@ geekbench6() {
 	fi
 }
 
+geekbench() {
+
+	if [[ $tram -le 1000 ]]; then
+		geekbench4
+	elif [[ $tram -ge 1000 && $tram -le 2000 ]]; then
+		geekbench5
+	else
+		geekbench6
+	fi
+}
+
 calc_disk() {
     local total_size=0
     local array=$@
@@ -1257,7 +1268,7 @@ lviv_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench;
 	iotest;
 	write_io;
 	print_speedtest_lviv;
@@ -1293,12 +1304,14 @@ case $1 in
 		about;sleep 3;next;get_system_info;print_system_info;;
 	'version'|'-v'|'--v'|'-version'|'--version')
 		next;about;next;;
+  	'gb4'|'-gb4'|'--gb4'|'geek4'|'-geek4'|'--geek4' )
+		next;geekbench4;next;cleanup;;
    	'gb5'|'-gb5'|'--gb5'|'geek5'|'-geek5'|'--geek5' )
 		next;geekbench5;next;cleanup;;
      	'gb6'|'-gb6'|'--gb6'|'geek6'|'-geek6'|'--geek6' )
 		next;geekbench6;next;cleanup;;
 	'gb'|'-gb'|'--gb'|'geek'|'-geek'|'--geek' )
-		next;geekbench4;next;cleanup;;
+		next;geekbench;next;cleanup;;
 	'io'|'-io'|'--io'|'ioping'|'-ioping'|'--ioping' )
 		next;iotest;write_io;next;;
 	'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
