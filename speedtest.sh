@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-bench_v="v1.7.2"
-bench_d="2023-10-25"
+bench_v="v1.7.3"
+bench_d="2023-10-27"
 about() {
 	echo ""
 	echo " ========================================================= "
@@ -1098,7 +1098,7 @@ bench_all(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench;
 	iotest;
 	write_io;
 	print_speedtest;
@@ -1117,7 +1117,7 @@ usa_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench;
 	iotest;
 	write_io;
 	print_speedtest_usa;
@@ -1136,7 +1136,7 @@ in_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench;
 	iotest;
 	write_io;
 	print_speedtest_in;
@@ -1155,7 +1155,7 @@ europe_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench;
 	iotest;
 	write_io;
 	print_speedtest_europe;
@@ -1174,7 +1174,7 @@ asia_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench;
 	iotest;
 	write_io;
 	print_speedtest_asia;
@@ -1193,7 +1193,7 @@ china_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench;
 	iotest;
 	write_io;
 	print_speedtest_china;
@@ -1212,7 +1212,7 @@ sa_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench;
 	iotest;
 	write_io;
 	print_speedtest_sa;
@@ -1231,7 +1231,7 @@ au_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench;
 	iotest;
 	write_io;
 	print_speedtest_au;
@@ -1250,7 +1250,7 @@ ukraine_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench;
 	iotest;
 	write_io;
 	print_speedtest_ukraine;
@@ -1286,7 +1286,7 @@ meast_bench(){
 	print_system_info;
 	ip_info4;
 	next;
-	geekbench5;
+	geekbench;
 	iotest;
 	write_io;
 	print_speedtest_meast;
@@ -1300,10 +1300,10 @@ log="$HOME/speedtest.log"
 true > $log
 
 case $1 in
-	'info'|'-i'|'--i'|'-info'|'--info' )
+	'info'|'i'|'-i'|'--i'|'-info'|'--info' )
 		about;sleep 3;next;get_system_info;print_system_info;next;cleanup;;
-	'version'|'-v'|'--v'|'-version'|'--version')
-		next;about;next;;
+	'version'|'v'|'-v'|'--v'|'-version'|'--version')
+		next;about;next;cleanup;;
   	'gb4'|'-gb4'|'--gb4'|'geek4'|'-geek4'|'--geek4' )
 		next;geekbench4;next;cleanup;;
    	'gb5'|'-gb5'|'--gb5'|'geek5'|'-geek5'|'--geek5' )
@@ -1338,10 +1338,10 @@ case $1 in
 		about;benchinit;machine_location;print_speedtest_lviv;next;cleanup;;
 	'ip'|'-ip'|'--ip'|'geoip'|'-geoip'|'--geoip' )
 		about;benchinit;next;ip_info4;next;cleanup;;
-	'bench'|'-a'|'--a'|'-all'|'--all'|'-bench'|'--bench'|'-Global' )
+	'a'|'-a'|'about'|'-about'|'--about' )
+		about;next;cleanup;;
+  	'all'|'-all'|'bench'|'-bench'|'--bench'|'-Global' )
 		bench_all;;
-	'about'|'-about'|'--about' )
-		about;;
 	'usa'|'-usa'|'--usa'|'us'|'-us'|'--us'|'USA'|'-USA'|'--USA' )
 		usa_bench;;
 	'in'|'-india'|'--in'|'in'|'-in'|'IN'|'-IN'|'--IN' )
