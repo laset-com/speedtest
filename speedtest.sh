@@ -649,10 +649,10 @@ geekbench6() {
 }
 
 geekbench() {
-
-	if [[ $tram -le 1000 ]]; then
+	totalram="$( free -m | grep Mem | awk 'NR=1 {print $2}' )"
+	if [[ $totalram -le 1000 ]]; then
 		geekbench4
-	elif [[ $tram -ge 1000 && $tram -le 2000 ]]; then
+	elif [[ $totalram -ge 1000 && $totalram -le 2000 ]]; then
 		geekbench5
 	else
 		geekbench6
@@ -1301,7 +1301,7 @@ true > $log
 
 case $1 in
 	'info'|'-i'|'--i'|'-info'|'--info' )
-		about;sleep 3;next;get_system_info;print_system_info;;
+		about;sleep 3;next;get_system_info;print_system_info;next;cleanup;;
 	'version'|'-v'|'--v'|'-version'|'--version')
 		next;about;next;;
   	'gb4'|'-gb4'|'--gb4'|'geek4'|'-geek4'|'--geek4' )
@@ -1313,7 +1313,7 @@ case $1 in
 	'gb'|'-gb'|'--gb'|'geek'|'-geek'|'--geek' )
 		next;geekbench;next;cleanup;;
 	'io'|'-io'|'--io'|'ioping'|'-ioping'|'--ioping' )
-		next;iotest;write_io;next;;
+		next;iotest;write_io;next;cleanup;;
 	'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
 		about;benchinit;machine_location;print_speedtest;next;cleanup;;
 	'usas'|'-usas'|'uss'|'-uss'|'uspeed'|'-uspeed' )
