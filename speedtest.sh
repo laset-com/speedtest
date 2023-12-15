@@ -188,9 +188,11 @@ speed_test(){
     local reupload=$(echo "$temp" | awk -F ':' '/Upload/{print $2}')
     local relatency=$(echo "$temp" | awk -F ':' '/Hosted/{print $2}')
 
-    temp=$(echo "$relatency" | awk -F '.' '{print $1}')
-    if ((temp > 50)); then
-      relatency="*"${relatency}
+    if [[ $relatency == *"Hosted"* ]]; then
+      relatency=$(echo "$relatency" | awk -F '.' '{print $1}')
+      if ((relatency > 50)); then
+        relatency="*"${relatency}
+      fi
     fi
 
     local nodeName=$2
@@ -202,13 +204,13 @@ speed_test(){
 
     # Check conditions and adjust the display for relatency only
     if ((relatency_value > 20000)); then
-      relatency=$(printf "%.0f" "$relatency_value")
+      relatency=$(printf "%.0f" "$((relatency_value / 1000))")
     elif ((relatency_value > 10000)); then
-      relatency=$(printf "%.1f" "$relatency_value")
+      relatency=$(printf "%.1f" "$((relatency_value / 1000))")
     elif ((relatency_value > 5000)); then
-      relatency=$(printf "%.2f" "$relatency_value")
+      relatency=$(printf "%.2f" "$((relatency_value / 1000))")
     else
-      relatency=$(printf "%3i" "$relatency_value")
+      relatency=$(printf "%3i" "$((relatency_value / 1000))")
     fi
 
     temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
