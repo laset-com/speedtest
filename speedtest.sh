@@ -1077,6 +1077,32 @@ pingtest() {
 	local ping_output=$(ping -w 1 -c 3 -q $ping_link | grep 'rtt')
 
 	# Extract the avg value from the output
+	local ping_avg=$(echo "$ping_output" | awk -F'/' '{printf "%.3f", $6}')
+
+	# get download speed and print
+	if [[ $ping_avg == "" ]]; then
+	  printf "ping error!"
+	else
+	  # Check conditions and adjust the display
+	  if (( $(echo "$ping_avg > 19.999" | bc -l) )); then
+	   printf "%d ms" "${ping_avg%.*}"
+	  elif (( $(echo "$ping_avg > 9.999" | bc -l) )); then
+	   printf "%.1f ms" "$ping_avg"
+	  elif (( $(echo "$ping_avg > 4.999" | bc -l) )); then
+	  printf "%.2f ms" "$ping_avg"
+	  else
+	  printf "%3i ms" "${ping_avg%.*}"
+	  fi
+	fi
+}
+
+pingtest() {
+	local ping_link=$(echo ${1#*//} | cut -d"/" -f1)
+
+	# Send three pings and capture the output
+	local ping_output=$(ping -w 1 -c 3 -q $ping_link | grep 'rtt')
+
+	# Extract the avg value from the output
 	local ping_avg=$(echo "$ping_output" | awk -F'/' '{print $6}')
 
 	# get download speed and print
