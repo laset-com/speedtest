@@ -179,47 +179,27 @@ delete() {
 
 speed_test(){
 	if [[ $1 == '' ]]; then
-  temp=$(python3 speedtest.py --secure --share 2>&1)
-  is_down=$(echo "$temp" | grep 'Download')
-  result_speed=$(echo "$temp" | awk -F ' ' '/results/{print $3}')
+		temp=$(python3 speedtest.py --secure --share 2>&1)
+		is_down=$(echo "$temp" | grep 'Download')
+		result_speed=$(echo "$temp" | awk -F ' ' '/results/{print $3}')
+		if [[ ${is_down} ]]; then
+	        local REDownload=$(echo "$temp" | awk -F ':' '/Download/{print $2}')
+	        local reupload=$(echo "$temp" | awk -F ':' '/Upload/{print $2}')
+	        local relatency=$(echo "$temp" | awk -F ':' '/Hosted/{print $2}')
 
-  if [[ ${is_down} ]]; then
-    local REDownload=$(echo "$temp" | awk -F ':' '/Download/{print $2}')
-    local reupload=$(echo "$temp" | awk -F ':' '/Upload/{print $2}')
-    local relatency=$(echo "$temp" | awk -F ':' '/Hosted/{print $2}')
+	        temp=$(echo "$relatency" | awk -F '.' '{print $1}')
+        	if [[ ${temp} -gt 50 ]]; then
+            	relatency="*"${relatency}
+        	fi
+	        local nodeName=$2
 
-    if [[ $relatency == *"Hosted"* ]]; then
-      relatency=$(echo "$relatency" | awk -F '.' '{print $1}')
-      if [[ $(bc <<< "$relatency > 50") -eq 1 ]]; then
-        relatency="*"${relatency}
-      fi
-    fi
-
-    local nodeName=$2
-
-    # Extract numerical values for conditions
-    download_value=$(echo "$REDownload" | awk -F ' ' '{print $1}')
-    upload_value=$(echo "$reupload" | awk -F ' ' '{print $1}')
-    relatency_value=$(echo "$relatency" | awk -F ' ' '{print $1}')
-
-    # Check conditions and adjust the display for relatency only
-    if (( $(echo "$relatency_value > 19.999" | bc -l) )); then
-      relatency=$(printf "%.0f" "$relatency_value")
-    elif (( $(echo "$relatency_value > 9.999" | bc -l) )); then
-      relatency=$(printf "%.1f" "$relatency_value")
-    elif (( $(echo "$relatency_value > 4.999" | bc -l) )); then
-      relatency=$(printf "%.2f" "$relatency_value")
-    else
-      relatency=$(printf "%3i" "$relatency_value")
-    fi
-
-    temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
-    if [[ $(bc <<< "$temp > 0") -eq 1 ]]; then
-      printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
-    fi
-  else
-    local cerror="ERROR"
-  fi
+	        temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
+	        if [[ $(awk -v num1=${temp} -v num2=0 'BEGIN{print(num1>num2)?"1":"0"}') -eq 1 ]]; then
+	        	printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
+	        fi
+		else
+	        local cerror="ERROR"
+		fi
 	else
 		temp=$(python3 speedtest.py --secure --server $1 --share 2>&1)
 		is_down=$(echo "$temp" | grep 'Download') 
@@ -243,6 +223,7 @@ speed_test(){
 		fi
 	fi
 }
+
 
 print_speedtest() {
 	echo "" | tee -a $log
