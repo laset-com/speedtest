@@ -179,36 +179,42 @@ delete() {
 
 speed_test(){
 	if [[ $1 == '' ]]; then
-		temp=$(python3 speedtest.py --secure --share 2>&1)
-		is_down=$(echo "$temp" | grep 'Download')
-		result_speed=$(echo "$temp" | awk -F ' ' '/results/{print $3}')
-		if [[ ${is_down} ]]; then
-	        local REDownload=$(echo "$temp" | awk -F ':' '/Download/{print $2}')
-	        local reupload=$(echo "$temp" | awk -F ':' '/Upload/{print $2}')
-	        local relatency=$(echo "$temp" | awk -F ':' '/Hosted/{print $2}')
+	  temp=$(python3 speedtest.py --secure --share 2>&1)
+  is_down=$(echo "$temp" | grep 'Download')
+  result_speed=$(echo "$temp" | awk -F ' ' '/results/{print $3}')
 
-	        temp=$(echo "$relatency" | awk -F '.' '{print $1}')
-        	if [[ ${temp} -gt 50 ]]; then
-            	relatency="*"${relatency}
-        	fi
-	        local nodeName=$2
+  if [[ ${is_down} ]]; then
+    local REDownload=$(echo "$temp" | awk -F ':' '/Download/{print $2}')
+    local reupload=$(echo "$temp" | awk -F ':' '/Upload/{print $2}')
+    local relatency=$(echo "$temp" | awk -F ':' '/Hosted/{print $2}')
 
-	        relatency_value=$(echo "$relatency" | awk -F ' ' '{print $1}')
-	        # Check conditions and adjust the display for relatency only
-	        if (( relatency_value > 20 )); then
-	        relatency=$(printf "%.0f" "$relatency_value")
-	        elif (( relatency_value > 10 )); then
-	        relatency=$(printf "%.1f" "$relatency_value")
-	        elif (( relatency_value > 5 )); then
-	        relatency=$(printf "%.2f" "$relatency_value")
-	        else
-	        relatency=$(printf "%3i" "$relatency_value")
-	        fi
+    temp=$(echo "$relatency" | awk -F '.' '{print $1}')
+    if ((temp > 50)); then
+      relatency="*"${relatency}
+    fi
 
-	        temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
-	        if [[ $(awk -v num1=${temp} -v num2=0 'BEGIN{print(num1>num2)?"1":"0"}') -eq 1 ]]; then
-	        	printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
-	        fi
+    local nodeName=$2
+
+    # Extract numerical values for conditions
+    download_value=$(echo "$REDownload" | awk -F ' ' '{print $1}')
+    upload_value=$(echo "$reupload" | awk -F ' ' '{print $1}')
+    relatency_value=$(echo "$relatency" | awk -F ' ' '{print $1}')
+
+    # Check conditions and adjust the display for relatency only
+    if ((relatency_value > 20)); then
+      relatency=$(printf "%.0f" "$relatency_value")
+    elif ((relatency_value > 10)); then
+      relatency=$(printf "%.1f" "$relatency_value")
+    elif ((relatency_value > 5)); then
+      relatency=$(printf "%.2f" "$relatency_value")
+    else
+      relatency=$(printf "%3i" "$relatency_value")
+    fi
+
+    temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
+    if ((temp > 0)); then
+      printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
+    fi
 		else
 	        local cerror="ERROR"
 		fi
