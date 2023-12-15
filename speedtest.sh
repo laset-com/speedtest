@@ -1041,7 +1041,8 @@ sharetest() {
 	'haste' )
 		share_link=$( curl -X POST -s -d "$(cat $log)" https://hastebin.com/documents | awk -F '"' '{print "https://hastebin.com/"$4}' );;
 	'clbin' )
-		share_link=$( curl -sF 'clbin=<-' https://clbin.com < $log );;
+		#share_link=$( curl -sF 'clbin=<-' https://clbin.com < $log );;
+		share_link=$( curl -sF 'sprunge=<-' https://sprunge.us < $log );;
 	esac
 
 	# print result info
