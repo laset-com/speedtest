@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-bench_v="v1.7.3"
-bench_d="2023-10-27"
+bench_v="v1.7.4"
+bench_d="2023-12-15"
 about() {
 	echo ""
 	echo " ========================================================= "
@@ -1035,15 +1035,18 @@ sharetest() {
 	echo " - $result_speed" | tee -a $log
 	log_preupload
 	case $1 in
-	'ubuntu')
-		share_link=$( curl -v --data-urlencode "content@$log_up" -d "poster=speedtest.sh" -d "syntax=text" "https://paste.ubuntu.com" 2>&1 | \
-			grep "Location" | awk '{print "https://paste.ubuntu.com"$3}' );;
-	'haste' )
-		share_link=$( curl -X POST -s -d "$(cat $log)" https://hastebin.com/documents | awk -F '"' '{print "https://hastebin.com/"$4}' );;
+	#'ubuntu')
+	#	share_link=$( curl -v --data-urlencode "content@$log_up" -d "poster=speedtest.sh" -d "syntax=text" "https://paste.ubuntu.com" 2>&1 | \
+	#		grep "Location" | awk '{print "https://paste.ubuntu.com"$3}' );;
+	#'haste' )
+	#	share_link=$( curl -X POST -s -d "$(cat $log)" https://hastebin.com/documents | awk -F '"' '{print "https://hastebin.com/"$4}' );;
 	'clbin' )
 		#share_link=$( curl -sF 'clbin=<-' https://clbin.com < $log );;
-		share_link=$( curl -sF 'sprunge=<-' https://sprunge.us < $log );;
+		sprunge_link=$(curl -sF 'sprunge=<-' https://sprunge.us < $log);;
 	esac
+
+	# Replace "http://" with "https://"
+	share_link=$(echo "$sprunge_link" | sed 's/http:/https:/')
 
 	# print result info
 	echo " - $GEEKBENCH_URL" | tee -a $log
