@@ -179,7 +179,7 @@ delete() {
 
 speed_test(){
 	if [[ $1 == '' ]]; then
-  temp=$(python3 speedtest.py --secure --share 2>&1)
+temp=$(python3 speedtest.py --secure --share 2>&1)
   is_down=$(echo "$temp" | grep 'Download')
   result_speed=$(echo "$temp" | awk -F ' ' '/results/{print $3}')
 
