@@ -190,7 +190,7 @@ speed_test(){
 
     if [[ $relatency == *"Hosted"* ]]; then
       relatency=$(echo "$relatency" | awk -F '.' '{print $1}')
-      if awk -v val="$relatency" 'BEGIN { exit !(val > 50) }'; then
+      if [[ $(bc <<< "$relatency > 50") -eq 1 ]]; then
         relatency="*"${relatency}
       fi
     fi
@@ -203,18 +203,18 @@ speed_test(){
     relatency_value=$(echo "$relatency" | awk -F ' ' '{print $1}')
 
     # Check conditions and adjust the display for relatency only
-    if awk -v val="$relatency_value" 'BEGIN { exit !(val > 20000) }'; then
-      relatency=$(echo "$relatency_value / 1000" | awk '{printf "%.0f", $1}')
-    elif awk -v val="$relatency_value" 'BEGIN { exit !(val > 10000) }'; then
-      relatency=$(echo "$relatency_value / 1000" | awk '{printf "%.1f", $1}')
-    elif awk -v val="$relatency_value" 'BEGIN { exit !(val > 5000) }'; then
-      relatency=$(echo "$relatency_value / 1000" | awk '{printf "%.2f", $1}')
+    if [[ $(bc <<< "$relatency_value > 20000") -eq 1 ]]; then
+      relatency=$(bc <<< "scale=0; $relatency_value / 1000")
+    elif [[ $(bc <<< "$relatency_value > 10000") -eq 1 ]]; then
+      relatency=$(bc <<< "scale=1; $relatency_value / 1000")
+    elif [[ $(bc <<< "$relatency_value > 5000") -eq 1 ]]; then
+      relatency=$(bc <<< "scale=2; $relatency_value / 1000")
     else
-      relatency=$(printf "%3i" "$((relatency_value / 1000))")
+      relatency=$(printf "%3i" "$(bc <<< "$relatency_value / 1000")")
     fi
 
     temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
-    if awk -v val="$temp" 'BEGIN { exit !(val > 0) }'; then
+    if [[ $(bc <<< "$temp > 0") -eq 1 ]]; then
       printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
     fi
   else
