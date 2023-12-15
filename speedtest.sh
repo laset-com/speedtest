@@ -179,7 +179,7 @@ delete() {
 
 speed_test(){
 	if [[ $1 == '' ]]; then
-	  temp=$(python3 speedtest.py --secure --share 2>&1)
+  temp=$(python3 speedtest.py --secure --share 2>&1)
   is_down=$(echo "$temp" | grep 'Download')
   result_speed=$(echo "$temp" | awk -F ' ' '/results/{print $3}')
 
@@ -201,11 +201,11 @@ speed_test(){
     relatency_value=$(echo "$relatency" | awk -F ' ' '{print $1}')
 
     # Check conditions and adjust the display for relatency only
-    if awk -v value="$relatency_value" 'BEGIN { exit !(value > 20) }'; then
+    if ((relatency_value > 20000)); then
       relatency=$(printf "%.0f" "$relatency_value")
-    elif awk -v value="$relatency_value" 'BEGIN { exit !(value > 10) }'; then
+    elif ((relatency_value > 10000)); then
       relatency=$(printf "%.1f" "$relatency_value")
-    elif awk -v value="$relatency_value" 'BEGIN { exit !(value > 5) }'; then
+    elif ((relatency_value > 5000)); then
       relatency=$(printf "%.2f" "$relatency_value")
     else
       relatency=$(printf "%3i" "$relatency_value")
