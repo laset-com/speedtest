@@ -201,11 +201,11 @@ speed_test(){
     relatency_value=$(echo "$relatency" | awk -F ' ' '{print $1}')
 
     # Check conditions and adjust the display for relatency only
-    if ((relatency_value > 20)); then
+    if awk -v value="$relatency_value" 'BEGIN { exit !(value > 20) }'; then
       relatency=$(printf "%.0f" "$relatency_value")
-    elif ((relatency_value > 10)); then
+    elif awk -v value="$relatency_value" 'BEGIN { exit !(value > 10) }'; then
       relatency=$(printf "%.1f" "$relatency_value")
-    elif ((relatency_value > 5)); then
+    elif awk -v value="$relatency_value" 'BEGIN { exit !(value > 5) }'; then
       relatency=$(printf "%.2f" "$relatency_value")
     else
       relatency=$(printf "%3i" "$relatency_value")
@@ -215,9 +215,9 @@ speed_test(){
     if ((temp > 0)); then
       printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
     fi
-		else
-	        local cerror="ERROR"
-		fi
+  else
+    local cerror="ERROR"
+  fi
 	else
 		temp=$(python3 speedtest.py --secure --server $1 --share 2>&1)
 		is_down=$(echo "$temp" | grep 'Download') 
