@@ -1072,19 +1072,14 @@ get_ip_whois_org_name(){
 }
 
 pingtest() {
-	local ping_link=$(echo ${1#*//} | cut -d"/" -f1)
-
-	# Send three pings and capture the output
-	local ping_output=$(ping -w 1 -c 3 -q $ping_link | grep 'rtt')
-
-	# Extract the avg value from the output
-	local ping_avg=$(echo "$ping_output" | awk -F'/' '{printf "%.3f", $6}')
+	local ping_link=$( echo ${1#*//} | cut -d"/" -f1 )
+	local ping_ms=$( ping -w 1 -c 1 -q $ping_link | grep 'rtt' | cut -d"/" -f5 )
 
 	# get download speed and print
-	if [[ $ping_avg == "" ]]; then
-	  printf "ping error!"
+	if [[ $ping_ms == "" ]]; then
+		printf "ping error!"
 	else
-	  printf "%3i ms" "${ping_avg%.*}"
+		printf "%3i.%s ms" "${ping_ms%.*}" "${ping_ms#*.}"
 	fi
 }
 
