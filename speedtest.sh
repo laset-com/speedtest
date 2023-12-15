@@ -1084,16 +1084,7 @@ pingtest() {
 	if [[ $ping_avg == "" ]]; then
 	  printf "ping error!"
 	else
-	  # Check conditions and adjust the display
-	  if (( $(echo "$ping_avg > 19.999" | bc -l) )); then
-	   printf "%d ms" "${ping_avg%.*}"
-	  elif (( $(echo "$ping_avg > 9.999" | bc -l) )); then
-	   printf "%.1f ms" "$ping_avg"
-	  elif (( $(echo "$ping_avg > 4.999" | bc -l) )); then
-	  printf "%.2f ms" "$ping_avg"
-	  else
 	  printf "%3i ms" "${ping_avg%.*}"
-	  fi
 	fi
 }
 
