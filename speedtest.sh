@@ -203,14 +203,14 @@ speed_test(){
     relatency_value=$(echo "$relatency" | awk -F ' ' '{print $1}')
 
     # Check conditions and adjust the display for relatency only
-    if [[ $(bc <<< "$relatency_value > 20000") -eq 1 ]]; then
-      relatency=$(bc <<< "scale=0; $relatency_value / 1000")
-    elif [[ $(bc <<< "$relatency_value > 10000") -eq 1 ]]; then
-      relatency=$(bc <<< "scale=1; $relatency_value / 1000")
-    elif [[ $(bc <<< "$relatency_value > 5000") -eq 1 ]]; then
-      relatency=$(bc <<< "scale=2; $relatency_value / 1000")
+    if (( $(echo "$relatency_value > 19.999" | bc -l) )); then
+      relatency=$(printf "%.0f" "$relatency_value")
+    elif (( $(echo "$relatency_value > 9.999" | bc -l) )); then
+      relatency=$(printf "%.1f" "$relatency_value")
+    elif (( $(echo "$relatency_value > 4.999" | bc -l) )); then
+      relatency=$(printf "%.2f" "$relatency_value")
     else
-      relatency=$(printf "%3i" "$(bc <<< "$relatency_value / 1000")")
+      relatency=$(printf "%3i" "$relatency_value")
     fi
 
     temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
