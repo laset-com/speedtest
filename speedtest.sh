@@ -193,6 +193,18 @@ speed_test(){
         	fi
 	        local nodeName=$2
 
+	        relatency_value=$(echo "$relatency" | awk -F ' ' '{print $1}')
+	        # Check conditions and adjust the display for relatency only
+	        if (( $(echo "$relatency_value > 19.999" | bc -l) )); then
+	        relatency=$(printf "%.0f" "$relatency_value")
+	        elif (( $(echo "$relatency_value > 9.999" | bc -l) )); then
+	        relatency=$(printf "%.1f" "$relatency_value")
+	        elif (( $(echo "$relatency_value > 4.999" | bc -l) )); then
+	        relatency=$(printf "%.2f" "$relatency_value")
+	        else
+	        relatency=$(printf "%3i" "$relatency_value")
+	        fi
+
 	        temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
 	        if [[ $(awk -v num1=${temp} -v num2=0 'BEGIN{print(num1>num2)?"1":"0"}') -eq 1 ]]; then
 	        	printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
@@ -1109,16 +1121,7 @@ pingtest() {
 	if [[ $ping_avg == "" ]]; then
   	  printf "ping error!"
 	else
-	# Check conditions and adjust the display
-	if [[ ${#ping_avg} -gt 19 ]]; then
-	  printf "%s ms" "$ping_avg"
-	elif [[ ${#ping_avg} -gt 9 ]]; then
-	  printf "%s ms" "${ping_avg:0:1}"
-	elif [[ ${#ping_avg} -gt 5 ]]; then
-	  printf "%s.%s ms" "${ping_avg:0:2}" "${ping_avg#*.}"
-	else
 	  printf "%3i.%s ms" "$ping_avg" "${ping_avg#*.}"
-	fi
 	fi
 }
 
