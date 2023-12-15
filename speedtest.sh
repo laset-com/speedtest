@@ -1101,7 +1101,7 @@ pingtest() {
 	if [[ $ping_avg == "" ]]; then
   	  printf "ping error!"
 	else
-	  printf "%3i.%s ms" "$ping_avg" "${ping_avg#*.}"
+	  printf "%d.%s ms" "${ping_avg%.*}" "${ping_avg#*.}"
 	fi
 }
 
