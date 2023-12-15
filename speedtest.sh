@@ -204,11 +204,11 @@ speed_test(){
 
     # Check conditions and adjust the display for relatency only
     if ((relatency_value > 20000)); then
-      relatency=$(printf "%.0f" "$((relatency_value / 1000))")
+      relatency=$(echo "scale=0; $relatency_value / 1000" | bc)
     elif ((relatency_value > 10000)); then
-      relatency=$(printf "%.1f" "$((relatency_value / 1000))")
+      relatency=$(echo "scale=1; $relatency_value / 1000" | bc)
     elif ((relatency_value > 5000)); then
-      relatency=$(printf "%.2f" "$((relatency_value / 1000))")
+      relatency=$(echo "scale=2; $relatency_value / 1000" | bc)
     else
       relatency=$(printf "%3i" "$((relatency_value / 1000))")
     fi
