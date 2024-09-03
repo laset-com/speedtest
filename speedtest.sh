@@ -1036,13 +1036,13 @@ sharetest() {
 	echo " - $result_speed" | tee -a $log
 	log_preupload
 	case $1 in
-	'ubuntu')
-		share_link=$( curl -v --data-urlencode "content@$log_up" -d "poster=speedtest.sh" -d "syntax=text" "https://paste.ubuntu.com" 2>&1 | \
-			grep "Location" | awk '{print "https://paste.ubuntu.com"$3}' );;
+	#'ubuntu')
+	#	share_link=$( curl -v --data-urlencode "content@$log_up" -d "poster=speedtest.sh" -d "syntax=text" "https://paste.ubuntu.com" 2>&1 | \
+	#		grep "Location" | awk '{print "https://paste.ubuntu.com"$3}' );;
 	#'haste' )
 	#	share_link=$( curl -X POST -s -d "$(cat $log)" https://hastebin.com/documents | awk -F '"' '{print "https://hastebin.com/"$4}' );;
-	#'clbin' )
-		#share_link=$( curl -sF 'clbin=<-' https://clbin.com < $log );;
+	'clbin' )
+		share_link=$( curl -sF 'clbin=<-' https://clbin.com < $log );;
 		#sprunge_link=$(curl -sF 'sprunge=<-' https://sprunge.us < $log);;
 	esac
 
@@ -1126,7 +1126,7 @@ bench_all(){
 	next;
 	print_end_time;
 	cleanup;
-	sharetest clbin;
+	#sharetest clbin;
 }
 
 usa_bench(){
@@ -1145,7 +1145,7 @@ usa_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	sharetest clbin;
+	#sharetest clbin;
 }
 
 in_bench(){
@@ -1164,7 +1164,7 @@ in_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	sharetest clbin;
+	#sharetest clbin;
 }
 
 europe_bench(){
@@ -1183,7 +1183,7 @@ europe_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	sharetest clbin;
+	#sharetest clbin;
 }
 
 asia_bench(){
@@ -1202,7 +1202,7 @@ asia_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	sharetest clbin;
+	#sharetest clbin;
 }
 
 china_bench(){
@@ -1221,7 +1221,7 @@ china_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	sharetest clbin;
+	#sharetest clbin;
 }
 
 sa_bench(){
@@ -1240,7 +1240,7 @@ sa_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	sharetest clbin;
+	#sharetest clbin;
 }
 
 au_bench(){
@@ -1259,7 +1259,7 @@ au_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	sharetest clbin;
+	#sharetest clbin;
 }
 
 ukraine_bench(){
@@ -1278,7 +1278,7 @@ ukraine_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	sharetest clbin;
+	#sharetest clbin;
 }
 lviv_bench(){
 	region_name="Lviv"
@@ -1296,7 +1296,7 @@ lviv_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	sharetest clbin;
+	#sharetest clbin;
 }
 meast_bench(){
 	region_name="Middle-East"
@@ -1314,7 +1314,7 @@ meast_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	sharetest clbin;
+	#sharetest clbin;
 }
 
 log="$HOME/speedtest.log"
