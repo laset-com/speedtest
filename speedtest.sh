@@ -1041,8 +1041,8 @@ sharetest() {
 	#		grep "Location" | awk '{print "https://paste.ubuntu.com"$3}' );;
 	#'haste' )
 	#	share_link=$( curl -X POST -s -d "$(cat $log)" https://hastebin.com/documents | awk -F '"' '{print "https://hastebin.com/"$4}' );;
-	'clbin' )
-		share_link=$( curl -sF 'clbin=<-' https://clbin.com < $log );;
+	#'clbin' )
+	#	share_link=$( curl -sF 'clbin=<-' https://clbin.com < $log );;
 		#sprunge_link=$(curl -sF 'sprunge=<-' https://sprunge.us < $log);;
 	esac
 
@@ -1051,7 +1051,7 @@ sharetest() {
 
 	# print result info
 	echo " - $GEEKBENCH_URL" | tee -a $log
-	echo " - $share_link"
+	#echo " - $share_link"
 	echo ""
 	rm -f $log_up
 
@@ -1126,7 +1126,7 @@ bench_all(){
 	next;
 	print_end_time;
 	cleanup;
-	#sharetest clbin;
+	sharetest clbin;
 }
 
 usa_bench(){
@@ -1145,7 +1145,7 @@ usa_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	#sharetest clbin;
+	sharetest clbin;
 }
 
 in_bench(){
@@ -1164,7 +1164,7 @@ in_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	#sharetest clbin;
+	sharetest clbin;
 }
 
 europe_bench(){
@@ -1183,7 +1183,7 @@ europe_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	#sharetest clbin;
+	sharetest clbin;
 }
 
 asia_bench(){
@@ -1202,7 +1202,7 @@ asia_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	#sharetest clbin;
+	sharetest clbin;
 }
 
 china_bench(){
@@ -1221,7 +1221,7 @@ china_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	#sharetest clbin;
+	sharetest clbin;
 }
 
 sa_bench(){
@@ -1240,7 +1240,7 @@ sa_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	#sharetest clbin;
+	sharetest clbin;
 }
 
 au_bench(){
@@ -1259,7 +1259,7 @@ au_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	#sharetest clbin;
+	sharetest clbin;
 }
 
 ukraine_bench(){
@@ -1278,7 +1278,7 @@ ukraine_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	#sharetest clbin;
+	sharetest clbin;
 }
 lviv_bench(){
 	region_name="Lviv"
@@ -1296,7 +1296,7 @@ lviv_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	#sharetest clbin;
+	sharetest clbin;
 }
 meast_bench(){
 	region_name="Middle-East"
@@ -1314,7 +1314,7 @@ meast_bench(){
 	next;
 	print_end_time;
 	cleanup;
-	#sharetest clbin;
+	sharetest clbin;
 }
 
 log="$HOME/speedtest.log"
