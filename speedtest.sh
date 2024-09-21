@@ -450,7 +450,6 @@ print_speedtest_lviv() {
 	speed_test '2445' 'Ukraine, Lviv (KOMiTEX) ' 'http://speedtest.komitex.net'
 	speed_test '12786' 'Ukraine, Lviv (ASTRA)   ' 'http://speedtest.astra.in.ua'
 	speed_test '1204' 'Ukraine, Lviv (Network) ' 'http://speedtest.network.lviv.ua'
-	speed_test '26293' 'Ukraine, Lviv (LinkCom) ' 'http://st.lc.lviv.ua'
 	speed_test '34751' 'Ukraine, Lviv (Wenet)   ' 'http://vds.wenet.lviv.ua'
 	 
 	rm -rf speedtest.py
