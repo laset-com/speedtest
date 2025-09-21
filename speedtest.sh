@@ -780,6 +780,7 @@ virt_check(){
 
 	virtualx=$(dmesg) 2>/dev/null
 	
+	# Перевірка на контейнери
 	if grep docker /proc/1/cgroup -qa; then
 	    virtual="Docker"
 	elif grep lxc /proc/1/cgroup -qa; then
@@ -788,6 +789,7 @@ virt_check(){
 		virtual="Lxc"
 	elif [[ -f /proc/user_beancounters ]]; then
 		virtual="OpenVZ"
+	# Перевірка на віртуальні машини
 	elif [[ "$virtualx" == *kvm-clock* ]]; then
 		virtual="KVM"
 	elif [[ "$cname" == *KVM* ]]; then
@@ -807,6 +809,25 @@ virt_check(){
 			else
 				virtual="Microsoft Virtual Machine"
 			fi
+		fi
+	# Додаткові перевірки для ARM64
+	elif [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
+		# Перевірка на KVM для ARM64
+		if grep -q "KVM" /proc/cpuinfo 2>/dev/null || grep -q "kvm" /proc/interrupts 2>/dev/null; then
+			virtual="KVM"
+		# Перевірка на Xen для ARM64
+		elif grep -q "xen" /proc/interrupts 2>/dev/null || [[ -d /proc/xen ]]; then
+			virtual="Xen"
+		# Перевірка на віртуалізацію через /sys
+		elif [[ -f /sys/class/dmi/id/product_name ]]; then
+			product_name=$(cat /sys/class/dmi/id/product_name 2>/dev/null)
+			if [[ "$product_name" == *"Virtual"* || "$product_name" == *"VM"* || "$product_name" == *"Cloud"* ]]; then
+				virtual="VM"
+			else
+				virtual="Dedicated"
+			fi
+		else
+			virtual="Dedicated"
 		fi
 	else
 		virtual="Dedicated"
@@ -864,8 +885,39 @@ print_system_info() {
 }
 
 get_system_info() {
-	cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
-	cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
+	# Визначення моделі процесора з підтримкою ARM64
+	if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
+		# Спроба отримати модель процесора для ARM64
+		cname=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
+		
+		# Якщо модель не визначена, спробуємо інші поля
+		if [[ -z "$cname" ]]; then
+			cname=$(awk -F: '/Hardware/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
+		fi
+		
+		# Якщо все ще не визначено, спробуємо отримати з інших джерел
+		if [[ -z "$cname" ]]; then
+			if [[ -f /sys/devices/virtual/dmi/id/product_name ]]; then
+				cname=$(cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null)
+			fi
+		fi
+		
+		# Якщо все ще не визначено, встановлюємо "Unknown ARM64 Processor"
+		if [[ -z "$cname" ]]; then
+			cname="Unknown ARM64 Processor"
+		fi
+	else
+		# Стандартне визначення для x86_64
+		cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+	fi
+	
+	# Визначення кількості ядер з підтримкою ARM64
+	if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
+		cores=$(grep -c ^processor /proc/cpuinfo)
+	else
+		cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
+	fi
+	
 	freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
 	corescache=$( awk -F: '/cache size/ {cache=$2} END {print cache}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
 	cpu_aes=$(cat /proc/cpuinfo | grep aes)
