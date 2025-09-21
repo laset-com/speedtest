@@ -30,7 +30,7 @@ def GetIpipInfo(para):
 
 def GetGeoioInfo(para):
     try:
-        # Додаємо таймаут для запобігання зависання на повільних з'єднаннях
+        # Add a timeout to prevent hanging on slow connections
         with urllib.request.urlopen('http://ip-api.com/json', timeout=10) as ip_api:
             ijson = json.loads(ip_api.read().decode('utf-8'))
             if para in ijson:
@@ -65,7 +65,7 @@ def GetDiskInfo(para):
             if disk[5] in cuts:
                 continue
             diskInfo = [disk[1], disk[2], disk[3], disk[4], disk[5]]
-            break  # Беремо перший підходящий диск
+            break  # Take the first suitable disk
 
         if not diskInfo:
             print("Error: No suitable disk found")
@@ -82,20 +82,20 @@ def ExecShell(cmdstring, cwd=None, timeout=None, shell=True):
         else:
             cmdstring_list = shlex.split(cmdstring)
         
-        # Перевірка наявності команди grep (для ARM64 та інших систем)
+        # Check for the presence of the grep command (for ARM64 and other systems)
         if 'grep' in cmdstring and shell:
-            # Перевірка наявності GNU grep
+            # Check for GNU grep
             check_grep = subprocess.run("which grep", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if check_grep.returncode != 0:
-                # Спробувати використати альтернативний підхід
+                # Try an alternative approach
                 if "df -h" in cmdstring:
-                    # Для команди df використовуємо Python для фільтрації
+                    # For the df command, use Python for filtering
                     df_cmd = "df -h -P"
                     df_proc = subprocess.Popen(df_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     stdout, stderr = df_proc.communicate()
                     if isinstance(stdout, bytes):
                         stdout = stdout.decode('utf-8')
-                    # Фільтруємо результати вручну
+                    # Filter results manually
                     filtered_lines = []
                     for line in stdout.split('\n'):
                         if '/' in line and 'tmpfs' not in line:
