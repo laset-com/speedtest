@@ -1,8 +1,8 @@
 # Speedtest
 
-https://bench.monster
+https://bench.laset.com
 
-`curl -sL bench.monster | bash`
+`curl -sL bench.laset.com | bash`
 
 # Credits 
 

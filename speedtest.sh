@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
 
-bench_v="v1.7.4"
-bench_d="2023-12-15"
+bench_v="v1.8.0"
+bench_d="2025-09-21"
 about() {
 	echo ""
 	echo " ========================================================= "
-	echo " \            Speedtest https://bench.monster            / "
+	echo " \            Speedtest https://bench.laset.com            / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
 	echo " \                  $bench_v    $bench_d                 / "
 	echo " ========================================================= "
 	echo ""
+}
+
+cleanup() {
+	# Видалення тимчасових файлів
+	rm -f speedtest.py tools.py 2>/dev/null
+	rm -rf $benchram 2>/dev/null
 }
 
 cancel() {
@@ -19,10 +25,20 @@ cancel() {
 	echo " Cleanup ..."
 	cleanup;
 	echo " Done"
-	exit
+	exit 0
+}
+
+error_exit() {
+	echo ""
+	echo " Error: $1"
+	echo " Cleanup ..."
+	cleanup;
+	echo " Done"
+	exit 1
 }
 
 trap cancel SIGINT
+trap 'error_exit "Unexpected error occurred"' SIGTERM
 
 benchram="$HOME/tmpbenchram"
 NULL="/dev/null"
@@ -35,10 +51,16 @@ if [[ $ARCH = *x86_64* ]]; then
 elif [[ $ARCH = *i?86* ]]; then
 	# host is running a 32-bit kernel
 	ARCH="x86"
+elif [[ $ARCH = *aarch64* || $ARCH = *arm64* ]]; then
+	# host is running ARM64 architecture
+	ARCH="arm64"
+elif [[ $ARCH = *armv7* || $ARCH = *armhf* ]]; then
+	# host is running ARM 32-bit architecture
+	ARCH="arm"
 else
 	# host is running a non-supported kernel
-	echo -e "Architecture not supported."
-	exit 1
+	echo -e "Architecture $ARCH might have limited support."
+	ARCH="unknown"
 fi
 
 echostyle(){
@@ -53,19 +75,29 @@ echostyle(){
 benchinit() {
 	# check release
 	if [ -f /etc/redhat-release ]; then
-	    release="centos"
+		if grep -q "AlmaLinux" /etc/redhat-release; then
+			release="almalinux"
+		else
+			release="centos"
+		fi
+	elif [ -f /etc/almalinux-release ]; then
+		release="almalinux"
 	elif cat /etc/issue | grep -Eqi "debian"; then
-	    release="debian"
+		release="debian"
 	elif cat /etc/issue | grep -Eqi "ubuntu"; then
-	    release="ubuntu"
+		release="ubuntu"
 	elif cat /etc/issue | grep -Eqi "centos|red hat|redhat"; then
-	    release="centos"
+		release="centos"
+	elif cat /etc/issue | grep -Eqi "almalinux"; then
+		release="almalinux"
 	elif cat /proc/version | grep -Eqi "debian"; then
-	    release="debian"
+		release="debian"
 	elif cat /proc/version | grep -Eqi "ubuntu"; then
-	    release="ubuntu"
+		release="ubuntu"
 	elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
-	    release="centos"
+		release="centos"
+	elif cat /proc/version | grep -Eqi "almalinux"; then
+		release="almalinux"
 	fi
 
 	# check OS
@@ -78,64 +110,43 @@ benchinit() {
 	#echo -ne "\e[1A"; echo -ne "\e[0K\r"
 	
 	# check root
-	[[ $EUID -ne 0 ]] && echo -e "Error: This script must be run as root!" && exit 1
-	
-
-	# check python
-	if  [ ! -e '/usr/bin/python3' ]; then
-	        echo " Installing Python3 ..."
-	            if [ "${release}" == "centos" ]; then
-	                    yum -y install python3 > /dev/null 2>&1
-			    alternatives --set python3 /usr/bin/python3 > /dev/null 2>&1
-	                else
-	                    apt-get -y install python3 > /dev/null 2>&1
-	                fi
-	        echo -ne "\e[1A"; echo -ne "\e[0K\r" 
-	fi
-
-	# check curl
-	if  [ ! -e '/usr/bin/curl' ]; then
-	        echo " Installing Curl ..."
-	            if [ "${release}" == "centos" ]; then
-	                yum -y install curl > /dev/null 2>&1
-	            else
-	                apt-get -y install curl > /dev/null 2>&1
-	            fi
-		echo -ne "\e[1A"; echo -ne "\e[0K\r"
-	fi
-
-	# check wget
-	if  [ ! -e '/usr/bin/wget' ]; then
-	        echo " Installing Wget ..."
-	            if [ "${release}" == "centos" ]; then
-	                yum -y install wget > /dev/null 2>&1
-	            else
-	                apt-get -y install wget > /dev/null 2>&1
-	            fi
-		echo -ne "\e[1A"; echo -ne "\e[0K\r"
+	if [[ $EUID -ne 0 ]]; then
+		error_exit "This script must be run as root!"
 	fi
 	
-	# check bzip2
-	if  [ ! -e '/usr/bin/bzip2' ]; then
-	        echo " Installing bzip2 ..."
-	            if [ "${release}" == "centos" ]; then
-	                yum -y install bzip2 > /dev/null 2>&1
-	            else
-	                apt-get -y install bzip2 > /dev/null 2>&1
-	            fi
-		echo -ne "\e[1A"; echo -ne "\e[0K\r"
+
+	# Function to install packages based on distribution
+	install_package() {
+		local package_name=$1
+		local package_path=$2
+		
+		if [ ! -e "$package_path" ]; then
+			echo " Installing $package_name ..."
+			if [[ "${release}" == "centos" || "${release}" == "almalinux" ]]; then
+				dnf -y install $package_name > /dev/null 2>&1 || yum -y install $package_name > /dev/null 2>&1
+			elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
+				apt-get update -y > /dev/null 2>&1
+				apt-get -y install $package_name > /dev/null 2>&1
+			else
+				echo " Unknown distribution, trying apt-get and yum..."
+				apt-get -y install $package_name > /dev/null 2>&1 || yum -y install $package_name > /dev/null 2>&1
+			fi
+			echo -ne "\e[1A"; echo -ne "\e[0K\r"
+		fi
+	}
+
+	# Check and install required packages
+	install_package "python3" "/usr/bin/python3"
+	
+	# Set python3 as default if needed (for RHEL-based systems)
+	if [[ "${release}" == "centos" || "${release}" == "almalinux" ]] && [ -e '/usr/bin/python3' ]; then
+		alternatives --set python3 /usr/bin/python3 > /dev/null 2>&1 || true
 	fi
 	
-	# check tar
-	if  [ ! -e '/usr/bin/tar' ]; then
-	        echo " Installing tar ..."
-	            if [ "${release}" == "centos" ]; then
-	                yum -y install tar > /dev/null 2>&1
-	            else
-	                apt-get -y install tar > /dev/null 2>&1
-	            fi
-		echo -ne "\e[1A"; echo -ne "\e[0K\r"
-	fi
+	install_package "curl" "/usr/bin/curl"
+	install_package "wget" "/usr/bin/wget"
+	install_package "bzip2" "/usr/bin/bzip2"
+	install_package "tar" "/usr/bin/tar"
 
 	# install speedtest-cli
 	if  [ ! -e 'speedtest.py' ]; then
