@@ -514,6 +514,10 @@ geekbench4() {
 	echo "" | tee -a $log
 	echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..."
 
+	# Початок вимірювання steal time
+	local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
+	local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
+	
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
 	curl -s https://cdn.geekbench.com/Geekbench-4.4.4-Linux.tar.gz  | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
@@ -525,6 +529,21 @@ geekbench4() {
 	GEEKBENCH_SCORES=$(curl -s $GEEKBENCH_URL | grep "span class='score'")
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $7 }')
+	
+	# Кінець вимірювання steal time
+	local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
+	local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
+	
+	# Обчислення steal time
+	local steal_diff=$((steal_end - steal_start))
+	local total_diff=$((total_end - total_start))
+	
+	# Обчислення відсотка steal time
+	if [[ $total_diff -gt 0 ]]; then
+		STEAL_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
+	else
+		STEAL_PERCENT="0.00"
+	fi
 	
 	if [[ $GEEKBENCH_SCORES_SINGLE -le 1700 ]]; then
 		grank="(POOR)"
@@ -547,6 +566,7 @@ geekbench4() {
 	echo "" | tee -a $log
 	echo -e "  Single Core : $GEEKBENCH_SCORES_SINGLE  $grank" | tee -a $log
 	echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
+	echo -e "    CPU Steal : ${STEAL_PERCENT}%" | tee -a $log
 	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" >> geekbench_claim.url 2> /dev/null
 	echo "" | tee -a $log
 	echo -e " Cooling down..."
@@ -565,6 +585,10 @@ geekbench5() {
 	echo "" | tee -a $log
 	echo -e " Performing Geekbench v5 CPU Benchmark test. Please wait..."
 
+	# Початок вимірювання steal time
+	local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
+	local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
+
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
 	if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
@@ -582,6 +606,21 @@ geekbench5() {
 	GEEKBENCH_SCORES=$(curl -s $GEEKBENCH_URL | grep "div class='score'")
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
+
+	# Кінець вимірювання steal time
+	local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
+	local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
+	
+	# Обчислення steal time
+	local steal_diff=$((steal_end - steal_start))
+	local total_diff=$((total_end - total_start))
+	
+	# Обчислення відсотка steal time
+	if [[ $total_diff -gt 0 ]]; then
+		STEAL_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
+	else
+		STEAL_PERCENT="0.00"
+	fi
 	
 	if [[ $GEEKBENCH_SCORES_SINGLE -le 300 ]]; then
 		grank="(POOR)"
@@ -604,6 +643,7 @@ geekbench5() {
 	echo "" | tee -a $log
 	echo -e "  Single Core : $GEEKBENCH_SCORES_SINGLE  $grank" | tee -a $log
 	echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
+	echo -e "    CPU Steal : ${STEAL_PERCENT}%" | tee -a $log
 	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" >> geekbench_claim.url 2> /dev/null
 	echo "" | tee -a $log
 	echo -e " Cooling down..."
@@ -622,6 +662,10 @@ geekbench6() {
 	echo "" | tee -a $log
 	echo -e " Performing Geekbench v6 CPU Benchmark test. Please wait..."
 
+	# Початок вимірювання steal time
+	local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
+	local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
+
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
 	if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
@@ -639,6 +683,21 @@ geekbench6() {
 	GEEKBENCH_SCORES=$(curl -s $GEEKBENCH_URL | grep "div class='score'")
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
+
+	# Кінець вимірювання steal time
+	local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
+	local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
+	
+	# Обчислення steal time
+	local steal_diff=$((steal_end - steal_start))
+	local total_diff=$((total_end - total_start))
+	
+	# Обчислення відсотка steal time
+	if [[ $total_diff -gt 0 ]]; then
+		STEAL_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
+	else
+		STEAL_PERCENT="0.00"
+	fi
 	
 	if [[ $GEEKBENCH_SCORES_SINGLE -le 400 ]]; then
 		grank="(POOR)"
@@ -661,6 +720,7 @@ geekbench6() {
 	echo "" | tee -a $log
 	echo -e "  Single Core : $GEEKBENCH_SCORES_SINGLE  $grank" | tee -a $log
 	echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
+	echo -e "    CPU Steal : ${STEAL_PERCENT}%" | tee -a $log
 	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" >> geekbench_claim.url 2> /dev/null
 	echo "" | tee -a $log
 	echo -e " Cooling down..."
@@ -972,13 +1032,47 @@ averageio() {
 	printf "%s" "$ioavg"
 }
 
+measure_steal_time() {
+	# Вимірювання CPU steal time за вказаний період
+	local duration=$1
+	local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
+	local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
+	
+	sleep $duration
+	
+	local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
+	local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
+	
+	local steal_diff=$((steal_end - steal_start))
+	local total_diff=$((total_end - total_start))
+	
+	# Обчислення відсотка steal time
+	if [[ $total_diff -gt 0 ]]; then
+		local steal_percent=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
+		echo $steal_percent
+	else
+		echo "0.00"
+	fi
+}
+
 cpubench() {
 	if hash $1 2>$NULL; then
+		# Вимірюємо steal time перед тестом
+		local steal_before=$(measure_steal_time 1)
+		
+		# Виконуємо тест продуктивності
 		io=$( ( dd if=/dev/zero bs=512K count=$2 | $1 ) 2>&1 | grep 'copied' | awk -F, '{io=$NF} END {print io}' )
+		
+		# Вимірюємо steal time після тесту
+		local steal_after=$(measure_steal_time 1)
+		
+		# Зберігаємо середнє значення steal time
+		steal_avg=$(awk "BEGIN {printf \"%.2f\", ($steal_before + $steal_after) / 2}")
+		
 		if [[ $io != *"."* ]]; then
-			printf "%4i %s" "${io% *}" "${io##* }"
+			printf "%4i %s (Steal: %s%%)" "${io% *}" "${io##* }" "$steal_avg"
 		else
-			printf "%4i.%s" "${io%.*}" "${io#*.}"
+			printf "%4i.%s (Steal: %s%%)" "${io%.*}" "${io#*.}" "$steal_avg"
 		fi
 	else
 		printf " %s not found on system." "$1"
