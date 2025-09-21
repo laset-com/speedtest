@@ -508,6 +508,8 @@ print_speedtest_china() {
 geekbench4() {
 	if [[ $ARCH = *x86* ]]; then # 32-bit
 	echo -e "\nGeekbench 4 cannot run on 32-bit architectures. Skipping the test"
+	elif [[ $ARCH = *aarch64* || $ARCH = *arm64* ]]; then # ARM64
+	echo -e "\nGeekbench 4 is not compatible with ARM64 architectures. Skipping the test"
 	else
 	echo "" | tee -a $log
 	echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..."
