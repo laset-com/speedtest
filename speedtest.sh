@@ -13,7 +13,7 @@ about() {
 }
 
 cleanup() {
-	# Видалення тимчасових файлів
+	# Remove temporary files
 	rm -f speedtest.py tools.py 2>/dev/null
 	rm -rf $benchram 2>/dev/null
 }
@@ -842,7 +842,7 @@ virt_check(){
 
 	virtualx=$(dmesg) 2>/dev/null
 	
-	# Перевірка на контейнери
+	# Check for containers
 	if grep docker /proc/1/cgroup -qa; then
 	    virtual="Docker"
 	elif grep lxc /proc/1/cgroup -qa; then
@@ -851,7 +851,7 @@ virt_check(){
 		virtual="Lxc"
 	elif [[ -f /proc/user_beancounters ]]; then
 		virtual="OpenVZ"
-	# Перевірка на віртуальні машини
+	# Check for virtual machines
 	elif [[ "$virtualx" == *kvm-clock* ]]; then
 		virtual="KVM"
 	elif [[ "$cname" == *KVM* ]]; then
@@ -872,15 +872,15 @@ virt_check(){
 				virtual="Microsoft Virtual Machine"
 			fi
 		fi
-	# Додаткові перевірки для ARM64
+	# Additional virtualization checks for ARM64
 	elif [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
-		# Перевірка на KVM для ARM64
+		# Check for KVM virtualization on ARM64
 		if grep -q "KVM" /proc/cpuinfo 2>/dev/null || grep -q "kvm" /proc/interrupts 2>/dev/null; then
 			virtual="KVM"
-		# Перевірка на Xen для ARM64
+		# Check for Xen virtualization on ARM64
 		elif grep -q "xen" /proc/interrupts 2>/dev/null || [[ -d /proc/xen ]]; then
 			virtual="Xen"
-		# Перевірка на віртуалізацію через /sys
+		# Check for virtualization via /sys interface
 		elif [[ -f /sys/class/dmi/id/product_name ]]; then
 			product_name=$(cat /sys/class/dmi/id/product_name 2>/dev/null)
 			if [[ "$product_name" == *"Virtual"* || "$product_name" == *"VM"* || "$product_name" == *"Cloud"* ]]; then
@@ -904,7 +904,7 @@ power_time_check(){
 }
 
 freedisk() {
-	# check free space
+	# Check available disk space
 	#spacename=$( df -m . | awk 'NR==2 {print $1}' )
 	#spacenamelength=$(echo ${spacename} | awk '{print length($0)}')
 	#if [[ $spacenamelength -gt 20 ]]; then
@@ -947,33 +947,33 @@ print_system_info() {
 }
 
 get_system_info() {
-	# Визначення моделі процесора з підтримкою ARM64
+	# Detect CPU model with ARM64 support
 	if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
-		# Спроба отримати модель процесора для ARM64
+		# Try to get CPU model for ARM64
 		cname=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
 		
-		# Якщо модель не визначена, спробуємо інші поля
+		# If model is not defined, try other fields
 		if [[ -z "$cname" ]]; then
 			cname=$(awk -F: '/Hardware/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
 		fi
 		
-		# Якщо все ще не визначено, спробуємо отримати з інших джерел
+		# If still not defined, try other sources
 		if [[ -z "$cname" ]]; then
 			if [[ -f /sys/devices/virtual/dmi/id/product_name ]]; then
 				cname=$(cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null)
 			fi
 		fi
 		
-		# Якщо все ще не визначено, встановлюємо "Unknown ARM64 Processor"
+		# If still not defined, set as "Unknown ARM64 Processor"
 		if [[ -z "$cname" ]]; then
 			cname="Unknown ARM64 Processor"
 		fi
 	else
-		# Стандартне визначення для x86_64
+		# Standard detection for x86_64
 		cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
 	fi
 	
-	# Визначення кількості ядер з підтримкою ARM64
+	# Detect number of cores with ARM64 support
 	if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
 		cores=$(grep -c ^processor /proc/cpuinfo)
 	else
@@ -1033,7 +1033,7 @@ averageio() {
 }
 
 measure_steal_time() {
-	# Вимірювання CPU steal time за вказаний період
+	# Measure CPU steal time for the specified period
 	local duration=$1
 	local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
 	local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
@@ -1046,7 +1046,7 @@ measure_steal_time() {
 	local steal_diff=$((steal_end - steal_start))
 	local total_diff=$((total_end - total_start))
 	
-	# Обчислення відсотка steal time
+	# Calculate steal time percentage
 	if [[ $total_diff -gt 0 ]]; then
 		local steal_percent=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
 		echo $steal_percent
@@ -1057,16 +1057,16 @@ measure_steal_time() {
 
 cpubench() {
 	if hash $1 2>$NULL; then
-		# Вимірюємо steal time перед тестом
+		# Measure steal time before the test
 		local steal_before=$(measure_steal_time 1)
 		
-		# Виконуємо тест продуктивності
+		# Run performance test
 		io=$( ( dd if=/dev/zero bs=512K count=$2 | $1 ) 2>&1 | grep 'copied' | awk -F, '{io=$NF} END {print io}' )
 		
-		# Вимірюємо steal time після тесту
+		# Measure steal time after the test
 		local steal_after=$(measure_steal_time 1)
 		
-		# Зберігаємо середнє значення steal time
+		# Save average steal time value
 		steal_avg=$(awk "BEGIN {printf \"%.2f\", ($steal_before + $steal_after) / 2}")
 		
 		if [[ $io != *"."* ]]; then
