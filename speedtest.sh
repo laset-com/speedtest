@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-bench_v="v1.8.0"
+bench_v="v1.8.1"
 bench_d="2025-09-21"
 about() {
 	echo ""
@@ -565,7 +565,13 @@ geekbench5() {
 
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
-	curl -s https://cdn.geekbench.com/Geekbench-5.5.1-Linux.tar.gz | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
+	if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
+		curl -s https://cdn.geekbench.com/Geekbench-5.5.1-LinuxARMPreview.tar.gz | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
+	elif [[ $(uname -m) == "riscv64" ]]; then
+		curl -s https://cdn.geekbench.com/Geekbench-5.5.1-LinuxRISCVPreview.tar.gz | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
+	else
+		curl -s https://cdn.geekbench.com/Geekbench-5.5.1-Linux.tar.gz | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
+	fi
 	GEEKBENCH_TEST=$($GEEKBENCH_PATH/geekbench5 2>/dev/null | grep "https://browser")
 	GEEKBENCH_URL=$(echo -e $GEEKBENCH_TEST | head -1)
 	GEEKBENCH_URL_CLAIM=$(echo $GEEKBENCH_URL | awk '{ print $2 }')
@@ -616,7 +622,13 @@ geekbench6() {
 
 	GEEKBENCH_PATH=$HOME/geekbench
 	mkdir -p $GEEKBENCH_PATH
-	curl -s https://cdn.geekbench.com/Geekbench-6.2.1-Linux.tar.gz | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
+	if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
+		curl -s https://cdn.geekbench.com/Geekbench-6.5.0-LinuxARMPreview.tar.gz | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
+	elif [[ $(uname -m) == "riscv64" ]]; then
+		curl -s https://cdn.geekbench.com/Geekbench-6.5.0-LinuxRISCVPreview.tar.gz | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
+	else
+		curl -s https://cdn.geekbench.com/Geekbench-6.5.0-Linux.tar.gz | tar xz --strip-components=1 -C $GEEKBENCH_PATH &>/dev/null
+	fi
 	GEEKBENCH_TEST=$($GEEKBENCH_PATH/geekbench6 2>/dev/null | grep "https://browser")
 	GEEKBENCH_URL=$(echo -e $GEEKBENCH_TEST | head -1)
 	GEEKBENCH_URL_CLAIM=$(echo $GEEKBENCH_URL | awk '{ print $2 }')
@@ -1037,8 +1049,8 @@ print_end_time() {
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.monster '$bench_v' '$bench_d' \n' $region_name | tee -a $log
-	printf " Usage : curl -sL bench.monster | bash -s -- -%s\n" $region_name | tee -a $log
+	printf ' Region: %s  https://bench.laset.com '$bench_v' '$bench_d' \n' $region_name | tee -a $log
+	printf " Usage : curl -sL bench.laset.com | bash -s -- -%s\n" $region_name | tee -a $log
 }
 
 sharetest() {
