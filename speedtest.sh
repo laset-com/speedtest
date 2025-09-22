@@ -556,9 +556,13 @@ geekbench4() {
     GEEKBENCH_URL_CLAIM=$(echo "$GEEKBENCH_URL" | awk '{ print $2 }')
     GEEKBENCH_URL=$(echo "$GEEKBENCH_URL" | awk '{ print $1 }')
     sleep 20
-    GEEKBENCH_SCORES=$(curl -s "$GEEKBENCH_URL" | grep "span class='score'")
-    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES" | awk -v FS="(>|<)" '{ print $3 }')
-    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | awk -v FS="(>|<)" '{ print $7 }')
+    # --- FIX: Ensure single and multi-core scores are extracted correctly ---
+    # Geekbench 4 typically uses 'span class='score'' for scores.
+    # We assume the first 'span class='score'' is single-core and the second is multi-core.
+    local GEEKBENCH_SCORES_RAW=$(curl -s "$GEEKBENCH_URL" | grep "span class='score'")
+    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES_RAW" | head -n 1 | awk -F'[<>]' '{print $3}')
+    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES_RAW" | tail -n 1 | awk -F'[<>]' '{print $3}')
+    # --- END FIX ---
     
     # End steal time measurement
     local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
@@ -575,17 +579,19 @@ geekbench4() {
         STEAL_PERCENT="0.00"
     fi
     
-    if [[ $GEEKBENCH_SCORES_SINGLE -le 1700 ]]; then
+    # Ensure scores are treated as integers for comparison
+    local single_score_int=${GEEKBENCH_SCORES_SINGLE:-0} # Default to 0 if empty
+    if [[ $single_score_int -le 1700 ]]; then
         grank="(POOR)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1700 && $GEEKBENCH_SCORES_SINGLE -le 2500 ]]; then
+    elif [[ $single_score_int -ge 1700 && $single_score_int -le 2500 ]]; then
         grank="(FAIR)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2500 && $GEEKBENCH_SCORES_SINGLE -le 3500 ]]; then
+    elif [[ $single_score_int -ge 2500 && $single_score_int -le 3500 ]]; then
         grank="(GOOD)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 3500 && $GEEKBENCH_SCORES_SINGLE -le 4500 ]]; then
+    elif [[ $single_score_int -ge 3500 && $single_score_int -le 4500 ]]; then
         grank="(VERY GOOD)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 4500 && $GEEKBENCH_SCORES_SINGLE -le 6000 ]]; then
+    elif [[ $single_score_int -ge 4500 && $single_score_int -le 6000 ]]; then
         grank="(EXCELLENT)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 6000 && $GEEKBENCH_SCORES_SINGLE -le 7000 ]]; then
+    elif [[ $single_score_int -ge 6000 && $single_score_int -le 7000 ]]; then
         grank="(THE BEAST)"
     else
         grank="(MONSTER)"
@@ -633,9 +639,12 @@ geekbench5() {
     GEEKBENCH_URL_CLAIM=$(echo "$GEEKBENCH_URL" | awk '{ print $2 }')
     GEEKBENCH_URL=$(echo "$GEEKBENCH_URL" | awk '{ print $1 }')
     sleep 20
-    GEEKBENCH_SCORES=$(curl -s "$GEEKBENCH_URL" | grep "div class='score'")
-    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES" | awk -v FS="(>|<)" '{ print $3 }')
-    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | awk -v FS="(<|>)" '{ print $7 }')
+    # --- FIX: Ensure single and multi-core scores are extracted correctly ---
+    # Geekbench 5/6 typically use 'span class='score-value'' for the actual scores
+    local GEEKBENCH_SCORES_RAW=$(curl -s "$GEEKBENCH_URL" | grep "span class='score-value'")
+    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES_RAW" | head -n 1 | awk -F'[<>]' '{print $3}')
+    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES_RAW" | tail -n 1 | awk -F'[<>]' '{print $3}')
+    # --- END FIX ---
 
     # End steal time measurement
     local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
@@ -652,17 +661,19 @@ geekbench5() {
         STEAL_PERCENT="0.00"
     fi
     
-    if [[ $GEEKBENCH_SCORES_SINGLE -le 300 ]]; then
+    # Ensure scores are treated as integers for comparison
+    local single_score_int=${GEEKBENCH_SCORES_SINGLE:-0} # Default to 0 if empty
+    if [[ $single_score_int -le 300 ]]; then
         grank="(POOR)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 300 && $GEEKBENCH_SCORES_SINGLE -le 500 ]]; then
+    elif [[ $single_score_int -ge 300 && $single_score_int -le 500 ]]; then
         grank="(FAIR)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 500 && $GEEKBENCH_SCORES_SINGLE -le 700 ]]; then
+    elif [[ $single_score_int -ge 500 && $single_score_int -le 700 ]]; then
         grank="(GOOD)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 700 && $GEEKBENCH_SCORES_SINGLE -le 1000 ]]; then
+    elif [[ $single_score_int -ge 700 && $single_score_int -le 1000 ]]; then
         grank="(VERY GOOD)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1000 && $GEEKBENCH_SCORES_SINGLE -le 1500 ]]; then
+    elif [[ $single_score_int -ge 1000 && $single_score_int -le 1500 ]]; then
         grank="(EXCELLENT)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1500 && $GEEKBENCH_SCORES_SINGLE -le 2000 ]]; then
+    elif [[ $single_score_int -ge 1500 && $single_score_int -le 2000 ]]; then
         grank="(THE BEAST)"
     else
         grank="(MONSTER)"
@@ -710,9 +721,12 @@ geekbench6() {
     GEEKBENCH_URL_CLAIM=$(echo "$GEEKBENCH_URL" | awk '{ print $2 }')
     GEEKBENCH_URL=$(echo "$GEEKBENCH_URL" | awk '{ print $1 }')
     sleep 15
-    GEEKBENCH_SCORES=$(curl -s "$GEEKBENCH_URL" | grep "div class='score'")
-    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES" | awk -v FS="(>|<)" '{ print $3 }')
-    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | awk -v FS="(<|>)" '{ print $7 }')
+    # --- FIX: Ensure single and multi-core scores are extracted correctly ---
+    # Geekbench 5/6 typically use 'span class='score-value'' for the actual scores
+    local GEEKBENCH_SCORES_RAW=$(curl -s "$GEEKBENCH_URL" | grep "span class='score-value'")
+    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES_RAW" | head -n 1 | awk -F'[<>]' '{print $3}')
+    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES_RAW" | tail -n 1 | awk -F'[<>]' '{print $3}')
+    # --- END FIX ---
 
     # End steal time measurement
     local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
@@ -729,17 +743,19 @@ geekbench6() {
         STEAL_PERCENT="0.00"
     fi
     
-    if [[ $GEEKBENCH_SCORES_SINGLE -le 400 ]]; then
+    # Ensure scores are treated as integers for comparison
+    local single_score_int=${GEEKBENCH_SCORES_SINGLE:-0} # Default to 0 if empty
+    if [[ $single_score_int -le 400 ]]; then
         grank="(POOR)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 400 && $GEEKBENCH_SCORES_SINGLE -le 660 ]]; then
+    elif [[ $single_score_int -ge 400 && $single_score_int -le 660 ]]; then
         grank="(FAIR)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 660 && $GEEKBENCH_SCORES_SINGLE -le 925 ]]; then
+    elif [[ $single_score_int -ge 660 && $single_score_int -le 925 ]]; then
         grank="(GOOD)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 925 && $GEEKBENCH_SCORES_SINGLE -le 1350 ]]; then
+    elif [[ $single_score_int -ge 925 && $single_score_int -le 1350 ]]; then
         grank="(VERY GOOD)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1350 && $GEEKBENCH_SCORES_SINGLE -le 2000 ]]; then
+    elif [[ $single_score_int -ge 1350 && $single_score_int -le 2000 ]]; then
         grank="(EXCELLENT)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2000 && $GEEKBENCH_SCORES_SINGLE -le 2600 ]]; then
+    elif [[ $single_score_int -ge 2000 && $single_score_int -le 2600 ]]; then
         grank="(THE BEAST)"
     else
         grank="(MONSTER)"
@@ -989,7 +1005,12 @@ print_system_info() {
     echo -e " OS           : $opsy ($lbit Bit)" | tee -a "$log"
     echo -e " Virt/Kernel  : $virtual / $kern" | tee -a "$log"
     echo -e " CPU Model    : $cname" | tee -a "$log"
-    echo -e " CPU Cores    : $cores @ $freq MHz $arch $corescache Cache" | tee -a "$log"
+    # Modified line: remove "MHz" if freq contains "GHz"
+    if [[ "$freq" == *"GHz"* ]]; then
+        echo -e " CPU Cores    : $cores @ $freq $arch $corescache Cache" | tee -a "$log"
+    else
+        echo -e " CPU Cores    : $cores @ $freq MHz $arch $corescache Cache" | tee -a "$log"
+    fi
     echo -e " CPU Flags    : $cpu_aes & $cpu_virt" | tee -a "$log"
     echo -e " Load Average : $load" | tee -a "$log"
     echo -e " Total Space  : $hdd ($hddused ~$hddfree used)" | tee -a "$log"
@@ -1038,9 +1059,255 @@ get_system_info() {
     
     # Use lscpu for more reliable CPU info if available
     if hash lscpu 2>"$NULL"; then
-        cname=$(lscpu | grep "Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        local model_name_lscpu=$(lscpu | grep "Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        local bios_model_name_lscpu=$(lscpu | grep "BIOS Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+
+        # Extract the 'virt-X.Y' part from bios_model_name_lscpu
+        local virt_version=$(echo "$bios_model_name_lscpu" | awk '{print $1}')
+        # Extract the frequency part from bios_model_name_lscpu (e.g., 2.0GHz)
+        local extracted_freq=$(echo "$bios_model_name_lscpu" | grep -oP '@ \K[^ ]+')
+
+        # Combine Model name and virt_version for cname
+        cname="$model_name_lscpu $virt_version"
+
         cores=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
-        freq=$(lscpu | grep "CPU MHz" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        # Use the extracted frequency
+        freq="$extracted_freq"
+        
+        corescache=$(lscpu | grep "L3 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        [[ -z "$corescache" ]] && corescache=$(lscpu | grep "L2 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        [[ -z "$corescache" ]] && corescache=$(lscpu | grep "L1d cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        cpu_aes=$(lscpu | grep "Flags:" | grep -q "aes" && echo "AES-NI Enabled" || echo "AES-NI Disabled")
+        cpu_virt=$(lscpu | grep "Flags:" | grep -q "vmx\|svm" && echo "VM-x/AMD-V Enabled" || echo "VM-x/AMD-V Disabled")
+    else
+        freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+        corescache=$( awk -F: '/cache size/ {cache=$2} END {print cache}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+        cpu_aes=$(cat /proc/cpuinfo | grep aes)
+        [[ -z "$cpu_aes" ]] && cpu_aes="AES-NI Disabled" || cpu_aes="AES-NI Enabled"
+        cpu_virt=$(cat /proc/cpuinfo | grep 'vmx\|svm')
+        [[ -z "$cpu_virt" ]] && cpu_virt="VM-x/AMD-V Disabled" || cpu_virt="VM-x/AMD-V Enabled"
+    fi
+
+    tram=$( free -m | awk '/Mem/ {print $2}' )
+    uram=$( free -m | awk '/Mem/ {print $3}' )
+    bram=$( free -m | awk '/Mem/ {print $6}' )
+    swap=$( free -m | awk '/Swap/ {print $2}' )
+    uswap=$( free -m | awk '/Swap/ {print $3}' )
+    up=$( awk '{a=$1/86400;b=($1%86400)/3600;c=($1%3600)/60} {printf("%d days %d:%d\n",a,b,c)}' /proc/uptime )
+    load=$( w | head -1 | awk -F'load average:' '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
+    opsy=$( get_opsy )
+    arch=$( uname -m )
+    lbit=$( getconf LONG_BIT )
+    kern=$( uname -r )
+    #ipv6=$( wget -qO- -t1 -T2 ipv6.icanhazip.com )
+    #disk_size1=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $2}' ))
+    #disk_size2=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $3}' ))
+    #disk_total_size=$( calc_disk "${disk_size1[@]}" )
+    #disk_used_size=$( calc_disk "${disk_size2[@]}" )
+    hdd=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $2 }')
+    hddused=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $3 }')
+    hddfree=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $5 }')
+    #tcp congestion control
+    #tcpctrl=$( sysctl net.ipv4.tcp_congestion_control | awk -F ' ' '{print $3}' )
+
+    #tmp=$(python3 "$TEMP_DIR/tools.py" disk 0)
+    #disk_total_size=$(echo "$tmp" | sed s/G//)
+    #tmp=$(python3 "$TEMP_DIR/tools.py" disk 1)
+    #disk_used_size=$(echo "$tmp" | sed s/G//)
+
+    virt_check
+}
+
+print_system_info() {
+    echo -e " OS           : $opsy ($lbit Bit)" | tee -a "$log"
+    echo -e " Virt/Kernel  : $virtual / $kern" | tee -a "$log"
+    echo -e " CPU Model    : $cname" | tee -a "$log"
+    # Modified line: remove "MHz" if freq contains "GHz"
+    if [[ "$freq" == *"GHz"* ]]; then
+        echo -e " CPU Cores    : $cores @ $freq $arch $corescache Cache" | tee -a "$log"
+    else
+        echo -e " CPU Cores    : $cores @ $freq MHz $arch $corescache Cache" | tee -a "$log"
+    fi
+    echo -e " CPU Flags    : $cpu_aes & $cpu_virt" | tee -a "$log"
+    echo -e " Load Average : $load" | tee -a "$log"
+    echo -e " Total Space  : $hdd ($hddused ~$hddfree used)" | tee -a "$log"
+    echo -e " Total RAM    : $tram MB ($uram MB + $bram MB Buff in use)" | tee -a "$log"
+    echo -e " Total SWAP   : $swap MB ($uswap MB in use)" | tee -a "$log"
+    [[ -z "$IPV4_CHECK" ]] && ONLINE="\xE2\x9D\x8C Offline / " || ONLINE="\xE2\x9C\x94 Online / "
+    [[ -z "$IPV6_CHECK" ]] && ONLINE+="\xE2\x9D\x8C Offline" || ONLINE+="\xE2\x9C\x94 Online"
+    echo -e " IPv4/IPv6    : $ONLINE" | tee -a "$log"
+    echo -e " Uptime       : $up" | tee -a "$log"
+    printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+}
+
+get_system_info() {
+    # Detect CPU model with ARM64 support
+    if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
+        # Try to get CPU model for ARM64
+        cname=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
+        
+        # If model is not defined, try other fields
+        if [[ -z "$cname" ]]; then
+            cname=$(awk -F: '/Hardware/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
+        fi
+        
+        # If still not defined, try other sources
+        if [[ -z "$cname" ]]; then
+            if [[ -f /sys/devices/virtual/dmi/id/product_name ]]; then
+                cname=$(cat /sys/devices/virtual/dmi/id/product_name 2>"$NULL")
+            fi
+        fi
+        
+        # If still not defined, set as "Unknown ARM64 Processor"
+        if [[ -z "$cname" ]]; then
+            cname="Unknown ARM64 Processor"
+        fi
+    else
+        # Standard detection for x86_64
+        cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+    fi
+    
+    # Detect number of cores with ARM64 support
+    if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
+        cores=$(grep -c ^processor /proc/cpuinfo)
+    else
+        cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
+    fi
+    
+    # Use lscpu for more reliable CPU info if available
+    if hash lscpu 2>"$NULL"; then
+        local model_name_lscpu=$(lscpu | grep "Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        local bios_model_name_lscpu=$(lscpu | grep "BIOS Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+
+        # Extract the 'virt-X.Y' part from bios_model_name_lscpu
+        local virt_version=$(echo "$bios_model_name_lscpu" | awk '{print $1}')
+        # Extract the frequency part from bios_model_name_lscpu (e.g., 2.0GHz)
+        local extracted_freq=$(echo "$bios_model_name_lscpu" | grep -oP '@ \K[^ ]+')
+
+        # Combine Model name and virt_version for cname
+        cname="$model_name_lscpu $virt_version"
+
+        cores=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
+        # Use the extracted frequency
+        freq="$extracted_freq"
+        
+        corescache=$(lscpu | grep "L3 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        [[ -z "$corescache" ]] && corescache=$(lscpu | grep "L2 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        [[ -z "$corescache" ]] && corescache=$(lscpu | grep "L1d cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        cpu_aes=$(lscpu | grep "Flags:" | grep -q "aes" && echo "AES-NI Enabled" || echo "AES-NI Disabled")
+        cpu_virt=$(lscpu | grep "Flags:" | grep -q "vmx\|svm" && echo "VM-x/AMD-V Enabled" || echo "VM-x/AMD-V Disabled")
+    else
+        freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+        corescache=$( awk -F: '/cache size/ {cache=$2} END {print cache}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+        cpu_aes=$(cat /proc/cpuinfo | grep aes)
+        [[ -z "$cpu_aes" ]] && cpu_aes="AES-NI Disabled" || cpu_aes="AES-NI Enabled"
+        cpu_virt=$(cat /proc/cpuinfo | grep 'vmx\|svm')
+        [[ -z "$cpu_virt" ]] && cpu_virt="VM-x/AMD-V Disabled" || cpu_virt="VM-x/AMD-V Enabled"
+    fi
+
+    tram=$( free -m | awk '/Mem/ {print $2}' )
+    uram=$( free -m | awk '/Mem/ {print $3}' )
+    bram=$( free -m | awk '/Mem/ {print $6}' )
+    swap=$( free -m | awk '/Swap/ {print $2}' )
+    uswap=$( free -m | awk '/Swap/ {print $3}' )
+    up=$( awk '{a=$1/86400;b=($1%86400)/3600;c=($1%3600)/60} {printf("%d days %d:%d\n",a,b,c)}' /proc/uptime )
+    load=$( w | head -1 | awk -F'load average:' '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
+    opsy=$( get_opsy )
+    arch=$( uname -m )
+    lbit=$( getconf LONG_BIT )
+    kern=$( uname -r )
+    #ipv6=$( wget -qO- -t1 -T2 ipv6.icanhazip.com )
+    #disk_size1=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $2}' ))
+    #disk_size2=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $3}' ))
+    #disk_total_size=$( calc_disk "${disk_size1[@]}" )
+    #disk_used_size=$( calc_disk "${disk_size2[@]}" )
+    hdd=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $2 }')
+    hddused=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $3 }')
+    hddfree=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $5 }')
+    #tcp congestion control
+    #tcpctrl=$( sysctl net.ipv4.tcp_congestion_control | awk -F ' ' '{print $3}' )
+
+    #tmp=$(python3 "$TEMP_DIR/tools.py" disk 0)
+    #disk_total_size=$(echo "$tmp" | sed s/G//)
+    #tmp=$(python3 "$TEMP_DIR/tools.py" disk 1)
+    #disk_used_size=$(echo "$tmp" | sed s/G//)
+
+    virt_check
+}
+
+print_system_info() {
+    echo -e " OS           : $opsy ($lbit Bit)" | tee -a "$log"
+    echo -e " Virt/Kernel  : $virtual / $kern" | tee -a "$log"
+    echo -e " CPU Model    : $cname" | tee -a "$log"
+    # Modified line: remove "MHz" if freq contains "GHz"
+    if [[ "$freq" == *"GHz"* ]]; then
+        echo -e " CPU Cores    : $cores @ $freq $arch $corescache Cache" | tee -a "$log"
+    else
+        echo -e " CPU Cores    : $cores @ $freq MHz $arch $corescache Cache" | tee -a "$log"
+    fi
+    echo -e " CPU Flags    : $cpu_aes & $cpu_virt" | tee -a "$log"
+    echo -e " Load Average : $load" | tee -a "$log"
+    echo -e " Total Space  : $hdd ($hddused ~$hddfree used)" | tee -a "$log"
+    echo -e " Total RAM    : $tram MB ($uram MB + $bram MB Buff in use)" | tee -a "$log"
+    echo -e " Total SWAP   : $swap MB ($uswap MB in use)" | tee -a "$log"
+    [[ -z "$IPV4_CHECK" ]] && ONLINE="\xE2\x9D\x8C Offline / " || ONLINE="\xE2\x9C\x94 Online / "
+    [[ -z "$IPV6_CHECK" ]] && ONLINE+="\xE2\x9D\x8C Offline" || ONLINE+="\xE2\x9C\x94 Online"
+    echo -e " IPv4/IPv6    : $ONLINE" | tee -a "$log"
+    echo -e " Uptime       : $up" | tee -a "$log"
+    printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+}
+
+get_system_info() {
+    # Detect CPU model with ARM64 support
+    if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
+        # Try to get CPU model for ARM64
+        cname=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
+        
+        # If model is not defined, try other fields
+        if [[ -z "$cname" ]]; then
+            cname=$(awk -F: '/Hardware/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
+        fi
+        
+        # If still not defined, try other sources
+        if [[ -z "$cname" ]]; then
+            if [[ -f /sys/devices/virtual/dmi/id/product_name ]]; then
+                cname=$(cat /sys/devices/virtual/dmi/id/product_name 2>"$NULL")
+            fi
+        fi
+        
+        # If still not defined, set as "Unknown ARM64 Processor"
+        if [[ -z "$cname" ]]; then
+            cname="Unknown ARM64 Processor"
+        fi
+    else
+        # Standard detection for x86_64
+        cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+    fi
+    
+    # Detect number of cores with ARM64 support
+    if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
+        cores=$(grep -c ^processor /proc/cpuinfo)
+    else
+        cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
+    fi
+    
+    # Use lscpu for more reliable CPU info if available
+    if hash lscpu 2>"$NULL"; then
+        local model_name_lscpu=$(lscpu | grep "Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        local bios_model_name_lscpu=$(lscpu | grep "BIOS Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+
+        # Extract the 'virt-X.Y' part from bios_model_name_lscpu
+        local virt_version=$(echo "$bios_model_name_lscpu" | awk '{print $1}')
+        # Extract the frequency part from bios_model_name_lscpu (e.g., 2.0GHz)
+        local extracted_freq=$(echo "$bios_model_name_lscpu" | grep -oP '@ \K[^ ]+')
+
+        # Combine Model name and virt_version for cname
+        cname="$model_name_lscpu $virt_version"
+
+        cores=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
+        # Use the extracted frequency
+        freq="$extracted_freq"
+        
         corescache=$(lscpu | grep "L3 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
         [[ -z "$corescache" ]] && corescache=$(lscpu | grep "L2 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
         [[ -z "$corescache" ]] && corescache=$(lscpu | grep "L1d cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
