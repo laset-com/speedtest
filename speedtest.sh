@@ -520,7 +520,7 @@ geekbench4() {
 	echo "" | tee -a $log
 	echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..."
 
-	# Початок вимірювання steal time
+	# Start steal time measurement
 	local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
 	local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
 	
@@ -536,15 +536,15 @@ geekbench4() {
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $7 }')
 	
-	# Кінець вимірювання steal time
+	# End steal time measurement
 	local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
 	local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
 	
-	# Обчислення steal time
+	# Calculate steal time
 	local steal_diff=$((steal_end - steal_start))
 	local total_diff=$((total_end - total_start))
 	
-	# Обчислення відсотка steal time
+	# Calculate steal time percentage
 	if [[ $total_diff -gt 0 ]]; then
 		STEAL_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
 	else
@@ -591,7 +591,7 @@ geekbench5() {
 	echo "" | tee -a $log
 	echo -e " Performing Geekbench v5 CPU Benchmark test. Please wait..."
 
-	# Початок вимірювання steal time
+	# Start steal time measurement
 	local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
 	local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
 
@@ -613,15 +613,15 @@ geekbench5() {
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 
-	# Кінець вимірювання steal time
+	# End steal time measurement
 	local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
 	local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
 	
-	# Обчислення steal time
+	# Calculate steal time
 	local steal_diff=$((steal_end - steal_start))
 	local total_diff=$((total_end - total_start))
 	
-	# Обчислення відсотка steal time
+	# Calculate steal time percentage
 	if [[ $total_diff -gt 0 ]]; then
 		STEAL_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
 	else
@@ -668,7 +668,7 @@ geekbench6() {
 	echo "" | tee -a $log
 	echo -e " Performing Geekbench v6 CPU Benchmark test. Please wait..."
 
-	# Початок вимірювання steal time
+	# Start steal time measurement
 	local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
 	local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
 
@@ -690,15 +690,15 @@ geekbench6() {
 	GEEKBENCH_SCORES_SINGLE=$(echo $GEEKBENCH_SCORES | awk -v FS="(>|<)" '{ print $3 }')
 	GEEKBENCH_SCORES_MULTI=$(echo $GEEKBENCH_SCORES | awk -v FS="(<|>)" '{ print $7 }')
 
-	# Кінець вимірювання steal time
+	# End steal time measurement
 	local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
 	local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
 	
-	# Обчислення steal time
+	# Calculate steal time
 	local steal_diff=$((steal_end - steal_start))
 	local total_diff=$((total_end - total_start))
 	
-	# Обчислення відсотка steal time
+	# Calculate steal time percentage
 	if [[ $total_diff -gt 0 ]]; then
 		STEAL_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
 	else
@@ -1245,18 +1245,6 @@ get_ip_whois_org_name(){
 	#org_name=$(echo $result | jq '.objects.object.[1].attributes.attribute.[1].value' | sed 's/\"//g')
 	org_name=$(echo $result | jq '.objects.object[1].attributes.attribute[1]' | sed 's/\"//g')
     echo $org_name;
-}
-
-pingtest() {
-	local ping_link=$( echo ${1#*//} | cut -d"/" -f1 )
-	local ping_ms=$( ping -w 1 -c 1 -q $ping_link | grep 'rtt' | cut -d"/" -f5 )
-
-	# get download speed and print
-	if [[ $ping_ms == "" ]]; then
-		printf "ping error!"
-	else
-		printf "%3i.%s ms" "${ping_ms%.*}" "${ping_ms#*.}"
-	fi
 }
 
 pingtest() {
