@@ -437,7 +437,6 @@ print_speedtest_ukraine() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '29112' 'Ukraine, Kyiv (Datagroup)     ' 'http://speedtest.datagroup.ua'
 	speed_test '30813' 'Ukraine, Kyiv (KyivStar)      ' 'http://srv01-okl-kv.kyivstar.ua'
-	speed_test '2518' 'Ukraine, Kyiv (Volia)         ' 'http://speedtest2.volia.com'
 	speed_test '14887' 'Ukraine, Lviv (UARNet)        ' 'http://speedtest.uar.net'
 	speed_test '29259' 'Ukraine, Lviv (KyivStar)      ' 'http://srv01-okl-lvv.kyivstar.ua'
 	speed_test '2445' 'Ukraine, Lviv (KOMiTEX)       ' 'http://speedtest.komitex.net'
@@ -449,7 +448,7 @@ print_speedtest_ukraine() {
 	speed_test '20953' 'Ukraine, Dnipro (Trifle)      ' 'http://speedtest.trifle.net'
 	speed_test '2796' 'Ukraine, Odesa (Black Sea)    ' 'http://speedtest.blacksea.net.ua'
 	speed_test '26725' 'Ukraine, Mariupol (CityLine)  ' 'http://speedtest.cl.dn.ua'
-	speed_test '2581' 'Ukraine, Yalta (KNET)         ' 'http://speedtest.knet-tele.com'
+	speed_test '21617' 'Ukraine, Yalta (Yaltanet)     ' 'http://speedtest.yaltanet.ru'
 	 
 	rm -rf speedtest.py
 }
@@ -467,7 +466,6 @@ print_speedtest_lviv() {
 	speed_test '2445' 'Ukraine, Lviv (KOMiTEX) ' 'http://speedtest.komitex.net'
 	speed_test '12786' 'Ukraine, Lviv (ASTRA)   ' 'http://speedtest.astra.in.ua'
 	speed_test '1204' 'Ukraine, Lviv (Network) ' 'http://speedtest.network.lviv.ua'
-	speed_test '34751' 'Ukraine, Lviv (Wenet)   ' 'http://vds.wenet.lviv.ua'
 	 
 	rm -rf speedtest.py
 }
@@ -485,8 +483,8 @@ print_speedtest_meast() {
 	speed_test '1689' 'Egypt, Cairo (Vodafone)     ' 'http://speedtest.vodafone.com.eg'
 	speed_test '9137' 'Lebanon, Tripoli (Be-Wise)  ' 'http://sp1.wise-isp.com'
 	speed_test '22129' 'UAE, Dubai (i3D)            ' 'http://ae.ap.speedtest.i3d.net'
-	speed_test '24742' 'Qatar, Doha (Ooredoo)       ' 'http://37.186.62.40'
-	speed_test '13610' 'SA, Riyadh (ITC)            ' 'http://87.101.181.146'
+	speed_test '24742' 'Qatar, Doha (Ooredoo)       ' 'http://speedtest2.ooredoo.qa'
+	speed_test '608' 'SA, Riyadh (STC)            ' 'http://speedtest.saudi.net.sa'
 	speed_test '1912' 'Bahrain, Manama (Zain)      ' 'http://62.209.25.182'
 	speed_test '18512' 'Iran, Tehran (MCI)          ' 'http://rhaspd2.mci.ir'
 	 
@@ -502,11 +500,7 @@ print_speedtest_china() {
         speed_test '' 'Nearby                        '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '5396' 'Suzhou (China Telecom 5G)     ' 'http://4gsuzhou1.speedtest.jsinfo.net'
-	speed_test '24447' 'ShangHai (China Unicom 5G)    ' 'http://5g.shunicomtest.com'
-	speed_test '26331' 'Zhengzhou (Henan CMCC 5G)     ' 'http://5ghenan.ha.chinamobile.com'
-	speed_test '29105' 'Xi"an (China Mobile 5G)       ' 'http://122.77.240.140'
-	speed_test '4870' 'Changsha (China Unicom 5G)    ' 'http://220.202.152.178'
-	speed_test '3633' 'Shanghai (China Telecom)      ' 'http://speedtest1.online.sh.cn'
+	speed_test '26352' 'Nanjing (China Telecom 5G)    ' 'http://5gnanjing.speedtest.jsinfo.net'
 	 
 	rm -rf speedtest.py
 }
