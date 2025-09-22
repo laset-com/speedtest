@@ -17,8 +17,8 @@ TEMP_DIR=$(mktemp -d -t speedtest-XXXXXX) || error_exit "Failed to create genera
 GEEKBENCH_BASE_DIR=""
 RAMDISK_BASE_DIR=""
 
-# Set log file path to the current working directory
-log="speedtest.log"
+# Set log file path to the current working directory (absolute path for robustness)
+log="$(pwd)/speedtest.log"
 true > "$log" # Initialize log file
 
 cleanup() {
@@ -34,8 +34,8 @@ cleanup() {
         rm -rf "$RAMDISK_BASE_DIR" 2>"$NULL"
     fi
     # Remove other specific temporary files within TEMP_DIR
+    # Note: speedtest_upload.log is cleaned by sharetest itself, or will be removed with TEMP_DIR by EXIT trap.
     rm -f "$TEMP_DIR/speedtest.py" "$TEMP_DIR/tools.py" "$TEMP_DIR/dd_err_$$" "$TEMP_DIR/geekbench_claim.url" 2>"$NULL"
-    # Note: speedtest_upload.log is cleaned by sharetest itself.
     # The TEMP_DIR itself will be removed by the EXIT trap
 }
 
@@ -559,32 +559,41 @@ geekbench4() {
     GEEKBENCH_URL=$(echo -e "$GEEKBENCH_TEST" | head -1)
     GEEKBENCH_URL_CLAIM=$(echo "$GEEKBENCH_URL" | awk '{ print $2 }')
     GEEKBENCH_URL=$(echo "$GEEKBENCH_URL" | awk '{ print $1 }')
-    sleep 20
-    # --- FIX: Ensure single and multi-core scores are extracted correctly ---
-    # Geekbench 4 typically uses 'span class='score'' for scores.
-    # We assume the first 'span class='score'' is single-core and the second is multi-core.
-    local GEEKBENCH_SCORES_RAW=$(curl -s "$GEEKBENCH_URL" | grep "span class='score'")
-    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES_RAW" | head -n 1 | awk -F'[<>]' '{print $3}')
-    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES_RAW" | tail -n 1 | awk -F'[<>]' '{print $3}')
-    # --- END FIX ---
     
-    # End steal time measurement
-    local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
-    local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
-    
-    # Calculate steal time
-    local steal_diff=$((steal_end - steal_start))
-    local total_diff=$((total_end - total_start))
-    
-    # Calculate steal time percentage
-    if [[ $total_diff -gt 0 ]]; then
-        STEAL_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
+    if [[ -z "$GEEKBENCH_URL" ]]; then
+        echo "  Failed to get Geekbench 4 URL. Skipping score extraction." | tee -a "$log"
+        GEEKBENCH_SCORES_SINGLE="N/A"
+        GEEKBENCH_SCORES_MULTI="N/A"
+        STEAL_PERCENT="N/A"
     else
-        STEAL_PERCENT="0.00"
-    fi
+        sleep 20
+        local GEEKBENCH_PAGE_CONTENT=$(curl -s "$GEEKBENCH_URL")
+        # --- FIX: Ensure single and multi-core scores are extracted correctly ---
+        # Geekbench 4 typically uses 'span class='score'' for scores.
+        GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -oP 'Single-Core Score.*?<span class="score">\K\d+' | head -n 1)
+        GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -oP 'Multi-Core Score.*?<span class="score">\K\d+' | head -n 1)
+        # --- END FIX ---
+        
+        # End steal time measurement
+        local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
+        local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
+        
+        # Calculate steal time
+        local steal_diff=$((steal_end - steal_start))
+        local total_diff=$((total_end - total_start))
+        
+        # Calculate steal time percentage
+        if [[ $total_diff -gt 0 ]]; then
+            STEAL_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
+        else
+            STEAL_PERCENT="0.00"
+        fi
+    fi # End of GEEKBENCH_URL check
     
-    # Ensure scores are treated as integers for comparison
-    local single_score_int=${GEEKBENCH_SCORES_SINGLE:-0} # Default to 0 if empty
+    # Ensure scores are treated as integers for comparison, default to 0 if N/A or empty
+    local single_score_int=${GEEKBENCH_SCORES_SINGLE//[^0-9]/} # Remove non-digits
+    [[ -z "$single_score_int" ]] && single_score_int=0
+
     if [[ $single_score_int -le 1700 ]]; then
         grank="(POOR)"
     elif [[ $single_score_int -ge 1700 && $single_score_int -le 2500 ]]; then
@@ -642,31 +651,41 @@ geekbench5() {
     GEEKBENCH_URL=$(echo -e "$GEEKBENCH_TEST" | head -1)
     GEEKBENCH_URL_CLAIM=$(echo "$GEEKBENCH_URL" | awk '{ print $2 }')
     GEEKBENCH_URL=$(echo "$GEEKBENCH_URL" | awk '{ print $1 }')
-    sleep 20
-    # --- FIX: Ensure single and multi-core scores are extracted correctly ---
-    # Geekbench 5/6 typically use 'span class='score-value'' for the actual scores
-    local GEEKBENCH_SCORES_RAW=$(curl -s "$GEEKBENCH_URL" | grep "span class='score-value'")
-    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES_RAW" | head -n 1 | awk -F'[<>]' '{print $3}')
-    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES_RAW" | tail -n 1 | awk -F'[<>]' '{print $3}')
-    # --- END FIX ---
-
-    # End steal time measurement
-    local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
-    local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
     
-    # Calculate steal time
-    local steal_diff=$((steal_end - steal_start))
-    local total_diff=$((total_end - total_start))
-    
-    # Calculate steal time percentage
-    if [[ $total_diff -gt 0 ]]; then
-        STEAL_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
+    if [[ -z "$GEEKBENCH_URL" ]]; then
+        echo "  Failed to get Geekbench 5 URL. Skipping score extraction." | tee -a "$log"
+        GEEKBENCH_SCORES_SINGLE="N/A"
+        GEEKBENCH_SCORES_MULTI="N/A"
+        STEAL_PERCENT="N/A"
     else
-        STEAL_PERCENT="0.00"
-    fi
+        sleep 20
+        local GEEKBENCH_PAGE_CONTENT=$(curl -s "$GEEKBENCH_URL")
+        # --- FIX: Ensure single and multi-core scores are extracted correctly ---
+        # Geekbench 5/6 typically use 'div class='score-value'' for the actual scores
+        GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -oP 'Single-Core Score.*?<div class="score-value">\K\d+' | head -n 1)
+        GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -oP 'Multi-Core Score.*?<div class="score-value">\K\d+' | head -n 1)
+        # --- END FIX ---
+
+        # End steal time measurement
+        local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
+        local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
+        
+        # Calculate steal time
+        local steal_diff=$((steal_end - steal_start))
+        local total_diff=$((total_end - total_start))
+        
+        # Calculate steal time percentage
+        if [[ $total_diff -gt 0 ]]; then
+            STEAL_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
+        else
+            STEAL_PERCENT="0.00"
+        fi
+    fi # End of GEEKBENCH_URL check
     
-    # Ensure scores are treated as integers for comparison
-    local single_score_int=${GEEKBENCH_SCORES_SINGLE:-0} # Default to 0 if empty
+    # Ensure scores are treated as integers for comparison, default to 0 if N/A or empty
+    local single_score_int=${GEEKBENCH_SCORES_SINGLE//[^0-9]/} # Remove non-digits
+    [[ -z "$single_score_int" ]] && single_score_int=0
+
     if [[ $single_score_int -le 300 ]]; then
         grank="(POOR)"
     elif [[ $single_score_int -ge 300 && $single_score_int -le 500 ]]; then
@@ -724,31 +743,41 @@ geekbench6() {
     GEEKBENCH_URL=$(echo -e "$GEEKBENCH_TEST" | head -1)
     GEEKBENCH_URL_CLAIM=$(echo "$GEEKBENCH_URL" | awk '{ print $2 }')
     GEEKBENCH_URL=$(echo "$GEEKBENCH_URL" | awk '{ print $1 }')
-    sleep 15
-    # --- FIX: Ensure single and multi-core scores are extracted correctly ---
-    # Geekbench 5/6 typically use 'span class='score-value'' for the actual scores
-    local GEEKBENCH_SCORES_RAW=$(curl -s "$GEEKBENCH_URL" | grep "span class='score-value'")
-    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES_RAW" | head -n 1 | awk -F'[<>]' '{print $3}')
-    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES_RAW" | tail -n 1 | awk -F'[<>]' '{print $3}')
-    # --- END FIX ---
-
-    # End steal time measurement
-    local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
-    local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
     
-    # Calculate steal time
-    local steal_diff=$((steal_end - steal_start))
-    local total_diff=$((total_end - total_start))
-    
-    # Calculate steal time percentage
-    if [[ $total_diff -gt 0 ]]; then
-        STEAL_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
+    if [[ -z "$GEEKBENCH_URL" ]]; then
+        echo "  Failed to get Geekbench 6 URL. Skipping score extraction." | tee -a "$log"
+        GEEKBENCH_SCORES_SINGLE="N/A"
+        GEEKBENCH_SCORES_MULTI="N/A"
+        STEAL_PERCENT="N/A"
     else
-        STEAL_PERCENT="0.00"
-    fi
+        sleep 15
+        local GEEKBENCH_PAGE_CONTENT=$(curl -s "$GEEKBENCH_URL")
+        # --- FIX: Ensure single and multi-core scores are extracted correctly ---
+        # Geekbench 5/6 typically use 'div class='score-value'' for the actual scores
+        GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -oP 'Single-Core Score.*?<div class="score-value">\K\d+' | head -n 1)
+        GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -oP 'Multi-Core Score.*?<div class="score-value">\K\d+' | head -n 1)
+        # --- END FIX ---
+
+        # End steal time measurement
+        local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
+        local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
+        
+        # Calculate steal time
+        local steal_diff=$((steal_end - steal_start))
+        local total_diff=$((total_end - total_start))
+        
+        # Calculate steal time percentage
+        if [[ $total_diff -gt 0 ]]; then
+            STEAL_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
+        else
+            STEAL_PERCENT="0.00"
+        fi
+    fi # End of GEEKBENCH_URL check
     
-    # Ensure scores are treated as integers for comparison
-    local single_score_int=${GEEKBENCH_SCORES_SINGLE:-0} # Default to 0 if empty
+    # Ensure scores are treated as integers for comparison, default to 0 if N/A or empty
+    local single_score_int=${GEEKBENCH_SCORES_SINGLE//[^0-9]/} # Remove non-digits
+    [[ -z "$single_score_int" ]] && single_score_int=0
+
     if [[ $single_score_int -le 400 ]]; then
         grank="(POOR)"
     elif [[ $single_score_int -ge 400 && $single_score_int -le 660 ]]; then
@@ -1003,123 +1032,6 @@ freedisk() {
     else
         printf "1"
     fi
-}
-
-print_system_info() {
-    echo -e " OS           : $opsy ($lbit Bit)" | tee -a "$log"
-    echo -e " Virt/Kernel  : $virtual / $kern" | tee -a "$log"
-    echo -e " CPU Model    : $cname" | tee -a "$log"
-    # Modified line: remove "MHz" if freq contains "GHz"
-    if [[ "$freq" == *"GHz"* ]]; then
-        echo -e " CPU Cores    : $cores @ $freq $arch $corescache Cache" | tee -a "$log"
-    else
-        echo -e " CPU Cores    : $cores @ $freq MHz $arch $corescache Cache" | tee -a "$log"
-    fi
-    echo -e " CPU Flags    : $cpu_aes & $cpu_virt" | tee -a "$log"
-    echo -e " Load Average : $load" | tee -a "$log"
-    echo -e " Total Space  : $hdd ($hddused ~$hddfree used)" | tee -a "$log"
-    echo -e " Total RAM    : $tram MB ($uram MB + $bram MB Buff in use)" | tee -a "$log"
-    echo -e " Total SWAP   : $swap MB ($uswap MB in use)" | tee -a "$log"
-    [[ -z "$IPV4_CHECK" ]] && ONLINE="\xE2\x9D\x8C Offline / " || ONLINE="\xE2\x9C\x94 Online / "
-    [[ -z "$IPV6_CHECK" ]] && ONLINE+="\xE2\x9D\x8C Offline" || ONLINE+="\xE2\x9C\x94 Online"
-    echo -e " IPv4/IPv6    : $ONLINE" | tee -a "$log"
-    echo -e " Uptime       : $up" | tee -a "$log"
-    printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-}
-
-get_system_info() {
-    # Detect CPU model with ARM64 support
-    if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
-        # Try to get CPU model for ARM64
-        cname=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
-        
-        # If model is not defined, try other fields
-        if [[ -z "$cname" ]]; then
-            cname=$(awk -F: '/Hardware/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
-        fi
-        
-        # If still not defined, try other sources
-        if [[ -z "$cname" ]]; then
-            if [[ -f /sys/devices/virtual/dmi/id/product_name ]]; then
-                cname=$(cat /sys/devices/virtual/dmi/id/product_name 2>"$NULL")
-            fi
-        fi
-        
-        # If still not defined, set as "Unknown ARM64 Processor"
-        if [[ -z "$cname" ]]; then
-            cname="Unknown ARM64 Processor"
-        fi
-    else
-        # Standard detection for x86_64
-        cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
-    fi
-    
-    # Detect number of cores with ARM64 support
-    if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
-        cores=$(grep -c ^processor /proc/cpuinfo)
-    else
-        cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
-    fi
-    
-    # Use lscpu for more reliable CPU info if available
-    if hash lscpu 2>"$NULL"; then
-        local model_name_lscpu=$(lscpu | grep "Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        local bios_model_name_lscpu=$(lscpu | grep "BIOS Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-
-        # Extract the 'virt-X.Y' part from bios_model_name_lscpu
-        local virt_version=$(echo "$bios_model_name_lscpu" | awk '{print $1}')
-        # Extract the frequency part from bios_model_name_lscpu (e.g., 2.0GHz)
-        local extracted_freq=$(echo "$bios_model_name_lscpu" | grep -oP '@ \K[^ ]+')
-
-        # Combine Model name and virt_version for cname
-        cname="$model_name_lscpu $virt_version"
-
-        cores=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
-        # Use the extracted frequency
-        freq="$extracted_freq"
-        
-        corescache=$(lscpu | grep "L3 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        [[ -z "$corescache" ]] && corescache=$(lscpu | grep "L2 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        [[ -z "$corescache" ]] && corescache=$(lscpu | grep "L1d cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        cpu_aes=$(lscpu | grep "Flags:" | grep -q "aes" && echo "AES-NI Enabled" || echo "AES-NI Disabled")
-        cpu_virt=$(lscpu | grep "Flags:" | grep -q "vmx\|svm" && echo "VM-x/AMD-V Enabled" || echo "VM-x/AMD-V Disabled")
-    else
-        freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
-        corescache=$( awk -F: '/cache size/ {cache=$2} END {print cache}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
-        cpu_aes=$(cat /proc/cpuinfo | grep aes)
-        [[ -z "$cpu_aes" ]] && cpu_aes="AES-NI Disabled" || cpu_aes="AES-NI Enabled"
-        cpu_virt=$(cat /proc/cpuinfo | grep 'vmx\|svm')
-        [[ -z "$cpu_virt" ]] && cpu_virt="VM-x/AMD-V Disabled" || cpu_virt="VM-x/AMD-V Enabled"
-    fi
-
-    tram=$( free -m | awk '/Mem/ {print $2}' )
-    uram=$( free -m | awk '/Mem/ {print $3}' )
-    bram=$( free -m | awk '/Mem/ {print $6}' )
-    swap=$( free -m | awk '/Swap/ {print $2}' )
-    uswap=$( free -m | awk '/Swap/ {print $3}' )
-    up=$( awk '{a=$1/86400;b=($1%86400)/3600;c=($1%3600)/60} {printf("%d days %d:%d\n",a,b,c)}' /proc/uptime )
-    load=$( w | head -1 | awk -F'load average:' '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
-    opsy=$( get_opsy )
-    arch=$( uname -m )
-    lbit=$( getconf LONG_BIT )
-    kern=$( uname -r )
-    #ipv6=$( wget -qO- -t1 -T2 ipv6.icanhazip.com )
-    #disk_size1=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $2}' ))
-    #disk_size2=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $3}' ))
-    #disk_total_size=$( calc_disk "${disk_size1[@]}" )
-    #disk_used_size=$( calc_disk "${disk_size2[@]}" )
-    hdd=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $2 }')
-    hddused=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $3 }')
-    hddfree=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $5 }')
-    #tcp congestion control
-    #tcpctrl=$( sysctl net.ipv4.tcp_congestion_control | awk -F ' ' '{print $3}' )
-
-    #tmp=$(python3 "$TEMP_DIR/tools.py" disk 0)
-    #disk_total_size=$(echo "$tmp" | sed s/G//)
-    #tmp=$(python3 "$TEMP_DIR/tools.py" disk 1)
-    #disk_used_size=$(echo "$tmp" | sed s/G//)
-
-    virt_check
 }
 
 print_system_info() {
@@ -1514,6 +1426,8 @@ sharetest() {
 
 log_preupload() {
     log_up="$TEMP_DIR/speedtest_upload.log"
+    # Ensure TEMP_DIR exists before creating log_up
+    mkdir -p "$TEMP_DIR" 2>"$NULL"
     true > "$log_up"
     $(cat "$log" 2>"$NULL" | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" > "$log_up")
 }
@@ -1558,8 +1472,8 @@ bench_all(){
     print_speedtest;
     next;
     print_end_time;
-    cleanup;
     sharetest clbin;
+    cleanup; # Moved cleanup after sharetest
 }
 
 usa_bench(){
@@ -1577,8 +1491,8 @@ usa_bench(){
     print_speedtest_usa;
     next;
     print_end_time;
-    cleanup;
     sharetest clbin;
+    cleanup; # Moved cleanup after sharetest
 }
 
 in_bench(){
@@ -1596,8 +1510,8 @@ in_bench(){
     print_speedtest_in;
     next;
     print_end_time;
-    cleanup;
     sharetest clbin;
+    cleanup; # Moved cleanup after sharetest
 }
 
 europe_bench(){
@@ -1615,8 +1529,8 @@ europe_bench(){
     print_speedtest_europe;
     next;
     print_end_time;
-    cleanup;
     sharetest clbin;
+    cleanup; # Moved cleanup after sharetest
 }
 
 asia_bench(){
@@ -1634,8 +1548,8 @@ asia_bench(){
     print_speedtest_asia;
     next;
     print_end_time;
-    cleanup;
     sharetest clbin;
+    cleanup; # Moved cleanup after sharetest
 }
 
 china_bench(){
@@ -1653,8 +1567,8 @@ china_bench(){
     print_speedtest_china;
     next;
     print_end_time;
-    cleanup;
     sharetest clbin;
+    cleanup; # Moved cleanup after sharetest
 }
 
 sa_bench(){
@@ -1672,8 +1586,8 @@ sa_bench(){
     print_speedtest_sa;
     next;
     print_end_time;
-    cleanup;
     sharetest clbin;
+    cleanup; # Moved cleanup after sharetest
 }
 
 au_bench(){
@@ -1691,8 +1605,8 @@ au_bench(){
     print_speedtest_au;
     next;
     print_end_time;
-    cleanup;
     sharetest clbin;
+    cleanup; # Moved cleanup after sharetest
 }
 
 ukraine_bench(){
@@ -1710,8 +1624,8 @@ ukraine_bench(){
     print_speedtest_ukraine;
     next;
     print_end_time;
-    cleanup;
     sharetest clbin;
+    cleanup; # Moved cleanup after sharetest
 }
 lviv_bench(){
     region_name="Lviv"
@@ -1728,8 +1642,8 @@ lviv_bench(){
     print_speedtest_lviv;
     next;
     print_end_time;
-    cleanup;
     sharetest clbin;
+    cleanup; # Moved cleanup after sharetest
 }
 meast_bench(){
     region_name="Middle-East"
@@ -1746,8 +1660,8 @@ meast_bench(){
     print_speedtest_meast;
     next;
     print_end_time;
-    cleanup;
     sharetest clbin;
+    cleanup; # Moved cleanup after sharetest
 }
 
 case $1 in
