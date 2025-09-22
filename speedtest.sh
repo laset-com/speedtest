@@ -236,7 +236,7 @@ speed_test(){
 
             temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
             if [[ $(awk -v num1=${temp} -v num2=0 'BEGIN{print(num1>num2)?"1":"0"}') -eq 1 ]]; then
-            	printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a "$log"
+                printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a "$log"
             fi
         else
             local cerror="ERROR"
@@ -257,7 +257,7 @@ speed_test(){
 
             temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
             if [[ $(awk -v num1=${temp} -v num2=0 'BEGIN{print(num1>num2)?"1":"0"}') -eq 1 ]]; then
-            	printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a "$log"
+                printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a "$log"
             fi
         else
             local cerror="ERROR"
@@ -1086,18 +1086,44 @@ get_system_info() {
 }
 
 write_test() {
-    (LANG=C dd if=/dev/zero of="$TEMP_DIR/test_file_$$" bs=512K count=$1 conv=fdatasync && rm -f "$TEMP_DIR/test_file_$$" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
+    # Redirect dd's stderr (where speed info is) to stdout, then pipe to awk
+    (LANG=C dd if=/dev/zero of="$TEMP_DIR/test_file_$$" bs=512K count=$1 conv=fdatasync 2>&1 && rm -f "$TEMP_DIR/test_file_$$" ) | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
 }
 
 averageio() {
-    ioraw1=$( echo "$1" | awk 'NR==1 {print $1}' )
-        [ "`echo "$1" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
-    ioraw2=$( echo "$2" | awk 'NR==1 {print $1}' )
-        [ "`echo "$2" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw2=$( awk 'BEGIN{print '$ioraw2' * 1024}' )
-    ioraw3=$( echo "$3" | awk 'NR==1 {print $1}' )
-        [ "`echo "$3" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
-    ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
-    ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
+    local ioraw1_val=$(echo "$1" | awk 'NR==1 {print $1}')
+    local ioraw1_unit=$(echo "$1" | awk 'NR==1 {print $2}')
+    local ioraw1=0
+    if [[ -n "$ioraw1_val" && "$ioraw1_val" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+        ioraw1=$(awk 'BEGIN{printf "%.1f", '$ioraw1_val'}' )
+        if [[ "$ioraw1_unit" == "GB/s" ]]; then
+            ioraw1=$(awk 'BEGIN{printf "%.1f", '$ioraw1' * 1024}' )
+        fi
+    fi
+
+    local ioraw2_val=$(echo "$2" | awk 'NR==1 {print $1}')
+    local ioraw2_unit=$(echo "$2" | awk 'NR==1 {print $2}')
+    local ioraw2=0
+    if [[ -n "$ioraw2_val" && "$ioraw2_val" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+        ioraw2=$(awk 'BEGIN{printf "%.1f", '$ioraw2_val'}' )
+        if [[ "$ioraw2_unit" == "GB/s" ]]; then
+            ioraw2=$(awk 'BEGIN{printf "%.1f", '$ioraw2' * 1024}' )
+        fi
+    fi
+
+    local ioraw3_val=$(echo "$3" | awk 'NR==1 {print $1}')
+    local ioraw3_unit=$(echo "$3" | awk 'NR==1 {print $2}')
+    local ioraw3=0
+    if [[ -n "$ioraw3_val" && "$ioraw3_val" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+        ioraw3=$(awk 'BEGIN{printf "%.1f", '$ioraw3_val'}' )
+        if [[ "$ioraw3_unit" == "GB/s" ]]; then
+            ioraw3=$(awk 'BEGIN{printf "%.1f", '$ioraw3' * 1024}' )
+        fi
+    fi
+
+    # Ensure ioall is always a number for awk
+    local ioall=$(awk 'BEGIN{printf "%.1f", '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
+    local ioavg=$(awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
     printf "%s" "$ioavg"
 }
 
@@ -1127,22 +1153,29 @@ measure_steal_time() {
 
 cpubench() {
     if hash "$1" 2>"$NULL"; then
-        # Measure steal time before the test
         local steal_before=$(measure_steal_time 1)
         
-        # Run performance test
-        io=$( ( dd if=/dev/zero bs=512K count="$2" | "$1" ) 2>"$NULL" | grep 'copied' | awk -F, '{io=$NF} END {print io}' )
+        local dd_err_file="$TEMP_DIR/dd_err_$$"
+        # Run dd, pipe its stdout to the CPU command, redirect its stderr to dd_err_file
+        # The CPU command's stdout and stderr are redirected to /dev/null
+        (dd if=/dev/zero bs=512K count="$2" 2>"$dd_err_file" | "$1" >/dev/null 2>&1)
         
-        # Measure steal time after the test
+        # Now parse the dd_err_file for the speed
+        # Use sed to remove leading/trailing whitespace from the extracted speed
+        io=$(cat "$dd_err_file" | grep 'copied' | awk -F, '{io=$NF} END {print io}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        rm -f "$dd_err_file"
+        
         local steal_after=$(measure_steal_time 1)
+        local steal_avg=$(awk "BEGIN {printf \"%.2f\", ($steal_before + $steal_after) / 2}")
         
-        # Save average steal time value
-        steal_avg=$(awk "BEGIN {printf \"%.2f\", ($steal_before + $steal_after) / 2}")
-        
-        if [[ $io != *"."* ]]; then
-            printf "%4i %s (Steal: %s%%)" "${io% *}" "${io##* }" "$steal_avg"
+        if [[ -n "$io" ]]; then # Check if io is not empty
+            if [[ $io != *"."* ]]; then
+                printf "%4i %s (Steal: %s%%)" "${io% *}" "${io##* }" "$steal_avg"
+            else
+                printf "%4i.%s (Steal: %s%%)" "${io%.*}" "${io#*.}" "$steal_avg"
+            fi
         else
-            printf "%4i.%s (Steal: %s%%)" "${io%.*}" "${io#*.}" "$steal_avg"
+            printf " 0 MB/s (Steal: %s%%)" "$steal_avg" # Default to 0 if no speed found
         fi
     else
         printf " %s not found on system." "$1"
@@ -1184,16 +1217,17 @@ iotest() {
     mkdir -p "$RAMDISK_BASE_DIR" # Ensure it exists, though mktemp -d already created it
     mount -t tmpfs -o size="$sbram" tmpfs "$RAMDISK_BASE_DIR"/
     echostyle "RAM Speed:"
-    iow1=$( ( dd if=/dev/zero of="$RAMDISK_BASE_DIR/zero" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' )
-    ior1=$( ( dd if="$RAMDISK_BASE_DIR/zero" of="$NULL" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' )
-    iow2=$( ( dd if=/dev/zero of="$RAMDISK_BASE_DIR/zero" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' )
-    ior2=$( ( dd if="$RAMDISK_BASE_DIR/zero" of="$NULL" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' )
-    iow3=$( ( dd if=/dev/zero of="$RAMDISK_BASE_DIR/zero" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' )
-    ior3=$( ( dd if="$RAMDISK_BASE_DIR/zero" of="$NULL" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' )
+    # Redirect dd's stderr (where speed info is) to stdout, then pipe to awk
+    iow1=$( ( dd if=/dev/zero of="$RAMDISK_BASE_DIR/zero" bs=512K count="$sbcount" 2>&1 ) | awk -F, '{io=$NF} END { print io}' )
+    ior1=$( ( dd if="$RAMDISK_BASE_DIR/zero" of="$NULL" bs=512K count="$sbcount" 2>&1 ) | awk -F, '{io=$NF} END { print io}' )
+    iow2=$( ( dd if=/dev/zero of="$RAMDISK_BASE_DIR/zero" bs=512K count="$sbcount" 2>&1 ) | awk -F, '{io=$NF} END { print io}' )
+    ior2=$( ( dd if="$RAMDISK_BASE_DIR/zero" of="$NULL" bs=512K count="$sbcount" 2>&1 ) | awk -F, '{io=$NF} END { print io}' )
+    iow3=$( ( dd if=/dev/zero of="$RAMDISK_BASE_DIR/zero" bs=512K count="$sbcount" 2>&1 ) | awk -F, '{io=$NF} END { print io}' )
+    ior3=$( ( dd if="$RAMDISK_BASE_DIR/zero" of="$NULL" bs=512K count="$sbcount" 2>&1 ) | awk -F, '{io=$NF} END { print io}' )
     echo "   Avg. write : $(averageio "$iow1" "$iow2" "$iow3") MB/s" | tee -a "$log"
     echo "   Avg. read  : $(averageio "$ior1" "$ior2" "$ior3") MB/s" | tee -a "$log"
-    rm "$RAMDISK_BASE_DIR/zero"
-    umount "$RAMDISK_BASE_DIR"
+    rm "$RAMDISK_BASE_DIR/zero" 2>"$NULL" # Add 2>"$NULL" to suppress errors if file doesn't exist
+    umount "$RAMDISK_BASE_DIR" 2>"$NULL" # Add 2>"$NULL" to suppress errors if not mounted
     # rm -rf "$RAMDISK_BASE_DIR" # This will be handled by the main cleanup function
     echo "" | tee -a "$log"
     
@@ -1230,13 +1264,39 @@ write_io() {
         echo -n "   3rd run    : " | tee -a "$log"
         io3=$( write_test "$writemb" )
         echo -e "$io3" | tee -a "$log"
-        ioraw1=$( echo "$io1" | awk 'NR==1 {print $1}' )
-        [ "`echo "$io1" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
-        ioraw2=$( echo "$io2" | awk 'NR==1 {print $1}' )
-        [ "`echo "$io2" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw2=$( awk 'BEGIN{print '$ioraw2' * 1024}' )
-        ioraw3=$( echo "$io3" | awk 'NR==1 {print $1}' )
-        [ "`echo "$io3" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
-        ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
+        
+        # Ensure variables are numeric before passing to awk
+        ioraw1_val=$(echo "$io1" | awk 'NR==1 {print $1}')
+        ioraw1_unit=$(echo "$io1" | awk 'NR==1 {print $2}')
+        ioraw1=0
+        if [[ -n "$ioraw1_val" && "$ioraw1_val" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+            ioraw1=$(awk 'BEGIN{printf "%.1f", '$ioraw1_val'}' )
+            if [[ "$ioraw1_unit" == "GB/s" ]]; then
+                ioraw1=$(awk 'BEGIN{printf "%.1f", '$ioraw1' * 1024}' )
+            fi
+        fi
+
+        ioraw2_val=$(echo "$io2" | awk 'NR==1 {print $1}')
+        ioraw2_unit=$(echo "$io2" | awk 'NR==1 {print $2}')
+        ioraw2=0
+        if [[ -n "$ioraw2_val" && "$ioraw2_val" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+            ioraw2=$(awk 'BEGIN{printf "%.1f", '$ioraw2_val'}' )
+            if [[ "$ioraw2_unit" == "GB/s" ]]; then
+                ioraw2=$(awk 'BEGIN{printf "%.1f", '$ioraw2' * 1024}' )
+            fi
+        fi
+
+        ioraw3_val=$(echo "$io3" | awk 'NR==1 {print $1}')
+        ioraw3_unit=$(echo "$io3" | awk 'NR==1 {print $2}')
+        ioraw3=0
+        if [[ -n "$ioraw3_val" && "$ioraw3_val" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+            ioraw3=$(awk 'BEGIN{printf "%.1f", '$ioraw3_val'}' )
+            if [[ "$ioraw3_unit" == "GB/s" ]]; then
+                ioraw3=$(awk 'BEGIN{printf "%.1f", '$ioraw3' * 1024}' )
+            fi
+        fi
+
+        ioall=$( awk 'BEGIN{printf "%.1f", '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
         ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
         echo -e "   -----------------------" | tee -a "$log"
         echo -e "   Average    : $ioavg MB/s" | tee -a "$log"
