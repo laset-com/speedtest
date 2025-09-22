@@ -482,8 +482,8 @@ print_speedtest_meast() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '610' 'Cyprus, Limassol (PrimeTel) ' 'http://speedtest-node.prime-tel.com'
 	speed_test '2434' 'Israel, Haifa (013Netvision)' 'http://speed2.013.net'
-	speed_test '16139' 'Egypt, Cairo (Telecom Egypt)' 'http://speedtestob.orange.eg'
-	speed_test '12498' 'Lebanon, Tripoli (BItarNet) ' 'http://speedtest1.wavenet-lb.net'
+	speed_test '1689' 'Egypt, Cairo (Vodafone)     ' 'http://speedtest.vodafone.com.eg'
+	speed_test '9137' 'Lebanon, Tripoli (Be-Wise)  ' 'http://sp1.wise-isp.com'
 	speed_test '22129' 'UAE, Dubai (i3D)            ' 'http://ae.ap.speedtest.i3d.net'
 	speed_test '24742' 'Qatar, Doha (Ooredoo)       ' 'http://37.186.62.40'
 	speed_test '13610' 'SA, Riyadh (ITC)            ' 'http://87.101.181.146'
