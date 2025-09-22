@@ -9,6 +9,55 @@ RAMDISK_TEMP_DIR=""
 
 # --- Core Utility Functions (must be defined early) ---
 
+about() {
+	echo ""
+	echo " ========================================================= "
+	echo " \            Speedtest https://bench.laset.com            / "
+	echo " \    System info, Geekbench, I/O test and speedtest     / "
+	echo " \                  $bench_v    $bench_d                 / "
+	echo " ========================================================= "
+	echo ""
+}
+
+cleanup() {
+	# Remove temporary files created in the current directory
+	rm -f speedtest.py tools.py 2>"$NULL"
+	rm -f ip_json.json 2>"$NULL"
+	rm -f geekbench_claim.url 2>"$NULL"
+	rm -f test_file_* 2>"$NULL"
+	
+	# Remove temporary directories created by mktemp
+	if [[ -n "$GEEKBENCH_TEMP_DIR" && -d "$GEEKBENCH_TEMP_DIR" ]]; then
+		rm -rf "$GEEKBENCH_TEMP_DIR" 2>"$NULL"
+	fi
+	if [[ -n "$RAMDISK_TEMP_DIR" && -d "$RAMDISK_TEMP_DIR" ]]; then
+		umount "$RAMDISK_TEMP_DIR" 2>"$NULL" # Attempt to unmount before removing
+		rm -rf "$RAMDISK_TEMP_DIR" 2>"$NULL"
+	fi
+	
+	# Remove the old fixed 'geekbench' directory if it exists (for backward compatibility)
+	rm -rf geekbench 2>"$NULL"
+}
+
+cancel() {
+	echo ""
+	next;
+	echo " Abort ..."
+	echo " Cleanup ..."
+	cleanup;
+	echo " Done"
+	exit 0
+}
+
+error_exit() {
+	echo ""
+	echo " Error: $1"
+	echo " Cleanup ..."
+	cleanup;
+	echo " Done"
+	exit 1
+}
+
 echostyle(){
 	if hash tput 2>"$NULL"; then
 		echo " $(tput setaf 6)$1$(tput sgr0)"
@@ -390,7 +439,7 @@ speed_test(){
 	        local reupload=$(echo "$temp" | awk -F ':' '/Upload/{print $2}')
 	        #local relatency=$(echo "$temp" | awk -F ':' '/Hosted/{print $2}')
 	        local relatency=$(pingtest "$3")
-	        #local temp_latency=$(echo "$relatency" | awk -F '.' '{print $1}')
+	        #local temp_latency=$(echo "$relatity" | awk -F '.' '{print $1}')
         	#if [[ "${temp_latency}" -gt 1000 ]]; then
             	#relatency=" - "
         	#fi
@@ -861,6 +910,277 @@ get_ip_whois_org_name(){
     echo "$org_name";
 }
 
+# --- Print Speedtest Functions ---
+
+print_speedtest() {
+	echo "" | tee -a "$log"
+	echostyle "## Global Speedtest.net"
+	echo "" | tee -a "$log"
+	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                        '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+	speed_test '21016' 'USA, New York (Starry)        ' 'http://speedtest-server-nyc.starry.com'
+	speed_test '17384' 'USA, Chicago (Windstream)     ' 'http://chicago02.speedtest.windstream.net'
+	speed_test '1763' 'USA, Houston (Comcast)        ' 'http://speedtest.pslightwave.com'
+	speed_test '14237' 'USA, Miami (Frontier)         ' 'http://miami.fl.speedtest.frontier.com'
+	speed_test '18401' 'USA, Los Angeles (Windstream) ' 'http://la02.speedtest.windstream.net'
+	speed_test '11445' 'UK, London (Structured Com)   ' 'http://lon.host.speedtest.net'
+	speed_test '27961' 'France, Paris (KEYYO)         ' 'http://perf.keyyo.net'
+	speed_test '20507' 'Germany, Berlin (DNS:NET)     ' 'http://speedtest01.dns-net.de'
+	speed_test '21378' 'Spain, Madrid (MasMovil)      ' 'http://speedtest-mad.masmovil.com'
+	speed_test '395' 'Italy, Rome (Unidata)         ' 'http://speedtest2.unidata.it'
+	speed_test '23647' 'India, Mumbai (Tatasky)       ' 'http://speedtestmum.tataskybroadband.com'
+	speed_test '5935' 'Singapore (MyRepublic)        ' 'http://speedtest.myrepublic.com.sg'
+	speed_test '7139' 'Japan, Tsukuba (SoftEther)    ' 'http://speedtest2.softether.co.jp'
+	speed_test '2629' 'Australia, Sydney (Telstra)   ' 'http://syd1.speedtest.telstra.net'
+	speed_test '15722' 'RSA, Randburg (MTN SA)        ' 'http://speedtest.rb.mtn.co.za'
+	speed_test '3068' 'Brazil, Sao Paulo (TIM)       ' 'http://svstsne0101.timbrasil.com.br'
+	 
+	rm -rf speedtest.py
+}
+
+print_speedtest_usa() {
+	echo "" | tee -a "$log"
+	echostyle "## USA Speedtest.net"
+	echo "" | tee -a "$log"
+	printf "%-33s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-76s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                         '
+	printf "%-76s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+	speed_test '21016' 'USA, New York (Starry)         ' 'http://speedtest-server-nyc.starry.com'
+	speed_test '1774' 'USA, Boston (Comcast)          ' 'http://po-2-rur102.needham.ma.boston.comcast.net'
+	speed_test '1775' 'USA, Baltimore, MD (Comcast)   ' 'http://po-1-rur101.capitolhghts.md.bad.comcast.net'
+	speed_test '17387' 'USA, Atlanta (Windstream)      ' 'http://atlanta02.speedtest.windstream.net'
+	speed_test '14237' 'USA, Miami (Frontier)          ' 'http://miami.fl.speedtest.frontier.com'
+	speed_test '1764' 'USA, Nashville (Comcast)       ' 'http://be-304-cr23.nashville.tn.ibone.comcast.net'
+	speed_test '10152' 'USA, Indianapolis (CenturyLink)' 'http://indianapolis.speedtest.centurylink.net'
+	speed_test '27834' 'USA, Cleveland (Windstream)    ' 'http://cleveland02.speedtest.windstream.net'
+	speed_test '1778' 'USA, Detroit, MI (Comcast)     ' 'http://ae-97-rur101.taylor.mi.michigan.comcast.net'
+	speed_test '17384' 'USA, Chicago (Windstream)      ' 'http://chicago02.speedtest.windstream.net'
+	speed_test '4557' 'USA, St. Louis (Elite Fiber)   ' 'http://speed.elitesystemsllc.com'
+	speed_test '2917' 'USA, Minneapolis (US Internet) ' 'http://speedtest.usiwireless.com'
+	speed_test '13628' 'USA, Kansas City (Nocix)       ' 'http://speedtest.nocix.net'
+	speed_test '1763' 'USA, Houston (Comcast)         ' 'http://speedtest.pslightwave.com'
+	speed_test '10051' 'USA, Denver (Comcast)          ' 'http://stosat-dvre-01.sys.comcast.net'
+	speed_test '16869' 'USA, Albuquerque (Plateau Tel) ' 'http://speedtest4.plateautel.net'
+	speed_test '28800' 'USA, Phoenix (PhoenixNAP)      ' 'http://speedtest.phoenixnap.com'
+	speed_test '1781' 'USA, Salt Lake City (Comcast)  ' 'http://be-36711-ar01.saltlakecity.ut.utah.comcast.net'
+	speed_test '1782' 'USA, Seattle (Comcast)         ' 'http://po-1-xar02.seattle.wa.seattle.comcast.net'
+	speed_test '1783' 'USA, San Francisco (Comcast)   ' 'http://be-232-rur01.santaclara.ca.sfba.comcast.net'
+	speed_test '18401' 'USA, Los Angeles (Windstream)  ' 'http://la02.speedtest.windstream.net'
+	speed_test '980' 'USA, Anchorage (Alaska Com)    ' 'http://speedtest.anc.acsalaska.net'
+	speed_test '24031' 'USA, Honolulu (Hawaiian Telcom)' 'http://htspeed.hawaiiantel.net'
+	 
+	rm -rf speedtest.py
+}
+
+print_speedtest_in() {
+	echo "" | tee -a "$log"
+	echostyle "## India Speedtest.net"
+	echo "" | tee -a "$log"
+	printf "%-33s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                         '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+	speed_test '7236' 'India, New Delhi (iForce)      ' 'http://speed.iforcenetworks.co.in'
+	speed_test '23647' 'India, Mumbai (Tatasky)        ' 'http://speedtestmum.tataskybroadband.com'
+	speed_test '16086' 'India, Nagpur (optbb)          ' 'http://speedtest.optbb.in'
+	speed_test '23244' 'India, Patna (Airtel)          ' 'http://speedtestbhr1.airtel.in'
+	speed_test '15697' 'India, Kolkata (RailTel)       ' 'http://kol.speedtest.rcil.gov.in'
+	speed_test '27524' 'India, Visakhapatnam (Alliance)' 'http://speedtestvtz.alliancebroadband.in'
+	speed_test '13785' 'India, Hyderabad (I-ON)        ' 'http://testspeed.vainavi.net'
+	speed_test '10024' 'India, Madurai (Niss Broadband)' 'http://madurai.nissbroadband.com'
+	rm -rf speedtest.py
+}
+
+print_speedtest_europe() {
+	echo "" | tee -a "$log"
+	echostyle "## Europe Speedtest.net"
+	echo "" | tee -a "$log"
+	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                          '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+	speed_test '11445' 'UK, London (Structured Com)     ' 'http://lon.host.speedtest.net'
+	speed_test '29076' 'Netherlands, Amsterdam (XS News)' 'http://speedtest.xsnews.nl'
+	speed_test '20507' 'Germany, Berlin (DNS:NET)       ' 'http://speedtest01.dns-net.de'
+	speed_test '31470' 'Germany, Munich (Telekom)       ' 'http://mue.wsqm.telekom-dienste.de'
+	speed_test '26852' 'Sweden, Stockholm (SUNET)       ' 'http://fd.sunet.se'
+	speed_test '8018' 'Norway, Oslo (NextGenTel)       ' 'http://sp2.nextgentel.no'
+	speed_test '27961' 'France, Paris (KEYYO)           ' 'http://perf.keyyo.net'
+	speed_test '21378' 'Spain, Madrid (MasMovil)        ' 'http://speedtest-mad.masmovil.com'
+	speed_test '395' 'Italy, Rome (Unidata)           ' 'http://speedtest2.unidata.it'
+	speed_test '30620' 'Czechia, Prague (O2)            ' 'http://ookla.o2.cz'
+	speed_test '12390' 'Austria, Vienna (A1)            ' 'http://speedtest.a1.net'
+	speed_test '7103' 'Poland, Warsaw (ISP Emitel)     ' 'http://speedtest.emitel.pl'
+	speed_test '30813' 'Ukraine, Kyiv (KyivStar)        ' 'http://srv01-okl-kv.kyivstar.ua'
+	speed_test '5834' 'Latvia, Riga (Bite)             ' 'http://213.226.139.90'
+	speed_test '4290' 'Romania, Bucharest (iNES)       ' 'http://speed.ines.ro'
+	speed_test '1727' 'Greece, Athens (GRNET)          ' 'http://speed-test.gr-ix.gr'
+	speed_test '32575' 'Turkey, Urfa (Firatnet)         ' 'http://firatspeedtest.com'
+	 
+	rm -rf speedtest.py
+}
+
+print_speedtest_asia() {
+	echo "" | tee -a "$log"
+	echostyle "## Asia Speedtest.net"
+	echo "" | tee -a "$log"
+	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                          '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+	speed_test '16475' 'India, New Delhi (Weebo)        ' 'http://sp1.weebo.in'
+	speed_test '23647' 'India, Mumbai (Tatasky)         ' 'http://speedtestmum.tataskybroadband.com'
+	speed_test '12329' 'Sri Lanka, Colombo (Mobitel)    ' 'http://ookla.mobitel.lk'
+	speed_test '31336' 'Bangladesh, Dhaka (Banglalink)  ' 'http://speedtest1.banglalink.net'
+	speed_test '24514' 'Myanmar, Yangon (TrueNET)       ' 'http://truenetisp.net'
+	speed_test '26845' 'Laos, Vientaine (Mangkone)      ' 'http://speedtest.mangkone.com'
+	speed_test '13871' 'Thailand, Bangkok (CAT Telecom) ' 'http://catspeedtest.net'
+	speed_test '5828' 'Cambodia, Phnom Penh (SINET)    ' 'http://speedtest.sinet.com.kh'
+	speed_test '9903' 'Vietnam, Hanoi (Viettel)        ' 'http://speedtestkv1a.viettel.vn'
+	speed_test '27261' 'Malaysia, Kuala Lumpur (Extreme)' 'http://kl-speedtest.ebb.my'
+	speed_test '5935' 'Singapore (MyRepublic)          ' 'http://speedtest.myrepublic.com.sg'
+	speed_test '7582' 'Indonesia, Jakarta (Telekom)    ' 'http://jakarta.speedtest.telkom.net.id'
+	speed_test '7167' 'Philippines, Manila (PLDT)      ' 'http://119.92.238.50'
+	speed_test '16176' 'Hong Kong (HGC Global)          ' 'http://ookla-speedtest.hgconair.hgc.com.hk'
+	speed_test '13506' 'Taiwan, Taipei (TAIFO)          ' 'http://speedtest.taifo.com.tw'
+	speed_test '7139' 'Japan, Tsukuba (SoftEther)      ' 'http://speedtest2.softether.co.jp'
+	 
+	rm -rf speedtest.py
+}
+
+print_speedtest_sa() {
+	echo "" | tee -a "$log"
+	echostyle "## South America Speedtest.net"
+	echo "" | tee -a "$log"
+	printf "%-37s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-80s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                             '
+	printf "%-80s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+	speed_test '3068' 'Brazil, Sao Paulo (TIM)            ' 'http://svstsne0101.timbrasil.com.br'
+	speed_test '11102' 'Brazil, Fortaleza (Connect)        ' 'http://speedtest3.connectja.com.br'
+	speed_test '18126' 'Brazil, Manaus (Claro)             ' 'http://spd7.claro.com.br'
+	speed_test '15018' 'Colombia, Bogota (Tigoune)         ' 'http://speedtestbog1.tigo.com.co'
+	speed_test '31043' 'Ecuador, Ambato (EXTREME)          ' 'http://speed.extreme.net.ec'
+	speed_test '5272' 'Peru, Lima (Fiberluxperu)          ' 'http://medidor.fiberluxperu.com'
+	speed_test '1053' 'Bolivia, La Paz (Nuevatel)         ' 'http://speedtest.nuevatel.com'
+	speed_test '6776' 'Paraguay, Asuncion (TEISA)         ' 'http://sp1.teisa.com.py'
+	speed_test '21436' 'Chile, Santiago (Movistar)         ' 'http://speedtest-h5-10g.movistarplay.cl'
+	speed_test '5181' 'Argentina, Buenos Aires (Claro)    ' 'http://speedtest.claro.com.ar'
+	speed_test '31687' 'Argentina, Cordoba (Colsecor)      ' 'http://speedtest.colsecor.com.ar'
+	speed_test '20212' 'Uruguay, Montevideo (Movistar)     ' 'http://speedtest.movistar.com.uy'
+	 
+	rm -rf speedtest.py
+}
+
+print_speedtest_au() {
+	echo "" | tee -a "$log"
+	echostyle "## Australia & New Zealand Speedtest.net"
+	echo "" | tee -a "$log"
+	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                        '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+	speed_test '2629' 'Australia, Sydney (Telstra)   ' 'http://syd1.speedtest.telstra.net'
+	speed_test '2225' 'Australia, Melbourne (Telstra)' 'http://mel1.speedtest.telstra.net'
+	speed_test '2604' 'Australia, Brisbane (Telstra) ' 'http://brs1.speedtest.telstra.net'
+	speed_test '18247' 'Australia, Adelaide (Vocus)   ' 'http://speedtest-ade.vocus.net'
+	speed_test '22006' 'Australia, Hobart (TasmaNet)  ' 'http://speedtest.tasmanet.com.au'
+	speed_test '22036' 'Australia, Darwin (Telstra)   ' 'http://drw1.speedtest.telstra.net'
+	speed_test '2627' 'Australia, Perth (Telstra)    ' 'http://per1.speedtest.telstra.net'
+	speed_test '5539' 'NZ, Auckland (2degrees)       ' 'http://speed2.snap.net.nz'
+	speed_test '11326' 'NZ, Wellington (Spark)        ' 'http://speedtest-wellington.spark.co.nz'
+	speed_test '4934' 'NZ, Christchurch (Vodafone)   ' 'http://christchurch.speedtest.vodafone.co.nz'
+	 
+	rm -rf speedtest.py
+}
+
+print_speedtest_ukraine() {
+	echo "" | tee -a "$log"
+	echostyle "## Ukraine Speedtest.net"
+	echo "" | tee -a "$log"
+	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                        '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+	speed_test '29112' 'Ukraine, Kyiv (Datagroup)     ' 'http://speedtest.datagroup.ua'
+	speed_test '30813' 'Ukraine, Kyiv (KyivStar)      ' 'http://srv01-okl-kv.kyivstar.ua'
+	speed_test '2518' 'Ukraine, Kyiv (Volia)         ' 'http://speedtest2.volia.com'
+	speed_test '14887' 'Ukraine, Lviv (UARNet)        ' 'http://speedtest.uar.net'
+	speed_test '29259' 'Ukraine, Lviv (KyivStar)' 'http://srv01-okl-lvv.kyivstar.ua'
+	speed_test '2445' 'Ukraine, Lviv (KOMiTEX) ' 'http://speedtest.komitex.net'
+	speed_test '3022' 'Ukraine, Uzhgorod (TransCom)  ' 'http://speedtest.tcom.uz.ua'
+	speed_test '19332' 'Ukraine, Chernivtsi (C.T.Net) ' 'http://speedtest.ctn.cv.ua'
+	speed_test '3861' 'Ukraine, Zhytomyr (DKS)       ' 'http://speedtest1.dks.com.ua'
+	speed_test '8633' 'Ukraine, Cherkasy (McLaut)    ' 'http://speedtest2.mclaut.com'
+	speed_test '20285' 'Ukraine, Kharkiv (Maxnet)     ' 'http://speedtest.maxnet.ua'
+	speed_test '20953' 'Ukraine, Dnipro (Trifle)      ' 'http://speedtest.trifle.net'
+	speed_test '2796' 'Ukraine, Odesa (Black Sea)    ' 'http://speedtest.blacksea.net.ua'
+	speed_test '26725' 'Ukraine, Mariupol (CityLine)  ' 'http://speedtest.cl.dn.ua'
+	speed_test '2581' 'Ukraine, Yalta (KNET)         ' 'http://speedtest.knet-tele.com'
+	 
+	rm -rf speedtest.py
+}
+
+print_speedtest_lviv() {
+	echo "" | tee -a "$log"
+	echostyle "## Lviv Speedtest.net"
+	echo "" | tee -a "$log"
+	printf "%-26s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                  '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+	speed_test '14887' 'Ukraine, Lviv (UARNet)  ' 'http://speedtest.uar.net'
+	speed_test '29259' 'Ukraine, Lviv (KyivStar)' 'http://srv01-okl-lvv.kyivstar.ua'
+	speed_test '2445' 'Ukraine, Lviv (KOMiTEX) ' 'http://speedtest.komitex.net'
+	speed_test '12786' 'Ukraine, Lviv (ASTRA)   ' 'http://speedtest.astra.in.ua'
+	speed_test '1204' 'Ukraine, Lviv (Network) ' 'http://speedtest.network.lviv.ua'
+	speed_test '34751' 'Ukraine, Lviv (Wenet)   ' 'http://vds.wenet.lviv.ua'
+	 
+	rm -rf speedtest.py
+}
+
+print_speedtest_meast() {
+	echo "" | tee -a "$log"
+	echostyle "## Middle East Speedtest.net"
+	echo "" | tee -a "$log"
+	printf "%-30s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                      '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+	speed_test '610' 'Cyprus, Limassol (PrimeTel) ' 'http://speedtest-node.prime-tel.com'
+	speed_test '2434' 'Israel, Haifa (013Netvision)' 'http://speed2.013.net'
+	speed_test '16139' 'Egypt, Cairo (Telecom Egypt)' 'http://speedtestob.orange.eg'
+	speed_test '12498' 'Lebanon, Tripoli (BItarNet) ' 'http://speedtest1.wavenet-lb.net'
+	speed_test '22129' 'UAE, Dubai (i3D)            ' 'http://ae.ap.speedtest.i3d.net'
+	speed_test '24742' 'Qatar, Doha (Ooredoo)       ' 'http://37.186.62.40'
+	speed_test '13610' 'SA, Riyadh (ITC)            ' 'http://87.101.181.146'
+	speed_test '1912' 'Bahrain, Manama (Zain)      ' 'http://62.209.25.182'
+	speed_test '18512' 'Iran, Tehran (MCI)          ' 'http://rhaspd2.mci.ir'
+	 
+	rm -rf speedtest.py
+}
+
+print_speedtest_china() {
+	echo "" | tee -a "$log"
+	echostyle "## China Speedtest.net"
+	echo "" | tee -a "$log"
+	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                        '
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+	speed_test '5396' 'Suzhou (China Telecom 5G)     ' 'http://4gsuzhou1.speedtest.jsinfo.net'
+	speed_test '24447' 'ShangHai (China Unicom 5G)    ' 'http://5g.shunicomtest.com'
+	speed_test '26331' 'Zhengzhou (Henan CMCC 5G)     ' 'http://5ghenan.ha.chinamobile.com'
+	speed_test '29105' 'Xi"an (China Mobile 5G)       ' 'http://122.77.240.140'
+	speed_test '4870' 'Changsha (China Unicom 5G)    ' 'http://220.202.152.178'
+	speed_test '3633' 'Shanghai (China Telecom)      ' 'http://speedtest1.online.sh.cn'
+	 
+	rm -rf speedtest.py
+}
+
 # --- Main Benchmark Execution Functions ---
 
 bench_all(){
@@ -1201,326 +1521,6 @@ if [[  ! "$is_share" == "share" ]]; then
 			;;
 	esac
 fi
-print_intro() {
-	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.laset.com '$bench_v' '$bench_d' \n' $region_name | tee -a $log
-	printf " Usage : curl -sL bench.laset.com | bash -s -- -%s\n" $region_name | tee -a $log
-}
-
-sharetest() {
-	echo " Share results:"
-	echo " - $result_speed" | tee -a $log
-	log_preupload
-	case $1 in
-	#'ubuntu')
-	#	share_link=$( curl -v --data-urlencode "content@$log_up" -d "poster=speedtest.sh" -d "syntax=text" "https://paste.ubuntu.com" 2>&1 | \
-	#		grep "Location" | awk '{print "https://paste.ubuntu.com"$3}' );;
-	#'haste' )
-	#	share_link=$( curl -X POST -s -d "$(cat $log)" https://hastebin.com/documents | awk -F '"' '{print "https://hastebin.com/"$4}' );;
-	#'clbin' )
-	#	share_link=$( curl -sF 'clbin=<-' https://clbin.com < $log );;
-		#sprunge_link=$(curl -sF 'sprunge=<-' https://sprunge.us < $log);;
-	esac
-
-	# Replace "http://" with "https://"
-	#share_link=$(echo "$sprunge_link" | sed 's/http:/https:/')
-
-	# print result info
-	echo " - $GEEKBENCH_URL" | tee -a $log
-	#echo " - $share_link"
-	echo ""
-	rm -f $log_up
-
-}
-
-log_preupload() {
-	log_up="$HOME/speedtest_upload.log"
-	true > $log_up
-	$(cat speedtest.log 2>&1 | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" > $log_up)
-}
-
-get_ip_whois_org_name(){
-	#ip=$(curl -s ip.sb)
-	result=$(curl -s https://rest.db.ripe.net/search.json?query-string=$(curl -s ip.sb))
-	#org_name=$(echo $result | jq '.objects.object.[1].attributes.attribute.[1].value' | sed 's/\"//g')
-	org_name=$(echo $result | jq '.objects.object[1].attributes.attribute[1]' | sed 's/\"//g')
-    echo $org_name;
-}
-
-pingtest() {
-	local ping_link=$(echo ${1#*//} | cut -d"/" -f1)
-
-	# Send three pings and capture the output
-	local ping_output=$(ping -w 1 -c 3 -q $ping_link | grep 'rtt')
-
-	# Extract the avg value from the output
-	local ping_avg=$(echo "$ping_output" | awk -F'/' '{print $6}')
-
-	# get download speed and print
-	if [[ $ping_avg == "" ]]; then
-  	  printf "ping error!"
-	else
-	  printf "%d.%s ms" "${ping_avg%.*}" "${ping_avg#*.}"
-	fi
-}
-
-cleanup() {
-	rm -f test_file_*;
-	rm -f speedtest.py;
-	rm -f speedtest.sh;
-	rm -f tools.py;
-	rm -f ip_json.json;
-	rm -f geekbench_claim.url;
-	rm -rf geekbench;
-}
-
-bench_all(){
-	region_name="Global"
-	print_intro;
-	benchinit;
-	next;
-	get_system_info;
-	print_system_info;
-	ip_info4;
-	next;
-	geekbench;
-	iotest;
-	write_io;
-	print_speedtest;
-	next;
-	print_end_time;
-	cleanup;
-	sharetest clbin;
-}
-
-usa_bench(){
-	region_name="USA"
-	print_intro;
-	benchinit;
-	next;
-	get_system_info;
-	print_system_info;
-	ip_info4;
-	next;
-	geekbench;
-	iotest;
-	write_io;
-	print_speedtest_usa;
-	next;
-	print_end_time;
-	cleanup;
-	sharetest clbin;
-}
-
-in_bench(){
-	region_name="India"
-	print_intro;
-	benchinit;
-	next;
-	get_system_info;
-	print_system_info;
-	ip_info4;
-	next;
-	geekbench;
-	iotest;
-	write_io;
-	print_speedtest_in;
-	next;
-	print_end_time;
-	cleanup;
-	sharetest clbin;
-}
-
-europe_bench(){
-	region_name="Europe"
-	print_intro;
-	benchinit;
-	next;
-	get_system_info;
-	print_system_info;
-	ip_info4;
-	next;
-	geekbench;
-	iotest;
-	write_io;
-	print_speedtest_europe;
-	next;
-	print_end_time;
-	cleanup;
-	sharetest clbin;
-}
-
-asia_bench(){
-	region_name="Asia"
-	print_intro;
-	benchinit;
-	next;
-	get_system_info;
-	print_system_info;
-	ip_info4;
-	next;
-	geekbench;
-	iotest;
-	write_io;
-	print_speedtest_asia;
-	next;
-	print_end_time;
-	cleanup;
-	sharetest clbin;
-}
-
-china_bench(){
-	region_name="China"
-	print_intro;
-	benchinit;
-	next;
-	get_system_info;
-	print_system_info;
-	ip_info4;
-	next;
-	geekbench;
-	iotest;
-	write_io;
-	print_speedtest_china;
-	next;
-	print_end_time;
-	cleanup;
-	sharetest clbin;
-}
-
-sa_bench(){
-	region_name="South-America"
-	print_intro;
-	benchinit;
-	next;
-	get_system_info;
-	print_system_info;
-	ip_info4;
-	next;
-	geekbench;
-	iotest;
-	write_io;
-	print_speedtest_sa;
-	next;
-	print_end_time;
-	cleanup;
-	sharetest clbin;
-}
-
-au_bench(){
-	region_name="AU-NZ"
-	print_intro;
-	benchinit;
-	next;
-	get_system_info;
-	print_system_info;
-	ip_info4;
-	next;
-	geekbench;
-	iotest;
-	write_io;
-	print_speedtest_au;
-	next;
-	print_end_time;
-	cleanup;
-	sharetest clbin;
-}
-
-ukraine_bench(){
-	region_name="Ukraine"
-	print_intro;
-	benchinit;
-	next;
-	get_system_info;
-	print_system_info;
-	ip_info4;
-	next;
-	geekbench;
-	iotest;
-	write_io;
-	print_speedtest_ukraine;
-	next;
-	print_end_time;
-	cleanup;
-	sharetest clbin;
-}
-lviv_bench(){
-	region_name="Lviv"
-	print_intro;
-	benchinit;
-	next;
-	get_system_info;
-	print_system_info;
-	ip_info4;
-	next;
-	geekbench;
-	iotest;
-	write_io;
-	print_speedtest_lviv;
-	next;
-	print_end_time;
-	cleanup;
-	sharetest clbin;
-}
-meast_bench(){
-	region_name="Middle-East"
-	print_intro;
-	benchinit;
-	next;
-	get_system_info;
-	print_system_info;
-	ip_info4;
-	next;
-	geekbench;
-	iotest;
-	write_io;
-	print_speedtest_meast;
-	next;
-	print_end_time;
-	cleanup;
-	sharetest clbin;
-}
-
-log="$HOME/speedtest.log"
-true > $log
-
-case $1 in
-	'info'|'i'|'-i'|'--i'|'-info'|'--info' )
-		about;sleep 3;next;get_system_info;print_system_info;next;cleanup;;
-	'version'|'v'|'-v'|'--v'|'-version'|'--version')
-		next;about;next;cleanup;;
-  	'gb4'|'-gb4'|'--gb4'|'geek4'|'-geek4'|'--geek4' )
-		next;geekbench4;next;cleanup;;
-   	'gb5'|'-gb5'|'--gb5'|'geek5'|'-geek5'|'--geek5' )
-		next;geekbench5;next;cleanup;;
-     	'gb6'|'-gb6'|'--gb6'|'geek6'|'-geek6'|'--geek6' )
-		next;geekbench6;next;cleanup;;
-	'gb'|'-gb'|'--gb'|'geek'|'-geek'|'--geek' )
-		next;geekbench;next;cleanup;;
-	'io'|'-io'|'--io'|'ioping'|'-ioping'|'--ioping' )
-		next;iotest;write_io;next;cleanup;;
-	'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
-		about;benchinit;machine_location;print_speedtest;next;cleanup;;
-	'usas'|'-usas'|'uss'|'-uss'|'uspeed'|'-uspeed' )
-		about;benchinit;machine_location;print_speedtest_usa;next;cleanup;;
-	'eus'|'-eus'|'es'|'-es'|'espeed'|'-espeed' )
-		about;benchinit;machine_location;print_speedtest_europe;next;cleanup;;
-	'as'|'-as'|'aspeed'|'-aspeed' )
-		about;benchinit;machine_location;print_speedtest_asia;next;cleanup;;
-	'aus'|'-aus'|'auspeed'|'-auspeed' )
-		about;benchinit;machine_location;print_speedtest_au;next;cleanup;;
-	'sas'|'-sas'|'saspeed'|'-saspeed' )
-		about;benchinit;machine_location;print_speedtest_sa;next;cleanup;;
-	'mes'|'-mes'|'mespeed'|'-mespeed' )
-		about;benchinit;machine_location;print_speedtest_meast;next;cleanup;;
-	'ins'|'-ins'|'inspeed'|'-inspeed' )
-		about;benchinit;machine_location;print_speedtest_in;next;cleanup;;
-	'cns'|'-cns'|'cnspeed'|'-cnspeed' )
-		about;benchinit;machine_location;print_speedtest_china;next;cleanup;;
-	'uas'|'-uas'|'uaspeed'|'-uaspeed' )
-		about;benchinit;machine_location;print_speedtest_ukraine;next;cleanup;;
-	'lvivs'|'-lvivs' )
-		about;benchinit;machine_location;print_speedtest_lviv;next;cleanup;;
 	'ip'|'-ip'|'--ip'|'geoip'|'-geoip'|'--geoip' )
 		about;benchinit;next;ip_info4;next;cleanup;;
 	'a'|'-a'|'about'|'-about'|'--about' )
