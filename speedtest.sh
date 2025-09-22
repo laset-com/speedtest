@@ -77,6 +77,8 @@ benchinit() {
 	if [ -f /etc/redhat-release ]; then
 		if grep -q "AlmaLinux" /etc/redhat-release; then
 			release="almalinux"
+		elif grep -q "Rocky Linux" /etc/redhat-release; then # Added Rocky Linux check
+			release="rocky"
 		else
 			release="centos"
 		fi
@@ -90,6 +92,8 @@ benchinit() {
 		release="centos"
 	elif cat /etc/issue | grep -Eqi "almalinux"; then
 		release="almalinux"
+	elif cat /etc/issue | grep -Eqi "rocky"; then # Added Rocky Linux check for /etc/issue
+		release="rocky"
 	elif cat /proc/version | grep -Eqi "debian"; then
 		release="debian"
 	elif cat /proc/version | grep -Eqi "ubuntu"; then
@@ -98,6 +102,8 @@ benchinit() {
 		release="centos"
 	elif cat /proc/version | grep -Eqi "almalinux"; then
 		release="almalinux"
+	elif cat /proc/version | grep -Eqi "rocky"; then # Added Rocky Linux check for /proc/version
+		release="rocky"
 	fi
 
 	# check OS
@@ -122,7 +128,7 @@ benchinit() {
 		
 		if [ ! -e "$package_path" ]; then
 			echo " Installing $package_name ..."
-			if [[ "${release}" == "centos" || "${release}" == "almalinux" ]]; then
+			if [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" ]]; then # Added rocky
 				dnf -y install $package_name > /dev/null 2>&1 || yum -y install $package_name > /dev/null 2>&1
 			elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
 				apt-get update -y > /dev/null 2>&1
@@ -139,7 +145,7 @@ benchinit() {
 	install_package "python3" "/usr/bin/python3"
 	
 	# Set python3 as default if needed (for RHEL-based systems)
-	if [[ "${release}" == "centos" || "${release}" == "almalinux" ]] && [ -e '/usr/bin/python3' ]; then
+	if [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" ]] && [ -e '/usr/bin/python3' ]; then # Added rocky
 		alternatives --set python3 /usr/bin/python3 > /dev/null 2>&1 || true
 	fi
 	
@@ -357,16 +363,16 @@ print_speedtest_asia() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '16475' 'India, New Delhi (Weebo)        ' 'http://sp1.weebo.in'
 	speed_test '23647' 'India, Mumbai (Tatasky)         ' 'http://speedtestmum.tataskybroadband.com'
-	speed_test '1131' 'Sri Lanka, Colombo (Telecom PLC)' 'http://speedtest2.sltnet.lk'
-	speed_test '7147' 'Bangladesh, Dhaka (Skytel)      ' 'http://sp1.cosmocom.net'
-	speed_test '14062' 'Myanmar, Yangon (5BB Broadband) ' 'http://5bbbroadband.com'
+	speed_test '12329' 'Sri Lanka, Colombo (Mobitel)    ' 'http://ookla.mobitel.lk'
+	speed_test '31336' 'Bangladesh, Dhaka (Banglalink)  ' 'http://speedtest1.banglalink.net'
+	speed_test '24514' 'Myanmar, Yangon (TrueNET)       ' 'http://truenetisp.net'
 	speed_test '26845' 'Laos, Vientaine (Mangkone)      ' 'http://speedtest.mangkone.com'
 	speed_test '13871' 'Thailand, Bangkok (CAT Telecom) ' 'http://catspeedtest.net'
-	speed_test '10798' 'Cambodia, Phnom Penh (Today)    ' 'http://100ge0-36.core1.pnh1.he.net'
-	speed_test '9174' 'Vietnam, Hanoi (MOBIFONE)       ' 'http://st1.mobifone.vn'
+	speed_test '5828' 'Cambodia, Phnom Penh (SINET)    ' 'http://speedtest.sinet.com.kh'
+	speed_test '9903' 'Vietnam, Hanoi (Viettel)        ' 'http://speedtestkv1a.viettel.vn'
 	speed_test '27261' 'Malaysia, Kuala Lumpur (Extreme)' 'http://kl-speedtest.ebb.my'
 	speed_test '5935' 'Singapore (MyRepublic)          ' 'http://speedtest.myrepublic.com.sg'
-	speed_test '11118' 'Indonesia, Jakarta (My Republic)' 'http://158.140.187.5'
+	speed_test '7582' 'Indonesia, Jakarta (Telekom)    ' 'http://jakarta.speedtest.telkom.net.id'
 	speed_test '7167' 'Philippines, Manila (PLDT)      ' 'http://119.92.238.50'
 	speed_test '16176' 'Hong Kong (HGC Global)          ' 'http://ookla-speedtest.hgconair.hgc.com.hk'
 	speed_test '13506' 'Taiwan, Taipei (TAIFO)          ' 'http://speedtest.taifo.com.tw'
@@ -384,17 +390,17 @@ print_speedtest_sa() {
         speed_test '' 'Nearby                             '
 	printf "%-80s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '3068' 'Brazil, Sao Paulo (TIM)            ' 'http://svstsne0101.timbrasil.com.br'
-	speed_test '11435' 'Brazil, Fortaleza (Netonda)        ' 'http://speedtest.netonda.com.br'
+	speed_test '11102' 'Brazil, Fortaleza (Connect)        ' 'http://speedtest3.connectja.com.br'
 	speed_test '18126' 'Brazil, Manaus (Claro)             ' 'http://spd7.claro.com.br'
-	speed_test '11683' 'Colombia, Bogota (Level 3)         ' 'http://speedtest.globalcrossing.com.co'
+	speed_test '15018' 'Colombia, Bogota (Tigoune)         ' 'http://speedtestbog1.tigo.com.co'
 	speed_test '31043' 'Ecuador, Ambato (EXTREME)          ' 'http://speed.extreme.net.ec'
 	speed_test '5272' 'Peru, Lima (Fiberluxperu)          ' 'http://medidor.fiberluxperu.com'
 	speed_test '1053' 'Bolivia, La Paz (Nuevatel)         ' 'http://speedtest.nuevatel.com'
 	speed_test '6776' 'Paraguay, Asuncion (TEISA)         ' 'http://sp1.teisa.com.py'
 	speed_test '21436' 'Chile, Santiago (Movistar)         ' 'http://speedtest-h5-10g.movistarplay.cl'
 	speed_test '5181' 'Argentina, Buenos Aires (Claro)    ' 'http://speedtest.claro.com.ar'
-	speed_test '10315' 'Argentina, Cordoba (Personal)      ' 'http://st1res.personal.com.ar'
-	speed_test '1546' 'Uruguay, Montevideo (Antel)        ' 'http://speedtest.movistar.com.uy'
+	speed_test '31687' 'Argentina, Cordoba (Colsecor)      ' 'http://speedtest.colsecor.com.ar'
+	speed_test '20212' 'Uruguay, Montevideo (Movistar)     ' 'http://speedtest.movistar.com.uy'
 	 
 	rm -rf speedtest.py
 }
@@ -1022,11 +1028,11 @@ write_test() {
 
 averageio() {
 	ioraw1=$( echo $1 | awk 'NR==1 {print $1}' )
-		[ "$(echo $1 | awk 'NR==1 {print $2}')" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
+		[ "`echo $1 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
 	ioraw2=$( echo $2 | awk 'NR==1 {print $1}' )
-		[ "$(echo $2 | awk 'NR==1 {print $2}')" == "GB/s" ] && ioraw2=$( awk 'BEGIN{print '$ioraw2' * 1024}' )
+		[ "`echo $2 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw2=$( awk 'BEGIN{print '$ioraw2' * 1024}' )
 	ioraw3=$( echo $3 | awk 'NR==1 {print $1}' )
-		[ "$(echo $3 | awk 'NR==1 {print $2}')" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
+		[ "`echo $3 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
 	ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
 	ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
 	printf "%s" "$ioavg"
