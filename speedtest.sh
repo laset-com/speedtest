@@ -179,21 +179,21 @@ benchinit() {
 		if [ ! -e "$package_path" ]; then
 			echo " Installing $package_name ..."
 			if [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" || "${release}" == "fedora" ]]; then
-				dnf -y install $package_name > /dev/null 2>&1 || yum -y install $package_name > /dev/null 2>&1
+				dnf -y install "$package_name" > /dev/null 2>&1 || yum -y install "$package_name" > /dev/null 2>&1
 			elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
 				apt-get update -y > /dev/null 2>&1
-				apt-get -y install $package_name > /dev/null 2>&1
+				apt-get -y install "$package_name" > /dev/null 2>&1
 			elif [[ "${release}" == "arch" ]]; then
-				pacman -Sy --noconfirm $package_name > /dev/null 2>&1
+				pacman -Sy --noconfirm "$package_name" > /dev/null 2>&1
 			elif [[ "${release}" == "suse" ]]; then
-				zypper --non-interactive install $package_name > /dev/null 2>&1
+				zypper --non-interactive install "$package_name" > /dev/null 2>&1
 			else
 				echo " Unknown distribution, trying apt-get, yum, dnf, pacman, and zypper..."
-				apt-get -y install $package_name > /dev/null 2>&1 || \
-				yum -y install $package_name > /dev/null 2>&1 || \
-				dnf -y install $package_name > /dev/null 2>&1 || \
-				pacman -Sy --noconfirm $package_name > /dev/null 2>&1 || \
-				zypper --non-interactive install $package_name > /dev/null 2>&1
+				apt-get -y install "$package_name" > /dev/null 2>&1 || \
+				yum -y install "$package_name" > /dev/null 2>&1 || \
+				dnf -y install "$package_name" > /dev/null 2>&1 || \
+				pacman -Sy --noconfirm "$package_name" > /dev/null 2>&1 || \
+				zypper --non-interactive install "$package_name" > /dev/null 2>&1
 			fi
 			echo -ne "\e[1A"; echo -ne "\e[0K\r"
 		fi
@@ -243,7 +243,7 @@ get_opsy() {
 }
 
 next() {
-    printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+    printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
 }
 next2() {
     printf "%-57s\n" "-" | sed 's/\s/-/g'
@@ -271,19 +271,19 @@ speed_test(){
 
 	        temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
 	        if [[ $(awk -v num1=${temp} -v num2=0 'BEGIN{print(num1>num2)?"1":"0"}') -eq 1 ]]; then
-	        	printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
+	        	printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a "$log"
 	        fi
 		else
 	        local cerror="ERROR"
 		fi
 	else
-		temp=$(python3 speedtest.py --secure --server $1 --share 2>&1)
+		temp=$(python3 speedtest.py --secure --server "$1" --share 2>&1)
 		is_down=$(echo "$temp" | grep 'Download') 
 		if [[ ${is_down} ]]; then
 	        local REDownload=$(echo "$temp" | awk -F ':' '/Download/{print $2}')
 	        local reupload=$(echo "$temp" | awk -F ':' '/Upload/{print $2}')
 	        #local relatency=$(echo "$temp" | awk -F ':' '/Hosted/{print $2}')
-	        local relatency=$(pingtest $3)
+	        local relatency=$(pingtest "$3")
 	        #temp=$(echo "$relatency" | awk -F '.' '{print $1}')
         	#if [[ ${temp} -gt 1000 ]]; then
             	#relatency=" - "
@@ -292,7 +292,7 @@ speed_test(){
 
 	        temp=$(echo "${REDownload}" | awk -F ' ' '{print $1}')
 	        if [[ $(awk -v num1=${temp} -v num2=0 'BEGIN{print(num1>num2)?"1":"0"}') -eq 1 ]]; then
-	        	printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a $log
+	        	printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a "$log"
 			fi
 		else
 	        local cerror="ERROR"
@@ -302,13 +302,13 @@ speed_test(){
 
 
 print_speedtest() {
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echostyle "## Global Speedtest.net"
-	echo "" | tee -a $log
-	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	echo "" | tee -a "$log"
+	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
 	speed_test '21016' 'USA, New York (Starry)        ' 'http://speedtest-server-nyc.starry.com'
 	speed_test '17384' 'USA, Chicago (Windstream)     ' 'http://chicago02.speedtest.windstream.net'
 	speed_test '1763' 'USA, Houston (Comcast)        ' 'http://speedtest.pslightwave.com'
@@ -330,13 +330,13 @@ print_speedtest() {
 }
 
 print_speedtest_usa() {
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echostyle "## USA Speedtest.net"
-	echo "" | tee -a $log
-	printf "%-33s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
-	printf "%-76s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	echo "" | tee -a "$log"
+	printf "%-33s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-76s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                         '
-	printf "%-76s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	printf "%-76s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
 	speed_test '21016' 'USA, New York (Starry)         ' 'http://speedtest-server-nyc.starry.com'
 	speed_test '1774' 'USA, Boston (Comcast)          ' 'http://po-2-rur102.needham.ma.boston.comcast.net'
 	speed_test '1775' 'USA, Baltimore, MD (Comcast)   ' 'http://po-1-rur101.capitolhghts.md.bad.comcast.net'
@@ -365,13 +365,13 @@ print_speedtest_usa() {
 }
 
 print_speedtest_in() {
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echostyle "## India Speedtest.net"
-	echo "" | tee -a $log
-	printf "%-33s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	echo "" | tee -a "$log"
+	printf "%-33s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                         '
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
 	speed_test '7236' 'India, New Delhi (iForce)      ' 'http://speed.iforcenetworks.co.in'
 	speed_test '23647' 'India, Mumbai (Tatasky)        ' 'http://speedtestmum.tataskybroadband.com'
 	speed_test '16086' 'India, Nagpur (optbb)          ' 'http://speedtest.optbb.in'
@@ -384,13 +384,13 @@ print_speedtest_in() {
 }
 
 print_speedtest_europe() {
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echostyle "## Europe Speedtest.net"
-	echo "" | tee -a $log
-	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	echo "" | tee -a "$log"
+	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                          '
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
 	speed_test '11445' 'UK, London (Structured Com)     ' 'http://lon.host.speedtest.net'
 	speed_test '29076' 'Netherlands, Amsterdam (XS News)' 'http://speedtest.xsnews.nl'
 	speed_test '20507' 'Germany, Berlin (DNS:NET)       ' 'http://speedtest01.dns-net.de'
@@ -413,13 +413,13 @@ print_speedtest_europe() {
 }
 
 print_speedtest_asia() {
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echostyle "## Asia Speedtest.net"
-	echo "" | tee -a $log
-	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	echo "" | tee -a "$log"
+	printf "%-34s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                          '
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
 	speed_test '16475' 'India, New Delhi (Weebo)        ' 'http://sp1.weebo.in'
 	speed_test '23647' 'India, Mumbai (Tatasky)         ' 'http://speedtestmum.tataskybroadband.com'
 	speed_test '12329' 'Sri Lanka, Colombo (Mobitel)    ' 'http://ookla.mobitel.lk'
@@ -441,13 +441,13 @@ print_speedtest_asia() {
 }
 
 print_speedtest_sa() {
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echostyle "## South America Speedtest.net"
-	echo "" | tee -a $log
-	printf "%-37s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
-	printf "%-80s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	echo "" | tee -a "$log"
+	printf "%-37s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-80s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                             '
-	printf "%-80s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	printf "%-80s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
 	speed_test '3068' 'Brazil, Sao Paulo (TIM)            ' 'http://svstsne0101.timbrasil.com.br'
 	speed_test '11102' 'Brazil, Fortaleza (Connect)        ' 'http://speedtest3.connectja.com.br'
 	speed_test '18126' 'Brazil, Manaus (Claro)             ' 'http://spd7.claro.com.br'
@@ -465,13 +465,13 @@ print_speedtest_sa() {
 }
 
 print_speedtest_au() {
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echostyle "## Australia & New Zealand Speedtest.net"
-	echo "" | tee -a $log
-	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	echo "" | tee -a "$log"
+	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
 	speed_test '2629' 'Australia, Sydney (Telstra)   ' 'http://syd1.speedtest.telstra.net'
 	speed_test '2225' 'Australia, Melbourne (Telstra)' 'http://mel1.speedtest.telstra.net'
 	speed_test '2604' 'Australia, Brisbane (Telstra) ' 'http://brs1.speedtest.telstra.net'
@@ -487,13 +487,13 @@ print_speedtest_au() {
 }
 
 print_speedtest_ukraine() {
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echostyle "## Ukraine Speedtest.net"
-	echo "" | tee -a $log
-	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	echo "" | tee -a "$log"
+	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
 	speed_test '29112' 'Ukraine, Kyiv (Datagroup)     ' 'http://speedtest.datagroup.ua'
 	speed_test '30813' 'Ukraine, Kyiv (KyivStar)      ' 'http://srv01-okl-kv.kyivstar.ua'
 	speed_test '2518' 'Ukraine, Kyiv (Volia)         ' 'http://speedtest2.volia.com'
@@ -514,13 +514,13 @@ print_speedtest_ukraine() {
 }
 
 print_speedtest_lviv() {
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echostyle "## Lviv Speedtest.net"
-	echo "" | tee -a $log
-	printf "%-26s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	echo "" | tee -a "$log"
+	printf "%-26s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                  '
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
 	speed_test '14887' 'Ukraine, Lviv (UARNet)  ' 'http://speedtest.uar.net'
 	speed_test '29259' 'Ukraine, Lviv (KyivStar)' 'http://srv01-okl-lvv.kyivstar.ua'
 	speed_test '2445' 'Ukraine, Lviv (KOMiTEX) ' 'http://speedtest.komitex.net'
@@ -532,13 +532,13 @@ print_speedtest_lviv() {
 }
 
 print_speedtest_meast() {
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echostyle "## Middle East Speedtest.net"
-	echo "" | tee -a $log
-	printf "%-30s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	echo "" | tee -a "$log"
+	printf "%-30s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                      '
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
 	speed_test '610' 'Cyprus, Limassol (PrimeTel) ' 'http://speedtest-node.prime-tel.com'
 	speed_test '2434' 'Israel, Haifa (013Netvision)' 'http://speed2.013.net'
 	speed_test '16139' 'Egypt, Cairo (Telecom Egypt)' 'http://speedtestob.orange.eg'
@@ -553,13 +553,13 @@ print_speedtest_meast() {
 }
 
 print_speedtest_china() {
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echostyle "## China Speedtest.net"
-	echo "" | tee -a $log
-	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a $log
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	echo "" | tee -a "$log"
+	printf "%-32s%-17s%-17s%-7s\n" " Location" "Upload" "Download" "Ping" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
 	speed_test '5396' 'Suzhou (China Telecom 5G)     ' 'http://4gsuzhou1.speedtest.jsinfo.net'
 	speed_test '24447' 'ShangHai (China Unicom 5G)    ' 'http://5g.shunicomtest.com'
 	speed_test '26331' 'Zhengzhou (Henan CMCC 5G)     ' 'http://5ghenan.ha.chinamobile.com'
@@ -576,7 +576,7 @@ geekbench4() {
 	elif [[ $ARCH = *aarch64* || $ARCH = *arm64* ]]; then # ARM64
 	echo -e "\nGeekbench 4 is not compatible with ARM64 architectures. Skipping the test"
 	else
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..."
 
 	# Start steal time measurement
@@ -627,12 +627,12 @@ geekbench4() {
 	
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
 	echostyle "## Geekbench v4 CPU Benchmark:"
-	echo "" | tee -a $log
-	echo -e "  Single Core : $GEEKBENCH_SCORES_SINGLE  $grank" | tee -a $log
-	echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
-	echo -e "    CPU Steal : ${STEAL_PERCENT}%" | tee -a $log
+	echo "" | tee -a "$log"
+	echo -e "  Single Core : $GEEKBENCH_SCORES_SINGLE  $grank" | tee -a "$log"
+	echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a "$log"
+	echo -e "    CPU Steal : ${STEAL_PERCENT}%" | tee -a "$log"
 	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" >> geekbench_claim.url 2> /dev/null
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echo -e " Cooling down..."
 	sleep 9
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
@@ -646,7 +646,7 @@ geekbench5() {
 	if [[ $ARCH = *x86* ]]; then # 32-bit
 	echo -e "\nGeekbench 5 cannot run on 32-bit architectures. Skipping the test"
 	else
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echo -e " Performing Geekbench v5 CPU Benchmark test. Please wait..."
 
 	# Start steal time measurement
@@ -703,12 +703,12 @@ geekbench5() {
 	
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
 	echostyle "## Geekbench v5 CPU Benchmark:"
-	echo "" | tee -a $log
-	echo -e "  Single Core : $GEEKBENCH_SCORES_SINGLE  $grank" | tee -a $log
-	echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
-	echo -e "    CPU Steal : ${STEAL_PERCENT}%" | tee -a $log
+	echo "" | tee -a "$log"
+	echo -e "  Single Core : $GEEKBENCH_SCORES_SINGLE  $grank" | tee -a "$log"
+	echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a "$log"
+	echo -e "    CPU Steal : ${STEAL_PERCENT}%" | tee -a "$log"
 	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" >> geekbench_claim.url 2> /dev/null
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echo -e " Cooling down..."
 	sleep 9
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
@@ -721,8 +721,10 @@ geekbench5() {
 geekbench6() {
 	if [[ $ARCH = *x86* ]]; then # 32-bit
 	echo -e "\nGeekbench 6 cannot run on 32-bit architectures. Skipping the test"
+	elif [[ $ARCH = *aarch64* || $ARCH = *arm64* ]]; then # ARM64
+	echo -e "\nGeekbench 6 is not compatible with ARM64 architectures. Skipping the test"
 	else
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echo -e " Performing Geekbench v6 CPU Benchmark test. Please wait..."
 
 	# Start steal time measurement
@@ -779,12 +781,12 @@ geekbench6() {
 	
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
 	echostyle "## Geekbench v6 CPU Benchmark:"
-	echo "" | tee -a $log
-	echo -e "  Single Core : $GEEKBENCH_SCORES_SINGLE  $grank" | tee -a $log
-	echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a $log
-	echo -e "    CPU Steal : ${STEAL_PERCENT}%" | tee -a $log
+	echo "" | tee -a "$log"
+	echo -e "  Single Core : $GEEKBENCH_SCORES_SINGLE  $grank" | tee -a "$log"
+	echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a "$log"
+	echo -e "    CPU Steal : ${STEAL_PERCENT}%" | tee -a "$log"
 	[ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" >> geekbench_claim.url 2> /dev/null
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	echo -e " Cooling down..."
 	sleep 9
 	echo -ne "\e[1A"; echo -ne "\033[0K\r"
@@ -794,9 +796,347 @@ geekbench6() {
 	fi
 }
 
+geekbench() {
+	totalram="$( free -m | grep Mem | awk 'NR=1 {print $2}' )"
+	if [[ $totalram -le 1000 ]]; then
+		geekbench4
+	elif [[ $totalram -ge 1000 && $totalram -le 2000 ]]; then
+		geekbench5
+	else
+		geekbench6
+	fi
+}
+
+calc_disk() {
+    local total_size=0
+    local array=$@
+    for size in ${array[@]}
+    do
+        [ "${size}" == "0" ] && size_t=0 || size_t=`echo ${size:0:${#size}-1}`
+        [ "`echo ${size:(-1)}`" == "K" ] && size=0
+        [ "`echo ${size:(-1)}`" == "M" ] && size=$( awk 'BEGIN{printf "%.1f", '$size_t' / 1024}' )
+        [ "`echo ${size:(-1)}`" == "T" ] && size=$( awk 'BEGIN{printf "%.1f", '$size_t' * 1024}' )
+        [ "`echo ${size:(-1)}`" == "G" ] && size=${size_t}
+        total_size=$( awk 'BEGIN{printf "%.1f", '$total_size' + '$size'}' )
+    done
+    echo "${total_size}"
+}
+
+power_time() {
+
+	result=$(smartctl -a "$(result=$(cat /proc/mounts) && echo "$(echo "$result" | awk '/data=ordered/{print $1}')" | awk '{print $1}')" 2>&1) && power_time=$(echo "$result" | awk '/Power_On/{print $10}') && echo "$power_time"
+}
+
+install_smart() {
+	# install smartctl
+	if  [ ! -e '/usr/sbin/smartctl' ]; then
+		echo "Installing Smartctl ..."
+	    if [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" || "${release}" == "fedora" ]]; then
+	    	dnf update -y > /dev/null 2>&1 || yum update -y > /dev/null 2>&1 # Added update for RHEL-based
+	    	dnf -y install smartmontools > /dev/null 2>&1 || yum -y install smartmontools > /dev/null 2>&1
+	    elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
+	    	apt-get update -y > /dev/null 2>&1
+	        apt-get -y install smartmontools > /dev/null 2>&1
+	    elif [[ "${release}" == "arch" ]]; then
+	    	pacman -Sy --noconfirm smartmontools > /dev/null 2>&1
+	    elif [[ "${release}" == "suse" ]]; then
+	    	zypper --non-interactive install smartmontools > /dev/null 2>&1
+	    else
+	    	# Fallback for unknown distributions
+	    	apt-get update -y > /dev/null 2>&1
+	        apt-get -y install smartmontools > /dev/null 2>&1 || \
+	        yum -y install smartmontools > /dev/null 2>&1 || \
+	        dnf -y install smartmontools > /dev/null 2>&1 || \
+	        pacman -Sy --noconfirm smartmontools > /dev/null 2>&1 || \
+	        zypper --non-interactive install smartmontools > /dev/null 2>&1
+	    fi      
+	fi
+}
+
+# test if the host has IPv4/IPv6 connectivity
+[[ ! -z $LOCAL_CURL ]] && IP_CHECK_CMD="curl -s -m 4" || IP_CHECK_CMD="wget -qO- -T 4"
+IPV4_CHECK=$((ping -4 -c 1 -W 4 ipv4.google.com >/dev/null 2>&1 && echo true) || $IP_CHECK_CMD -4 icanhazip.com 2> /dev/null)
+IPV6_CHECK=$((ping -6 -c 1 -W 4 ipv6.google.com >/dev/null 2>&1 && echo true) || $IP_CHECK_CMD -6 icanhazip.com 2> /dev/null)
+if [[ -z "$IPV4_CHECK" && -z "$IPV6_CHECK" ]]; then
+	echo -e
+	echo -e "Warning: Both IPv4 AND IPv6 connectivity were not detected. Check for DNS issues..."
+fi
+
+ip_info(){
+	# no jq
+	country=$(curl -s https://ipapi.co/country_name/)
+	city=$(curl -s https://ipapi.co/city/)
+	asn=$(curl -s https://ipapi.co/asn/)
+	org=$(curl -s https://ipapi.co/org/)
+	countryCode=$(curl -s https://ipapi.co/country/)
+	region=$(curl -s https://ipapi.co/region/)
+
+	echo -e " ASN & ISP            : $asn" | tee -a "$log"
+	echo -e " Organization         : $org" | tee -a "$log"
+	echo -e " Location             : $city, $country ($countryCode)" | tee -a "$log"
+	echo -e " Region               : $region" | tee -a "$log"
+}
+
+ip_info4(){
+	isp=$(python3 tools.py geoip isp)
+	as_tmp=$(python3 tools.py geoip as)
+	asn=$(echo "$as_tmp" | awk -F ' ' '{print $1}')
+	org=$(python3 tools.py geoip org)
+	country=$(python3 tools.py geoip country)
+	city=$(python3 tools.py geoip city)
+	#countryCode=$(python3 tools.py geoip countryCode)
+	region=$(python3 tools.py geoip regionName)
+
+	echo -e " Location     : $country, $city ($region)" | tee -a "$log"
+	#echo -e " Region       : $region" | tee -a "$log"
+	echo -e " ASN & ISP    : $asn, $isp / $org" | tee -a "$log"
+	#echo -e " Organization : $org" | tee -a "$log"
+
+	rm -rf tools.py
+}
+
+machine_location(){
+	isp=$(python3 tools.py geoip isp)
+	as_tmp=$(python3 tools.py geoip as)
+	asn=$(echo "$as_tmp" | awk -F ' ' '{print $1}')
+	org=$(python3 tools.py geoip org)
+	country=$(python3 tools.py geoip country)
+	city=$(python3 tools.py geoip city)
+	#countryCode=$(python3 tools.py geoip countryCode)
+	region=$(python3 tools.py geoip regionName)	
+
+	echo -e " Machine location: $country, $city ($region)"
+	echo -e " ISP & ORG: $asn, $isp / $org"
+
+	rm -rf tools.py
+}
+
+virt_check(){
+	if hash ifconfig 2>/dev/null; then
+		eth=$(ifconfig)
+	fi
+
+	# Use systemd-detect-virt if available for more reliable detection
+	if hash systemd-detect-virt 2>/dev/null; then
+		local detected_virt=$(systemd-detect-virt)
+		if [[ "$detected_virt" != "none" ]]; then
+			virtual=$(echo "$detected_virt" | awk '{print toupper(substr($0,1,1))substr($0,2)}') # Capitalize first letter
+		else
+			virtual="Dedicated"
+		fi
+	else
+		virtualx=$(dmesg) 2>/dev/null
+		
+		# Check for containers
+		if grep docker /proc/1/cgroup -qa; then
+			virtual="Docker"
+		elif grep lxc /proc/1/cgroup -qa; then
+			virtual="Lxc"
+		elif grep -qa container=lxc /proc/1/environ; then
+			virtual="Lxc"
+		elif [[ -f /proc/user_beancounters ]]; then
+			virtual="OpenVZ"
+		# Check for virtual machines
+		elif [[ "$virtualx" == *kvm-clock* ]]; then
+			virtual="KVM"
+		elif [[ "$cname" == *KVM* ]]; then
+			virtual="KVM"
+		elif [[ "$virtualx" == *"VMware Virtual Platform"* ]]; then
+			virtual="VMware"
+		elif [[ "$virtualx" == *"Parallels Software International"* ]]; then
+			virtual="Parallels"
+		elif [[ "$virtualx" == *VirtualBox* ]]; then
+			virtual="VirtualBox"
+		elif [[ -e /proc/xen ]]; then
+			virtual="Xen"
+		elif [[ "$sys_manu" == *"Microsoft Corporation"* ]]; then
+			if [[ "$sys_product" == *"Virtual Machine"* ]]; then
+				if [[ "$sys_ver" == *"7.0"* || "$sys_ver" == *"Hyper-V" ]]; then
+					virtual="Hyper-V"
+				else
+					virtual="Microsoft Virtual Machine"
+				fi
+			fi
+		# Additional virtualization checks for ARM64
+		elif [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
+			# Check for KVM virtualization on ARM64
+			if grep -q "KVM" /proc/cpuinfo 2>/dev/null || grep -q "kvm" /proc/interrupts 2>/dev/null; then
+				virtual="KVM"
+			# Check for Xen virtualization on ARM64
+			elif grep -q "xen" /proc/interrupts 2>/dev/null || [[ -d /proc/xen ]]; then
+				virtual="Xen"
+			# Check for virtualization via /sys interface
+			elif [[ -f /sys/class/dmi/id/product_name ]]; then
+				product_name=$(cat /sys/class/dmi/id/product_name 2>/dev/null)
+				if [[ "$product_name" == *"Virtual"* || "$product_name" == *"VM"* || "$product_name" == *"Cloud"* ]]; then
+					virtual="VM"
+				else
+					virtual="Dedicated"
+				fi
+			else
+				virtual="Dedicated"
+			fi
+		else
+			virtual="Dedicated"
+		fi
+	fi
+}
+
+power_time_check(){
+	echo -ne " Power time of disk   : "
+	install_smart
+	ptime=$(power_time)
+	echo -e "$ptime Hours"
+}
+
+freedisk() {
+	# Check available disk space
+	#spacename=$( df -m . | awk 'NR==2 {print $1}' )
+	#spacenamelength=$(echo ${spacename} | awk '{print length($0)}')
+	#if [[ $spacenamelength -gt 20 ]]; then
+   	#	freespace=$( df -m . | awk 'NR==3 {print $3}' )
+	#else
+	#	freespace=$( df -m . | awk 'NR==2 {print $4}' )
+	#fi
+	freespace=$( df -m . | awk 'NR==2 {print $4}' )
+	if [[ "$freespace" == "" ]]; then
+		freespace=$( df -m . | awk 'NR==3 {print $3}' )
+	fi
+	if [[ $freespace -gt 1024 ]]; then
+		printf "%s" $((1024*2))
+	elif [[ $freespace -gt 512 ]]; then
+		printf "%s" $((512*2))
+	elif [[ $freespace -gt 256 ]]; then
+		printf "%s" $((256*2))
+	elif [[ $freespace -gt 128 ]]; then
+		printf "%s" $((128*2))
+	else
+		printf "1"
+	fi
+}
+
+print_system_info() {
+	echo -e " OS           : $opsy ($lbit Bit)" | tee -a "$log"
+	echo -e " Virt/Kernel  : $virtual / $kern" | tee -a "$log"
+	echo -e " CPU Model    : $cname" | tee -a "$log"
+	echo -e " CPU Cores    : $cores @ $freq MHz $arch $corescache Cache" | tee -a "$log"
+	echo -e " CPU Flags    : $cpu_aes & $cpu_virt" | tee -a "$log"
+	echo -e " Load Average : $load" | tee -a "$log"
+	echo -e " Total Space  : $hdd ($hddused ~$hddfree used)" | tee -a "$log"
+	echo -e " Total RAM    : $tram MB ($uram MB + $bram MB Buff in use)" | tee -a "$log"
+	echo -e " Total SWAP   : $swap MB ($uswap MB in use)" | tee -a "$log"
+	[[ -z "$IPV4_CHECK" ]] && ONLINE="\xE2\x9D\x8C Offline / " || ONLINE="\xE2\x9C\x94 Online / "
+	[[ -z "$IPV6_CHECK" ]] && ONLINE+="\xE2\x9D\x8C Offline" || ONLINE+="\xE2\x9C\x94 Online"
+	echo -e " IPv4/IPv6    : $ONLINE" | tee -a "$log"
+	echo -e " Uptime       : $up" | tee -a "$log"
+	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+}
+
+get_system_info() {
+	# Detect CPU model with ARM64 support
+	if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
+		# Try to get CPU model for ARM64
+		cname=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
+		
+		# If model is not defined, try other fields
+		if [[ -z "$cname" ]]; then
+			cname=$(awk -F: '/Hardware/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
+		fi
+		
+		# If still not defined, try other sources
+		if [[ -z "$cname" ]]; then
+			if [[ -f /sys/devices/virtual/dmi/id/product_name ]]; then
+				cname=$(cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null)
+			fi
+		fi
+		
+		# If still not defined, set as "Unknown ARM64 Processor"
+		if [[ -z "$cname" ]]; then
+			cname="Unknown ARM64 Processor"
+		fi
+	else
+		# Standard detection for x86_64
+		cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+	fi
+	
+	# Detect number of cores with ARM64 support
+	if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
+		cores=$(grep -c ^processor /proc/cpuinfo)
+	else
+		cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
+	fi
+	
+	# Use lscpu for more reliable CPU info if available
+	if hash lscpu 2>/dev/null; then
+		cname=$(lscpu | grep "Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+		cores=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
+		freq=$(lscpu | grep "CPU MHz" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+		corescache=$(lscpu | grep "L3 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+		[[ -z "$corescache" ]] && corescache=$(lscpu | grep "L2 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+		[[ -z "$corescache" ]] && corescache=$(lscpu | grep "L1d cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+		cpu_aes=$(lscpu | grep "Flags:" | grep -q "aes" && echo "AES-NI Enabled" || echo "AES-NI Disabled")
+		cpu_virt=$(lscpu | grep "Flags:" | grep -q "vmx\|svm" && echo "VM-x/AMD-V Enabled" || echo "VM-x/AMD-V Disabled")
+	else
+		freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+		corescache=$( awk -F: '/cache size/ {cache=$2} END {print cache}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+		cpu_aes=$(cat /proc/cpuinfo | grep aes)
+		[[ -z "$cpu_aes" ]] && cpu_aes="AES-NI Disabled" || cpu_aes="AES-NI Enabled"
+		cpu_virt=$(cat /proc/cpuinfo | grep 'vmx\|svm')
+		[[ -z "$cpu_virt" ]] && cpu_virt="VM-x/AMD-V Disabled" || cpu_virt="VM-x/AMD-V Enabled"
+	fi
+
+	tram=$( free -m | awk '/Mem/ {print $2}' )
+	uram=$( free -m | awk '/Mem/ {print $3}' )
+	bram=$( free -m | awk '/Mem/ {print $6}' )
+	swap=$( free -m | awk '/Swap/ {print $2}' )
+	uswap=$( free -m | awk '/Swap/ {print $3}' )
+	up=$( awk '{a=$1/86400;b=($1%86400)/3600;c=($1%3600)/60} {printf("%d days %d:%d\n",a,b,c)}' /proc/uptime )
+	load=$( w | head -1 | awk -F'load average:' '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
+	opsy=$( get_opsy )
+	arch=$( uname -m )
+	lbit=$( getconf LONG_BIT )
+	kern=$( uname -r )
+	#ipv6=$( wget -qO- -t1 -T2 ipv6.icanhazip.com )
+	#disk_size1=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $2}' ))
+	#disk_size2=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $3}' ))
+	#disk_total_size=$( calc_disk ${disk_size1[@]} )
+	#disk_used_size=$( calc_disk ${disk_size2[@]} )
+	hdd=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $2 }')
+	hddused=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $3 }')
+	hddfree=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $5 }')
+	#tcp congestion control
+	#tcpctrl=$( sysctl net.ipv4.tcp_congestion_control | awk -F ' ' '{print $3}' )
+
+	#tmp=$(python3 tools.py disk 0)
+	#disk_total_size=$(echo $tmp | sed s/G//)
+	#tmp=$(python3 tools.py disk 1)
+	#disk_used_size=$(echo $tmp | sed s/G//)
+
+	virt_check
+}
+
+# Removed the first definition of pingtest, keeping the second one.
+
+pingtest() {
+	local ping_link=$(echo "${1#*//}" | cut -d"/" -f1) # Added quotes for safety
+
+	# Send three pings and capture the output
+	local ping_output=$(ping -w 1 -c 3 -q "$ping_link" | grep 'rtt') # Added quotes for safety
+
+	# Extract the avg value from the output
+	local ping_avg=$(echo "$ping_output" | awk -F'/' '{print $6}')
+
+	# get download speed and print
+	if [[ "$ping_avg" == "" ]]; then # Added quotes for safety
+  	  printf "ping error!"
+	else
+	  printf "%d.%s ms" "${ping_avg%.*}" "${ping_avg#*.}"
+	fi
+}
+
 iotest() {
 	echostyle "## IO Test"
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 
 	# start testing
 	writemb=$(freedisk)
@@ -810,10 +1150,10 @@ iotest() {
 
 	# CPU Speed test
 	echostyle "CPU Speed:"
-	echo "    bzip2     :$( cpubench bzip2 $writemb_cpu )" | tee -a $log 
-	echo "   sha256     :$( cpubench sha256sum $writemb_cpu )" | tee -a $log
-	echo "   md5sum     :$( cpubench md5sum $writemb_cpu )" | tee -a $log
-	echo "" | tee -a $log
+	echo "    bzip2     :$( cpubench bzip2 "$writemb_cpu" )" | tee -a "$log" # Added quotes
+	echo "   sha256     :$( cpubench sha256sum "$writemb_cpu" )" | tee -a "$log" # Added quotes
+	echo "   md5sum     :$( cpubench md5sum "$writemb_cpu" )" | tee -a "$log" # Added quotes
+	echo "" | tee -a "$log"
 
 	# RAM Speed test
 	# set ram allocation for mount
@@ -834,12 +1174,12 @@ iotest() {
 	ior2=$( ( dd if="$RAMDISK_TEMP_DIR"/zero of="$NULL" bs=512K count="$sbcount"; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
 	iow3=$( ( dd if=/dev/zero of="$RAMDISK_TEMP_DIR"/zero bs=512K count="$sbcount" ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
 	ior3=$( ( dd if="$RAMDISK_TEMP_DIR"/zero of="$NULL" bs=512K count="$sbcount"; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-	echo "   Avg. write : $(averageio "$iow1" "$iow2" "$iow3") MB/s" | tee -a $log
-	echo "   Avg. read  : $(averageio "$ior1" "$ior2" "$ior3") MB/s" | tee -a $log
+	echo "   Avg. write : $(averageio "$iow1" "$iow2" "$iow3") MB/s" | tee -a "$log"
+	echo "   Avg. read  : $(averageio "$ior1" "$ior2" "$ior3") MB/s" | tee -a "$log"
 	rm "$RAMDISK_TEMP_DIR"/zero
 	umount "$RAMDISK_TEMP_DIR"
 	rm -rf "$RAMDISK_TEMP_DIR"
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	
 	# Disk test
 	#echostyle "Disk Speed:"
@@ -859,21 +1199,21 @@ iotest() {
 write_io() {
 	writemb=$(freedisk)
 	writemb_size="$(( writemb / 2 ))MB"
-	if [[ $writemb_size == "1024MB" ]]; then
+	if [[ "$writemb_size" == "1024MB" ]]; then # Added quotes
 		writemb_size="1.0GB"
 	fi
 
 	if [[ $writemb != "1" ]]; then
 		echostyle "Disk Speed:"
-		echo -n "   1st run    : " | tee -a $log
+		echo -n "   1st run    : " | tee -a "$log"
 		io1=$( write_test "$writemb" ) # Added quotes
-		echo -e "$io1" | tee -a $log
-		echo -n "   2nd run    : " | tee -a $log
+		echo -e "$io1" | tee -a "$log"
+		echo -n "   2nd run    : " | tee -a "$log"
 		io2=$( write_test "$writemb" ) # Added quotes
-		echo -e "$io2" | tee -a $log
-		echo -n "   3rd run    : " | tee -a $log
+		echo -e "$io2" | tee -a "$log"
+		echo -n "   3rd run    : " | tee -a "$log"
 		io3=$( write_test "$writemb" ) # Added quotes
-		echo -e "$io3" | tee -a $log
+		echo -e "$io3" | tee -a "$log"
 		ioraw1=$( echo "$io1" | awk 'NR==1 {print $1}' ) # Added quotes
 		[ "`echo "$io1" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
 		ioraw2=$( echo "$io2" | awk 'NR==1 {print $1}' ) # Added quotes
@@ -882,15 +1222,15 @@ write_io() {
 		[ "`echo "$io3" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
 		ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
 		ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
-		echo -e "   -----------------------" | tee -a $log
-		echo -e "   Average    : $ioavg MB/s" | tee -a $log
+		echo -e "   -----------------------" | tee -a "$log"
+		echo -e "   Average    : $ioavg MB/s" | tee -a "$log"
 	else
 		echo -e " Not enough space!"
 	fi
 }
 
 print_end_time() {
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 	end=$(date +%s) 
 	time=$(( $end - $start ))
 	if [[ $time -gt 60 ]]; then
@@ -904,21 +1244,21 @@ print_end_time() {
 	#echo $(date +%Y-%m-%d" "%H:%M:%S)
 	printf '\n'
 	utc_time=$(date -u '+%F %T')
-	echo " Timestamp   : $utc_time GMT" | tee -a $log
+	echo " Timestamp   : $utc_time GMT" | tee -a "$log"
 	#echo " Finished!"
 	echo " Saved in    : $log"
-	echo "" | tee -a $log
+	echo "" | tee -a "$log"
 }
 
 print_intro() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g'
-	printf ' Region: %s  https://bench.laset.com '$bench_v' '$bench_d' \n' "$region_name" | tee -a $log # Added quotes
-	printf " Usage : curl -sL bench.laset.com | bash -s -- -%s\n" "$region_name" | tee -a $log # Added quotes
+	printf ' Region: %s  https://bench.laset.com '$bench_v' '$bench_d' \n' "$region_name" | tee -a "$log" # Added quotes
+	printf " Usage : curl -sL bench.laset.com | bash -s -- -%s\n" "$region_name" | tee -a "$log" # Added quotes
 }
 
 sharetest() {
 	echo " Share results:"
-	echo " - $result_speed" | tee -a $log
+	echo " - $result_speed" | tee -a "$log"
 	log_preupload
 	case $1 in
 	#'ubuntu')
@@ -935,7 +1275,7 @@ sharetest() {
 	#share_link=$(echo "$sprunge_link" | sed 's/http:/https:/')
 
 	# print result info
-	echo " - $GEEKBENCH_URL" | tee -a $log
+	echo " - $GEEKBENCH_URL" | tee -a "$log"
 	#echo " - $share_link"
 	echo ""
 	rm -f "$log_up" # Added quotes
@@ -955,3 +1295,305 @@ get_ip_whois_org_name(){
 	org_name=$(echo "$result" | jq '.objects.object[1].attributes.attribute[1]' | sed 's/\"//g') # Added quotes
     echo "$org_name"; # Added quotes
 }
+
+bench_all(){
+	region_name="Global"
+	print_intro;
+	benchinit;
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	geekbench;
+	iotest;
+	write_io;
+	print_speedtest;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+
+usa_bench(){
+	region_name="USA"
+	print_intro;
+	benchinit;
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	geekbench;
+	iotest;
+	write_io;
+	print_speedtest_usa;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+
+in_bench(){
+	region_name="India"
+	print_intro;
+	benchinit;
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	geekbench;
+	iotest;
+	write_io;
+	print_speedtest_in;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+
+europe_bench(){
+	region_name="Europe"
+	print_intro;
+	benchinit;
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	geekbench;
+	iotest;
+	write_io;
+	print_speedtest_europe;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+
+asia_bench(){
+	region_name="Asia"
+	print_intro;
+	benchinit;
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	geekbench;
+	iotest;
+	write_io;
+	print_speedtest_asia;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+
+china_bench(){
+	region_name="China"
+	print_intro;
+	benchinit;
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	geekbench;
+	iotest;
+	write_io;
+	print_speedtest_china;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+
+sa_bench(){
+	region_name="South-America"
+	print_intro;
+	benchinit;
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	geekbench;
+	iotest;
+	write_io;
+	print_speedtest_sa;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+
+au_bench(){
+	region_name="AU-NZ"
+	print_intro;
+	benchinit;
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	geekbench;
+	iotest;
+	write_io;
+	print_speedtest_au;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+
+ukraine_bench(){
+	region_name="Ukraine"
+	print_intro;
+	benchinit;
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	geekbench;
+	iotest;
+	write_io;
+	print_speedtest_ukraine;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+lviv_bench(){
+	region_name="Lviv"
+	print_intro;
+	benchinit;
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	geekbench;
+	iotest;
+	write_io;
+	print_speedtest_lviv;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+meast_bench(){
+	region_name="Middle-East"
+	print_intro;
+	benchinit;
+	next;
+	get_system_info;
+	print_system_info;
+	ip_info4;
+	next;
+	geekbench;
+	iotest;
+	write_io;
+	print_speedtest_meast;
+	next;
+	print_end_time;
+	cleanup;
+	sharetest clbin;
+}
+
+log="$HOME/speedtest.log"
+true > "$log"
+
+case $1 in
+	'info'|'i'|'-i'|'--i'|'-info'|'--info' )
+		about;sleep 3;next;get_system_info;print_system_info;next;cleanup;;
+	'version'|'v'|'-v'|'--v'|'-version'|'--version')
+		next;about;next;cleanup;;
+  	'gb4'|'-gb4'|'--gb4'|'geek4'|'-geek4'|'--geek4' )
+		benchinit;next;geekbench4;next;cleanup;;
+   	'gb5'|'-gb5'|'--gb5'|'geek5'|'-geek5'|'--geek5' )
+		benchinit;next;geekbench5;next;cleanup;;
+     	'gb6'|'-gb6'|'--gb6'|'geek6'|'-geek6'|'--geek6' )
+		benchinit;next;geekbench6;next;cleanup;;
+	'gb'|'-gb'|'--gb'|'geek'|'-geek'|'--geek' )
+		benchinit;next;geekbench;next;cleanup;;
+	'io'|'-io'|'--io'|'ioping'|'-ioping'|'--ioping' )
+		benchinit;next;iotest;write_io;next;cleanup;;
+	'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
+		about;benchinit;machine_location;print_speedtest;next;cleanup;;
+	'usas'|'-usas'|'uss'|'-uss'|'uspeed'|'-uspeed' )
+		about;benchinit;machine_location;print_speedtest_usa;next;cleanup;;
+	'eus'|'-eus'|'es'|'-es'|'espeed'|'-espeed' )
+		about;benchinit;machine_location;print_speedtest_europe;next;cleanup;;
+	'as'|'-as'|'aspeed'|'-aspeed' )
+		about;benchinit;machine_location;print_speedtest_asia;next;cleanup;;
+	'aus'|'-aus'|'auspeed'|'-auspeed' )
+		about;benchinit;machine_location;print_speedtest_au;next;cleanup;;
+	'sas'|'-sas'|'saspeed'|'-saspeed' )
+		about;benchinit;machine_location;print_speedtest_sa;next;cleanup;;
+	'mes'|'-mes'|'mespeed'|'-mespeed' )
+		about;benchinit;machine_location;print_speedtest_meast;next;cleanup;;
+	'ins'|'-ins'|'inspeed'|'-inspeed' )
+		about;benchinit;machine_location;print_speedtest_in;next;cleanup;;
+	'cns'|'-cns'|'cnspeed'|'-cnspeed' )
+		about;benchinit;machine_location;print_speedtest_china;next;cleanup;;
+	'uas'|'-uas'|'uaspeed'|'-uaspeed' )
+		about;benchinit;machine_location;print_speedtest_ukraine;next;cleanup;;
+	'lvivs'|'-lvivs' )
+		about;benchinit;machine_location;print_speedtest_lviv;next;cleanup;;
+	'ip'|'-ip'|'--ip'|'geoip'|'-geoip'|'--geoip' )
+		about;benchinit;next;ip_info4;next;cleanup;;
+	'a'|'-a'|'about'|'-about'|'--about' )
+		about;next;cleanup;;
+  	'all'|'-all'|'bench'|'-bench'|'--bench'|'-Global' )
+		bench_all;;
+	'usa'|'-usa'|'--usa'|'us'|'-us'|'--us'|'USA'|'-USA'|'--USA' )
+		usa_bench;;
+	'in'|'-india'|'--in'|'in'|'-in'|'IN'|'-IN'|'--IN' )
+		in_bench;;
+	'europe'|'-europe'|'--europe'|'eu'|'-eu'|'--eu'|'Europe'|'-Europe'|'--Europe' )
+		europe_bench;;
+	'asia'|'-asia'|'--asia'|'Asia'|'-Asia'|'--Asia' )
+		asia_bench;;
+	'china'|'-china'|'--china'|'mjj'|'-mjj'|'cn'|'-cn'|'--cn'|'China'|'-China'|'--China' )
+		china_bench;;
+	'au'|'-au'|'nz'|'-nz'|'AU'|'-AU'|'NZ'|'-NZ'|'-AU-NZ' )
+		au_bench;;
+	'sa'|'-sa'|'--sa'|'-South-America' )
+		sa_bench;;
+	'ukraine'|'-ukraine'|'--ukraine'|'ua'|'-ua'|'--ua'|'ukr'|'-ukr'|'--ukr'|'Ukraine'|'-Ukraine'|'--Ukraine' )
+		ukraine_bench;;
+	'lviv'|'-lviv'|'--lviv'|'-Lviv'|'--Lviv' )
+		lviv_bench;;
+	'M-East'|'-M-East'|'--M-East'|'-m-east'|'--m-east'|'-meast'|'--meast'|'-Middle-East'|'-me' )
+		meast_bench;;
+	'-s'|'--s'|'share'|'-share'|'--share' )
+		bench_all;
+		is_share="share"
+		if [[ $2 == "" ]]; then
+			sharetest ubuntu;
+		else
+			sharetest "$2";
+		fi
+		;;
+	'debug'|'-d'|'--d'|'-debug'|'--debug' )
+		get_ip_whois_org_name;;
+*)
+    bench_all;;
+esac
+
+
+
+if [[  ! "$is_share" == "share" ]]; then
+	case $2 in
+		'share'|'-s'|'--s'|'-share'|'--share' )
+			if [[ $3 == '' ]]; then
+				sharetest ubuntu;
+			else
+				sharetest "$3";
+			fi
+			;;
+	esac
+fi
