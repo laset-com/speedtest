@@ -862,7 +862,11 @@ virt_check(){
     if hash systemd-detect-virt 2>"$NULL"; then
         local detected_virt=$(systemd-detect-virt)
         if [[ "$detected_virt" != "none" ]]; then
-            virtual=$(echo "$detected_virt" | awk '{print toupper(substr($0,1,1))substr($0,2)}') # Capitalize first letter
+            if [[ "$detected_virt" == "kvm" ]]; then
+                virtual="KVM" # Capitalize KVM
+            else
+                virtual=$(echo "$detected_virt" | awk '{print toupper(substr($0,1,1))substr($0,2)}') # Capitalize first letter
+            fi
         else
             virtual="Dedicated"
         fi
