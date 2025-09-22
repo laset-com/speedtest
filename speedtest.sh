@@ -1092,27 +1092,49 @@ get_system_info() {
     
     # Use lscpu for more reliable CPU info if available
     if hash lscpu 2>"$NULL"; then
-        local model_name_lscpu=$(lscpu | grep "Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        local bios_model_name_lscpu=$(lscpu | grep "BIOS Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-
-        # Extract the 'virt-X.Y' part from bios_model_name_lscpu
-        local virt_version=$(echo "$bios_model_name_lscpu" | awk '{print $1}')
-        # Extract the frequency part from bios_model_name_lscpu (e.g., 2.0GHz)
-        local extracted_freq=$(echo "$bios_model_name_lscpu" | grep -oP '@ \K[^ ]+')
-
-        # Combine Model name and virt_version for cname
-        cname="$model_name_lscpu $virt_version"
-
-        cores=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
-        # Use the extracted frequency
-        freq="$extracted_freq"
+        local lscpu_output=$(lscpu) # Capture lscpu output once
         
-        corescache=$(lscpu | grep "L3 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        [[ -z "$corescache" ]] && corescache=$(lscpu | grep "L2 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        [[ -z "$corescache" ]] && corescache=$(lscpu | grep "L1d cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        cpu_aes=$(lscpu | grep "Flags:" | grep -q "aes" && echo "AES-NI Enabled" || echo "AES-NI Disabled")
-        cpu_virt=$(lscpu | grep "Flags:" | grep -q "vmx\|svm" && echo "VM-x/AMD-V Enabled" || echo "VM-x/AMD-V Disabled")
+        local model_name_lscpu_val=$(echo "$lscpu_output" | grep "Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        local bios_model_name_val=$(echo "$lscpu_output" | grep "BIOS Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+
+        local virt_version_val=""
+        local extracted_freq_val=""
+
+        if [[ -n "$bios_model_name_val" ]]; then
+            virt_version_val=$(echo "$bios_model_name_val" | awk '{print $1}') # e.g., virt-4.2
+            extracted_freq_val=$(echo "$bios_model_name_val" | grep -oP '@ \K[^ ]+') # e.g., 2.0GHz
+        fi
+
+        # Explicitly set cname and freq based on lscpu output
+        # Combine Model name and virt_version for cname
+        if [[ -n "$model_name_lscpu_val" && -n "$virt_version_val" ]]; then
+            cname="$model_name_lscpu_val $virt_version_val"
+        elif [[ -n "$model_name_lscpu_val" ]]; then
+            cname="$model_name_lscpu_val"
+        else
+            cname="Unknown CPU Model" # Fallback
+        fi
+
+        cores=$(echo "$lscpu_output" | grep "^CPU(s):" | awk '{print $2}')
+        
+        # Use the extracted frequency
+        if [[ -n "$extracted_freq_val" ]]; then
+            freq="$extracted_freq_val"
+        else
+            # Fallback for frequency if not extracted from BIOS Model name
+            freq=$(echo "$lscpu_output" | grep "CPU MHz" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+            if [[ -n "$freq" ]]; then
+                freq="${freq}MHz" # Append MHz if it's just a number
+            fi
+        fi
+        
+        corescache=$(echo "$lscpu_output" | grep "L3 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        [[ -z "$corescache" ]] && corescache=$(echo "$lscpu_output" | grep "L2 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        [[ -z "$corescache" ]] && corescache=$(echo "$lscpu_output" | grep "L1d cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        cpu_aes=$(echo "$lscpu_output" | grep "Flags:" | grep -q "aes" && echo "AES-NI Enabled" || echo "AES-NI Disabled")
+        cpu_virt=$(echo "$lscpu_output" | grep "Flags:" | grep -q "vmx\|svm" && echo "VM-x/AMD-V Enabled" || echo "VM-x/AMD-V Disabled")
     else
+        # Original logic for freq and corescache if lscpu is not available
         freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
         corescache=$( awk -F: '/cache size/ {cache=$2} END {print cache}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
         cpu_aes=$(cat /proc/cpuinfo | grep aes)
@@ -1132,243 +1154,11 @@ get_system_info() {
     arch=$( uname -m )
     lbit=$( getconf LONG_BIT )
     kern=$( uname -r )
-    #ipv6=$( wget -qO- -t1 -T2 ipv6.icanhazip.com )
-    #disk_size1=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $2}' ))
-    #disk_size2=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $3}' ))
-    #disk_total_size=$( calc_disk "${disk_size1[@]}" )
-    #disk_used_size=$( calc_disk "${disk_size2[@]}" )
     hdd=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $2 }')
     hddused=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $3 }')
     hddfree=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $5 }')
-    #tcp congestion control
-    #tcpctrl=$( sysctl net.ipv4.tcp_congestion_control | awk -F ' ' '{print $3}' )
-
-    #tmp=$(python3 "$TEMP_DIR/tools.py" disk 0)
-    #disk_total_size=$(echo "$tmp" | sed s/G//)
-    #tmp=$(python3 "$TEMP_DIR/tools.py" disk 1)
-    #disk_used_size=$(echo "$tmp" | sed s/G//)
 
     virt_check
-}
-
-write_test() {
-    # Redirect dd's stderr (where speed info is) to stdout, then pipe to awk
-    (LANG=C dd if=/dev/zero of="$TEMP_DIR/test_file_$$" bs=512K count=$1 conv=fdatasync 2>&1 && rm -f "$TEMP_DIR/test_file_$$" ) | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
-}
-
-averageio() {
-    local ioraw1_val=$(echo "$1" | awk 'NR==1 {print $1}')
-    local ioraw1_unit=$(echo "$1" | awk 'NR==1 {print $2}')
-    local ioraw1=0
-    if [[ -n "$ioraw1_val" && "$ioraw1_val" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
-        ioraw1=$(awk 'BEGIN{printf "%.1f", '$ioraw1_val'}' )
-        if [[ "$ioraw1_unit" == "GB/s" ]]; then
-            ioraw1=$(awk 'BEGIN{printf "%.1f", '$ioraw1' * 1024}' )
-        fi
-    fi
-
-    local ioraw2_val=$(echo "$2" | awk 'NR==1 {print $1}')
-    local ioraw2_unit=$(echo "$2" | awk 'NR==1 {print $2}')
-    local ioraw2=0
-    if [[ -n "$ioraw2_val" && "$ioraw2_val" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
-        ioraw2=$(awk 'BEGIN{printf "%.1f", '$ioraw2_val'}' )
-        if [[ "$ioraw2_unit" == "GB/s" ]]; then
-            ioraw2=$(awk 'BEGIN{printf "%.1f", '$ioraw2' * 1024}' )
-        fi
-    fi
-
-    local ioraw3_val=$(echo "$3" | awk 'NR==1 {print $1}')
-    local ioraw3_unit=$(echo "$3" | awk 'NR==1 {print $2}')
-    local ioraw3=0
-    if [[ -n "$ioraw3_val" && "$ioraw3_val" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
-        ioraw3=$(awk 'BEGIN{printf "%.1f", '$ioraw3_val'}' )
-        if [[ "$ioraw3_unit" == "GB/s" ]]; then
-            ioraw3=$(awk 'BEGIN{printf "%.1f", '$ioraw3' * 1024}' )
-        fi
-    fi
-
-    # Ensure ioall is always a number for awk
-    local ioall=$(awk 'BEGIN{printf "%.1f", '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
-    local ioavg=$(awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
-    printf "%s" "$ioavg"
-}
-
-measure_steal_time() {
-    # Measure CPU steal time for the specified period
-    local duration=$1
-    local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
-    local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
-    
-    sleep "$duration"
-    
-    local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
-    local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
-    
-    # Calculate steal time
-    local steal_diff=$((steal_end - steal_start))
-    local total_diff=$((total_end - total_start))
-    
-    # Calculate steal time percentage
-    if [[ $total_diff -gt 0 ]]; then
-        local steal_percent=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
-        echo "$steal_percent"
-    else
-        echo "0.00"
-    fi
-}
-
-cpubench() {
-    if hash "$1" 2>"$NULL"; then
-        local steal_before=$(measure_steal_time 1)
-        
-        local dd_err_file="$TEMP_DIR/dd_err_$$"
-        # Run dd, pipe its stdout to the CPU command, redirect its stderr to dd_err_file
-        # The CPU command's stdout and stderr are redirected to /dev/null
-        (dd if=/dev/zero bs=512K count="$2" 2>"$dd_err_file" | "$1" >/dev/null 2>&1)
-        
-        # Now parse the dd_err_file for the speed
-        # Use sed to remove leading/trailing whitespace from the extracted speed
-        io=$(cat "$dd_err_file" | grep 'copied' | awk -F, '{io=$NF} END {print io}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        rm -f "$dd_err_file"
-        
-        local steal_after=$(measure_steal_time 1)
-        local steal_avg=$(awk "BEGIN {printf \"%.2f\", ($steal_before + $steal_after) / 2}")
-        
-        if [[ -n "$io" ]]; then # Check if io is not empty
-            if [[ $io != *"."* ]]; then
-                printf "%4i %s (Steal: %s%%)" "${io% *}" "${io##* }" "$steal_avg"
-            else
-                printf "%4i.%s (Steal: %s%%)" "${io%.*}" "${io#*.}" "$steal_avg"
-            fi
-        else
-            printf " 0 MB/s (Steal: %s%%)" "$steal_avg" # Default to 0 if no speed found
-        fi
-    else
-        printf " %s not found on system." "$1"
-    fi
-}
-
-iotest() {
-    echostyle "## IO Test"
-    echo "" | tee -a "$log"
-
-    # start testing
-    writemb=$(freedisk)
-    if [[ $writemb -gt 512 ]]; then
-        writemb_size="$(( writemb / 2 / 2 ))MB"
-        writemb_cpu="$(( writemb / 2 ))"
-    else
-        writemb_size="$writemb"MB
-        writemb_cpu=$writemb
-    fi
-
-    # CPU Speed test
-    echostyle "CPU Speed:"
-    echo "    bzip2     :$( cpubench bzip2 "$writemb_cpu" )" | tee -a "$log" 
-    echo "   sha256     :$( cpubench sha256sum "$writemb_cpu" )" | tee -a "$log"
-    echo "   md5sum     :$( cpubench md5sum "$writemb_cpu" )" | tee -a "$log"
-    echo "" | tee -a "$log"
-
-    # RAM Speed test
-    # set ram allocation for mount
-    tram_mb="$( free -m | grep Mem | awk 'NR=1 {print $2}' )"
-    if [[ tram_mb -gt 1900 ]]; then
-        sbram=1024M
-        sbcount=2048
-    else
-        sbram=$(( tram_mb / 2 ))M
-        sbcount=$tram_mb
-    fi
-    # Use the new RAMDISK_BASE_DIR
-    mkdir -p "$RAMDISK_BASE_DIR" # Ensure it exists, though mktemp -d already created it
-    mount -t tmpfs -o size="$sbram" tmpfs "$RAMDISK_BASE_DIR"/
-    echostyle "RAM Speed:"
-    # Redirect dd's stderr (where speed info is) to stdout, then pipe to awk
-    iow1=$( ( dd if=/dev/zero of="$RAMDISK_BASE_DIR/zero" bs=512K count="$sbcount" 2>&1 ) | awk -F, '{io=$NF} END { print io}' )
-    ior1=$( ( dd if="$RAMDISK_BASE_DIR/zero" of="$NULL" bs=512K count="$sbcount" 2>&1 ) | awk -F, '{io=$NF} END { print io}' )
-    iow2=$( ( dd if=/dev/zero of="$RAMDISK_BASE_DIR/zero" bs=512K count="$sbcount" 2>&1 ) | awk -F, '{io=$NF} END { print io}' )
-    ior2=$( ( dd if="$RAMDISK_BASE_DIR/zero" of="$NULL" bs=512K count="$sbcount" 2>&1 ) | awk -F, '{io=$NF} END { print io}' )
-    iow3=$( ( dd if=/dev/zero of="$RAMDISK_BASE_DIR/zero" bs=512K count="$sbcount" 2>&1 ) | awk -F, '{io=$NF} END { print io}' )
-    ior3=$( ( dd if="$RAMDISK_BASE_DIR/zero" of="$NULL" bs=512K count="$sbcount" 2>&1 ) | awk -F, '{io=$NF} END { print io}' )
-    echo "   Avg. write : $(averageio "$iow1" "$iow2" "$iow3") MB/s" | tee -a "$log"
-    echo "   Avg. read  : $(averageio "$ior1" "$ior2" "$ior3") MB/s" | tee -a "$log"
-    rm "$RAMDISK_BASE_DIR/zero" 2>"$NULL" # Add 2>"$NULL" to suppress errors if file doesn't exist
-    umount "$RAMDISK_BASE_DIR" 2>"$NULL" # Add 2>"$NULL" to suppress errors if not mounted
-    # rm -rf "$RAMDISK_BASE_DIR" # This will be handled by the main cleanup function
-    echo "" | tee -a "$log"
-    
-    # Disk test
-    #echostyle "Disk Speed:"
-    #if [[ $writemb != "1" ]]; then
-    #	io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-    #	echo "   I/O Speed  :$io" | tee -a "$log"
-
-    #	io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test oflag=direct; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-    #	echo "   I/O Direct :$io" | tee -a "$log"
-    #else
-    #	echo "   Not enough space to test." | tee -a "$log"
-    #fi
-    #echo "" | tee -a "$log"
-}
-
-
-write_io() {
-    writemb=$(freedisk)
-    writemb_size="$(( writemb / 2 ))MB"
-    if [[ "$writemb_size" == "1024MB" ]]; then
-        writemb_size="1.0GB"
-    fi
-
-    if [[ $writemb != "1" ]]; then
-        echostyle "Disk Speed:"
-        echo -n "   1st run    : " | tee -a "$log"
-        io1=$( write_test "$writemb" )
-        echo -e "$io1" | tee -a "$log"
-        echo -n "   2nd run    : " | tee -a "$log"
-        io2=$( write_test "$writemb" )
-        echo -e "$io2" | tee -a "$log"
-        echo -n "   3rd run    : " | tee -a "$log"
-        io3=$( write_test "$writemb" )
-        echo -e "$io3" | tee -a "$log"
-        
-        # Ensure variables are numeric before passing to awk
-        ioraw1_val=$(echo "$io1" | awk 'NR==1 {print $1}')
-        ioraw1_unit=$(echo "$io1" | awk 'NR==1 {print $2}')
-        ioraw1=0
-        if [[ -n "$ioraw1_val" && "$ioraw1_val" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
-            ioraw1=$(awk 'BEGIN{printf "%.1f", '$ioraw1_val'}' )
-            if [[ "$ioraw1_unit" == "GB/s" ]]; then
-                ioraw1=$(awk 'BEGIN{printf "%.1f", '$ioraw1' * 1024}' )
-            fi
-        fi
-
-        ioraw2_val=$(echo "$io2" | awk 'NR==1 {print $1}')
-        ioraw2_unit=$(echo "$io2" | awk 'NR==1 {print $2}')
-        ioraw2=0
-        if [[ -n "$ioraw2_val" && "$ioraw2_val" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
-            ioraw2=$(awk 'BEGIN{printf "%.1f", '$ioraw2_val'}' )
-            if [[ "$ioraw2_unit" == "GB/s" ]]; then
-                ioraw2=$(awk 'BEGIN{printf "%.1f", '$ioraw2' * 1024}' )
-            fi
-        fi
-
-        ioraw3_val=$(echo "$io3" | awk 'NR==1 {print $1}')
-        ioraw3_unit=$(echo "$io3" | awk 'NR==1 {print $2}')
-        ioraw3=0
-        if [[ -n "$ioraw3_val" && "$ioraw3_val" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
-            ioraw3=$(awk 'BEGIN{printf "%.1f", '$ioraw3_val'}' )
-            if [[ "$ioraw3_unit" == "GB/s" ]]; then
-                ioraw3=$(awk 'BEGIN{printf "%.1f", '$ioraw3' * 1024}' )
-            fi
-        fi
-
-        ioall=$( awk 'BEGIN{printf "%.1f", '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
-        ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
-        echo -e "   -----------------------" | tee -a "$log"
-        echo -e "   Average    : $ioavg MB/s" | tee -a "$log"
-    else
-        echo -e " Not enough space!"
-    fi
 }
 
 print_end_time() {
