@@ -1038,10 +1038,11 @@ print_system_info() {
     echo -e " OS           : $opsy ($lbit Bit)" | tee -a "$log"
     echo -e " Virt/Kernel  : $virtual / $kern" | tee -a "$log"
     echo -e " CPU Model    : $cname" | tee -a "$log"
-    # Modified line: remove "MHz" if freq contains "GHz"
-    if [[ "$freq" == *"GHz"* ]]; then
+    # Print CPU Cores and Frequency
+    if [[ "$freq" == *"GHz"* || "$freq" == *"MHz"* ]]; then
         echo -e " CPU Cores    : $cores @ $freq $arch $corescache Cache" | tee -a "$log"
     else
+        # If no unit, assume MHz and append it
         echo -e " CPU Cores    : $cores @ $freq MHz $arch $corescache Cache" | tee -a "$log"
     fi
     echo -e " CPU Flags    : $cpu_aes & $cpu_virt" | tee -a "$log"
@@ -1067,51 +1068,58 @@ get_system_info() {
     
     # Try to get info using lscpu first for more reliable detection
     if hash lscpu 2>"$NULL"; then
-        local lscpu_output=$(lscpu)
+        local lscpu_output=$(lscpu 2>"$NULL") # Redirect stderr here too
         
-        local model_name_lscpu_val=$(echo "$lscpu_output" | grep "Model name:" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        local bios_model_name_val=$(echo "$lscpu_output" | grep "BIOS Model name:" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        local model_name_lscpu_raw=$(echo "$lscpu_output" | grep "Model name:" | awk -F: '{print $2}' | tr -d '\r' | xargs)
+        local bios_model_name_raw=$(echo "$lscpu_output" | grep "BIOS Model name:" | awk -F: '{print $2}' | tr -d '\r' | xargs)
 
-        # Construct cname: Model name + virt_version if available
-        if [[ -n "$model_name_lscpu_val" ]]; then
-            cname="$model_name_lscpu_val"
-            # Check if BIOS Model name contains virtualization info (e.g., "virt-4.2")
-            if [[ "$bios_model_name_val" == *"virt-"* ]]; then
-                local virt_part=$(echo "$bios_model_name_val" | awk '{print $1}') # Extract "virt-4.2"
+        # Determine CPU Model (cname)
+        if [[ -n "$model_name_lscpu_raw" ]]; then
+            cname="$model_name_lscpu_raw"
+        elif [[ -n "$bios_model_name_raw" ]]; then
+            cname="$bios_model_name_raw"
+        fi
+
+        # Append virtualization info to cname if present in BIOS Model name
+        if [[ -n "$bios_model_name_raw" && "$bios_model_name_raw" == *"virt-"* ]]; then
+            local virt_part=$(echo "$bios_model_name_raw" | awk '{print $1}') # Extracts "virt-4.2"
+            # Only append if not already part of cname (to avoid duplication if cname was already bios_model_name_raw)
+            if [[ "$cname" != *"$virt_part"* ]]; then
                 cname="$cname $virt_part"
             fi
-        elif [[ -n "$bios_model_name_val" ]]; then
-            # Fallback: If no Model name, use BIOS Model name as cname
-            cname="$bios_model_name_val"
         fi
 
-        cores=$(echo "$lscpu_output" | grep "^CPU(s):" | awk '{print $2}')
+        cores=$(echo "$lscpu_output" | grep "^CPU(s):" | awk '{print $2}' | tr -d '\r' | xargs)
         
-        # Extract frequency from BIOS Model name if it contains it, otherwise from CPU MHz
-        if [[ "$bios_model_name_val" == *"@ "* ]]; then
-            freq=$(echo "$bios_model_name_val" | grep -oP '@ \K[^ ]+') # e.g., 2.0GHz
-        else
-            freq=$(echo "$lscpu_output" | grep "CPU MHz:" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-            if [[ -n "$freq" ]]; then
-                freq="${freq}MHz"
-            fi
+
+        
+        # Determine CPU Frequency (freq)
+        local cpu_mhz_raw=$(echo "$lscpu_output" | grep "CPU MHz:" | awk -F: '{print $2}' | tr -d '\r' | xargs)
+        local cpu_max_mhz_raw=$(echo "$lscpu_output" | grep "CPU max MHz:" | awk -F: '{print $2}' | tr -d '\r' | xargs)
+
+        if [[ -n "$cpu_mhz_raw" ]]; then
+            freq="${cpu_mhz_raw}MHz"
+        elif [[ -n "$cpu_max_mhz_raw" ]]; then
+            freq="${cpu_max_mhz_raw}MHz"
+        elif [[ "$bios_model_name_raw" == *"@ "* ]]; then
+            freq=$(echo "$bios_model_name_raw" | grep -oP '@ \K[^ ]+')
         fi
         
-        corescache=$(echo "$lscpu_output" | grep "L3 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        [[ -z "$corescache" ]] && corescache=$(echo "$lscpu_output" | grep "L2 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        [[ -z "$corescache" ]] && corescache=$(echo "$lscpu_output" | grep "L1d cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        corescache=$(echo "$lscpu_output" | grep "L3 cache" | awk -F: '{print $2}' | tr -d '\r' | xargs)
+        [[ -z "$corescache" ]] && corescache=$(echo "$lscpu_output" | grep "L2 cache" | awk -F: '{print $2}' | tr -d '\r' | xargs)
+        [[ -z "$corescache" ]] && corescache=$(echo "$lscpu_output" | grep "L1d cache" | awk -F: '{print $2}' | tr -d '\r' | xargs)
         cpu_aes=$(echo "$lscpu_output" | grep "Flags:" | grep -q "aes" && echo "AES-NI Enabled" || echo "AES-NI Disabled")
         cpu_virt=$(echo "$lscpu_output" | grep "Flags:" | grep -q "vmx\|svm" && echo "VM-x/AMD-V Enabled" || echo "VM-x/AMD-V Disabled")
     else
         # Fallback to /proc/cpuinfo if lscpu is not available
         if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
-            cname=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
+            cname=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | tr -d '\r' | xargs)
             if [[ -z "$cname" ]]; then
-                cname=$(awk -F: '/Hardware/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
+                cname=$(awk -F: '/Hardware/ {name=$2} END {print name}' /proc/cpuinfo | tr -d '\r' | xargs)
             fi
             if [[ -z "$cname" ]]; then
                 if [[ -f /sys/devices/virtual/dmi/id/product_name ]]; then
-                    cname=$(cat /sys/devices/virtual/dmi/id/product_name 2>"$NULL")
+                    cname=$(cat /sys/devices/virtual/dmi/id/product_name 2>"$NULL" | tr -d '\r' | xargs)
                 fi
             fi
             if [[ -z "$cname" ]]; then
@@ -1119,12 +1127,12 @@ get_system_info() {
             fi
             cores=$(grep -c ^processor /proc/cpuinfo)
         else
-            cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+            cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | tr -d '\r' | xargs )
             cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
         fi
         
-        freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
-        corescache=$( awk -F: '/cache size/ {cache=$2} END {print cache}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+        freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | tr -d '\r' | xargs )
+        corescache=$( awk -F: '/cache size/ {cache=$2} END {print cache}' /proc/cpuinfo | tr -d '\r' | xargs )
         cpu_aes=$(cat /proc/cpuinfo | grep aes)
         [[ -z "$cpu_aes" ]] && cpu_aes="AES-NI Disabled" || cpu_aes="AES-NI Enabled"
         cpu_virt=$(cat /proc/cpuinfo | grep 'vmx\|svm')
@@ -1137,7 +1145,7 @@ get_system_info() {
     swap=$( free -m | awk '/Swap/ {print $2}' )
     uswap=$( free -m | awk '/Swap/ {print $3}' )
     up=$( awk '{a=$1/86400;b=($1%86400)/3600;c=($1%3600)/60} {printf("%d days %d:%d\n",a,b,c)}' /proc/uptime )
-    load=$( w | head -1 | awk -F'load average:' '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
+    load=$( w | head -1 | awk -F'load average:' '{print $2}' | tr -d '\r' | xargs )
     opsy=$( get_opsy )
     arch=$( uname -m )
     lbit=$( getconf LONG_BIT )
