@@ -568,11 +568,10 @@ geekbench4() {
     else
         sleep 20
         local GEEKBENCH_PAGE_CONTENT=$(curl -s "$GEEKBENCH_URL")
-        # --- FIX: Ensure single and multi-core scores are extracted correctly ---
+        # --- FIX: Reverted previous (?s) change and using grep -A for more robust extraction ---
         # Geekbench 4 typically uses 'span class='score'' for scores.
-        # Added (?s) flag for grep -oP to allow '.' to match newlines
-        GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -oP '(?s)Single-Core Score.*?<span class="score">\K\d+' | head -n 1)
-        GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -oP '(?s)Multi-Core Score.*?<span class="score">\K\d+' | head -n 1)
+        GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -A 1 "Single-Core Score" | grep -oP '<span class="score">\K\d+' | head -n 1)
+        GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -A 1 "Multi-Core Score" | grep -oP '<span class="score">\K\d+' | head -n 1)
         # --- END FIX ---
         
         # End steal time measurement
@@ -661,11 +660,10 @@ geekbench5() {
     else
         sleep 20
         local GEEKBENCH_PAGE_CONTENT=$(curl -s "$GEEKBENCH_URL")
-        # --- FIX: Ensure single and multi-core scores are extracted correctly ---
+        # --- FIX: Reverted previous (?s) change and using grep -A for more robust extraction ---
         # Geekbench 5/6 typically use 'div class='score-value'' for the actual scores
-        # Added (?s) flag for grep -oP to allow '.' to match newlines
-        GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -oP '(?s)Single-Core Score.*?<div class="score-value">\K\d+' | head -n 1)
-        GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -oP '(?s)Multi-Core Score.*?<div class="score-value">\K\d+' | head -n 1)
+        GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -A 2 "Single-Core Score" | grep -oP '<div class="score-value">\K\d+' | head -n 1)
+        GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -A 2 "Multi-Core Score" | grep -oP '<div class="score-value">\K\d+' | head -n 1)
         # --- END FIX ---
 
         # End steal time measurement
@@ -754,11 +752,10 @@ geekbench6() {
     else
         sleep 15
         local GEEKBENCH_PAGE_CONTENT=$(curl -s "$GEEKBENCH_URL")
-        # --- FIX: Ensure single and multi-core scores are extracted correctly ---
+        # --- FIX: Reverted previous (?s) change and using grep -A for more robust extraction ---
         # Geekbench 5/6 typically use 'div class='score-value'' for the actual scores
-        # Added (?s) flag for grep -oP to allow '.' to match newlines
-        GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -oP '(?s)Single-Core Score.*?<div class="score-value">\K\d+' | head -n 1)
-        GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -oP '(?s)Multi-Core Score.*?<div class="score-value">\K\d+' | head -n 1)
+        GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -A 2 "Single-Core Score" | grep -oP '<div class="score-value">\K\d+' | head -n 1)
+        GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_PAGE_CONTENT" | grep -A 2 "Multi-Core Score" | grep -oP '<div class="score-value">\K\d+' | head -n 1)
         # --- END FIX ---
 
         # End steal time measurement
@@ -1060,74 +1057,43 @@ print_system_info() {
 }
 
 get_system_info() {
-    # Detect CPU model with ARM64 support
-    if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
-        # Try to get CPU model for ARM64
-        cname=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
-        
-        # If model is not defined, try other fields
-        if [[ -z "$cname" ]]; then
-            cname=$(awk -F: '/Hardware/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
-        fi
-        
-        # If still not defined, try other sources
-        if [[ -z "$cname" ]]; then
-            if [[ -f /sys/devices/virtual/dmi/id/product_name ]]; then
-                cname=$(cat /sys/devices/virtual/dmi/id/product_name 2>"$NULL")
-            fi
-        fi
-        
-        # If still not defined, set as "Unknown ARM64 Processor"
-        if [[ -z "$cname" ]]; then
-            cname="Unknown ARM64 Processor"
-        fi
-    else
-        # Standard detection for x86_64
-        cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
-    fi
+    # Initialize variables to ensure they are clean before parsing
+    cname="Unknown CPU Model"
+    cores="N/A"
+    freq="N/A"
+    corescache="N/A"
+    cpu_aes="AES-NI Disabled"
+    cpu_virt="VM-x/AMD-V Disabled"
     
-    # Detect number of cores with ARM64 support
-    if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
-        cores=$(grep -c ^processor /proc/cpuinfo)
-    else
-        cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
-    fi
-    
-    # Use lscpu for more reliable CPU info if available
+    # Try to get info using lscpu first for more reliable detection
     if hash lscpu 2>"$NULL"; then
-        local lscpu_output=$(lscpu) # Capture lscpu output once
+        local lscpu_output=$(lscpu)
         
-        local model_name_lscpu_val=$(echo "$lscpu_output" | grep "Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        local bios_model_name_val=$(echo "$lscpu_output" | grep "BIOS Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        local model_name_lscpu_val=$(echo "$lscpu_output" | grep "Model name:" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+        local bios_model_name_val=$(echo "$lscpu_output" | grep "BIOS Model name:" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
 
-        local virt_version_val=""
-        local extracted_freq_val=""
-
-        if [[ -n "$bios_model_name_val" ]]; then
-            virt_version_val=$(echo "$bios_model_name_val" | awk '{print $1}') # e.g., virt-4.2
-            extracted_freq_val=$(echo "$bios_model_name_val" | grep -oP '@ \K[^ ]+') # e.g., 2.0GHz
-        fi
-
-        # Explicitly set cname and freq based on lscpu output
-        # Combine Model name and virt_version for cname
-        if [[ -n "$model_name_lscpu_val" && -n "$virt_version_val" ]]; then
-            cname="$model_name_lscpu_val $virt_version_val"
-        elif [[ -n "$model_name_lscpu_val" ]]; then
+        # Construct cname: Model name + virt_version if available
+        if [[ -n "$model_name_lscpu_val" ]]; then
             cname="$model_name_lscpu_val"
-        else
-            cname="Unknown CPU Model" # Fallback
+            # Check if BIOS Model name contains virtualization info (e.g., "virt-4.2")
+            if [[ "$bios_model_name_val" == *"virt-"* ]]; then
+                local virt_part=$(echo "$bios_model_name_val" | awk '{print $1}') # Extract "virt-4.2"
+                cname="$cname $virt_part"
+            fi
+        elif [[ -n "$bios_model_name_val" ]]; then
+            # Fallback: If no Model name, use BIOS Model name as cname
+            cname="$bios_model_name_val"
         fi
 
         cores=$(echo "$lscpu_output" | grep "^CPU(s):" | awk '{print $2}')
         
-        # Use the extracted frequency
-        if [[ -n "$extracted_freq_val" ]]; then
-            freq="$extracted_freq_val"
+        # Extract frequency from BIOS Model name if it contains it, otherwise from CPU MHz
+        if [[ "$bios_model_name_val" == *"@ "* ]]; then
+            freq=$(echo "$bios_model_name_val" | grep -oP '@ \K[^ ]+') # e.g., 2.0GHz
         else
-            # Fallback for frequency if not extracted from BIOS Model name
-            freq=$(echo "$lscpu_output" | grep "CPU MHz" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+            freq=$(echo "$lscpu_output" | grep "CPU MHz:" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
             if [[ -n "$freq" ]]; then
-                freq="${freq}MHz" # Append MHz if it's just a number
+                freq="${freq}MHz"
             fi
         fi
         
@@ -1137,7 +1103,26 @@ get_system_info() {
         cpu_aes=$(echo "$lscpu_output" | grep "Flags:" | grep -q "aes" && echo "AES-NI Enabled" || echo "AES-NI Disabled")
         cpu_virt=$(echo "$lscpu_output" | grep "Flags:" | grep -q "vmx\|svm" && echo "VM-x/AMD-V Enabled" || echo "VM-x/AMD-V Disabled")
     else
-        # Original logic for freq and corescache if lscpu is not available
+        # Fallback to /proc/cpuinfo if lscpu is not available
+        if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
+            cname=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
+            if [[ -z "$cname" ]]; then
+                cname=$(awk -F: '/Hardware/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
+            fi
+            if [[ -z "$cname" ]]; then
+                if [[ -f /sys/devices/virtual/dmi/id/product_name ]]; then
+                    cname=$(cat /sys/devices/virtual/dmi/id/product_name 2>"$NULL")
+                fi
+            fi
+            if [[ -z "$cname" ]]; then
+                cname="Unknown ARM64 Processor"
+            fi
+            cores=$(grep -c ^processor /proc/cpuinfo)
+        else
+            cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+            cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
+        fi
+        
         freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
         corescache=$( awk -F: '/cache size/ {cache=$2} END {print cache}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
         cpu_aes=$(cat /proc/cpuinfo | grep aes)
