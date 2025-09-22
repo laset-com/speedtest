@@ -773,14 +773,26 @@ install_smart() {
 	# install smartctl
 	if  [ ! -e '/usr/sbin/smartctl' ]; then
 		echo "Installing Smartctl ..."
-	    if [ "${release}" == "centos" ]; then
-	    	yum update > /dev/null 2>&1
-	        yum -y install smartmontools > /dev/null 2>&1
-	    else
-	    	apt-get update > /dev/null 2>&1
-	        apt-get -y install smartmontools > /dev/null 2>&1
-	    fi      
-	fi
+	    if [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" || "${release}" == "fedora" ]]; then
+        	dnf update -y > "$NULL" 2>&1 || yum update -y > "$NULL" 2>&1 # Added update for RHEL-based
+        	dnf -y install smartmontools > "$NULL" 2>&1 || yum -y install smartmontools > "$NULL" 2>&1
+        elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
+        	apt-get update -y > "$NULL" 2>&1
+            apt-get -y install smartmontools > "$NULL" 2>&1
+        elif [[ "${release}" == "arch" ]]; then
+        	pacman -Sy --noconfirm smartmontools > "$NULL" 2>&1
+        elif [[ "${release}" == "suse" ]]; then
+        	zypper --non-interactive install smartmontools > "$NULL" 2>&1
+        else
+        	# Fallback for unknown distributions
+        	apt-get update -y > "$NULL" 2>&1
+            apt-get -y install smartmontools > "$NULL" 2>&1 || \
+            yum -y install smartmontools > "$NULL" 2>&1 || \
+            dnf -y install smartmontools > "$NULL" 2>&1 || \
+            pacman -Sy --noconfirm smartmontools > "$NULL" 2>&1 || \
+            zypper --non-interactive install smartmontools > "$NULL" 2>&1
+        fi      
+    fi
 }
 
 # test if the host has IPv4/IPv6 connectivity
@@ -842,64 +854,74 @@ machine_location(){
 }
 
 virt_check(){
-	if hash ifconfig 2>/dev/null; then
-		eth=$(ifconfig)
-	fi
+    if hash ifconfig 2>"$NULL"; then
+        local eth=$(ifconfig)
+    fi
 
-	virtualx=$(dmesg) 2>/dev/null
-	
-	# Check for containers
-	if grep docker /proc/1/cgroup -qa; then
-	    virtual="Docker"
-	elif grep lxc /proc/1/cgroup -qa; then
-		virtual="Lxc"
-	elif grep -qa container=lxc /proc/1/environ; then
-		virtual="Lxc"
-	elif [[ -f /proc/user_beancounters ]]; then
-		virtual="OpenVZ"
-	# Check for virtual machines
-	elif [[ "$virtualx" == *kvm-clock* ]]; then
-		virtual="KVM"
-	elif [[ "$cname" == *KVM* ]]; then
-		virtual="KVM"
-	elif [[ "$virtualx" == *"VMware Virtual Platform"* ]]; then
-		virtual="VMware"
-	elif [[ "$virtualx" == *"Parallels Software International"* ]]; then
-		virtual="Parallels"
-	elif [[ "$virtualx" == *VirtualBox* ]]; then
-		virtual="VirtualBox"
-	elif [[ -e /proc/xen ]]; then
-		virtual="Xen"
-	elif [[ "$sys_manu" == *"Microsoft Corporation"* ]]; then
-		if [[ "$sys_product" == *"Virtual Machine"* ]]; then
-			if [[ "$sys_ver" == *"7.0"* || "$sys_ver" == *"Hyper-V" ]]; then
-				virtual="Hyper-V"
-			else
-				virtual="Microsoft Virtual Machine"
-			fi
-		fi
-	# Additional virtualization checks for ARM64
-	elif [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
-		# Check for KVM virtualization on ARM64
-		if grep -q "KVM" /proc/cpuinfo 2>/dev/null || grep -q "kvm" /proc/interrupts 2>/dev/null; then
-			virtual="KVM"
-		# Check for Xen virtualization on ARM64
-		elif grep -q "xen" /proc/interrupts 2>/dev/null || [[ -d /proc/xen ]]; then
-			virtual="Xen"
-		# Check for virtualization via /sys interface
-		elif [[ -f /sys/class/dmi/id/product_name ]]; then
-			product_name=$(cat /sys/class/dmi/id/product_name 2>/dev/null)
-			if [[ "$product_name" == *"Virtual"* || "$product_name" == *"VM"* || "$product_name" == *"Cloud"* ]]; then
-				virtual="VM"
-			else
-				virtual="Dedicated"
-			fi
-		else
-			virtual="Dedicated"
-		fi
-	else
-		virtual="Dedicated"
-	fi
+    # Use systemd-detect-virt if available for more reliable detection
+    if hash systemd-detect-virt 2>"$NULL"; then
+        local detected_virt=$(systemd-detect-virt)
+        if [[ "$detected_virt" != "none" ]]; then
+            virtual=$(echo "$detected_virt" | awk '{print toupper(substr($0,1,1))substr($0,2)}') # Capitalize first letter
+        else
+            virtual="Dedicated"
+        fi
+    else
+        local virtualx=$(dmesg) 2>"$NULL"
+        
+        # Check for containers
+        if grep docker /proc/1/cgroup -qa; then
+            virtual="Docker"
+        elif grep lxc /proc/1/cgroup -qa; then
+            virtual="Lxc"
+        elif grep -qa container=lxc /proc/1/environ; then
+            virtual="Lxc"
+        elif [[ -f /proc/user_beancounters ]]; then
+            virtual="OpenVZ"
+        # Check for virtual machines
+        elif [[ "$virtualx" == *kvm-clock* ]]; then
+            virtual="KVM"
+        elif [[ "$cname" == *KVM* ]]; then
+            virtual="KVM"
+        elif [[ "$virtualx" == *"VMware Virtual Platform"* ]]; then
+            virtual="VMware"
+        elif [[ "$virtualx" == *"Parallels Software International"* ]]; then
+            virtual="Parallels"
+        elif [[ "$virtualx" == *VirtualBox* ]]; then
+            virtual="VirtualBox"
+        elif [[ -e /proc/xen ]]; then
+            virtual="Xen"
+        elif [[ "$sys_manu" == *"Microsoft Corporation"* ]]; then
+            if [[ "$sys_product" == *"Virtual Machine"* ]]; then
+                if [[ "$sys_ver" == *"7.0"* || "$sys_ver" == *"Hyper-V" ]]; then
+                    virtual="Hyper-V"
+                else
+                    virtual="Microsoft Virtual Machine"
+                fi
+            fi
+        # Additional virtualization checks for ARM64
+        elif [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
+            # Check for KVM virtualization on ARM64
+            if grep -q "KVM" /proc/cpuinfo 2>"$NULL" || grep -q "kvm" /proc/interrupts 2>"$NULL"; then
+                virtual="KVM"
+            # Check for Xen virtualization on ARM64
+            elif grep -q "xen" /proc/interrupts 2>"$NULL" || [[ -d /proc/xen ]]; then
+                virtual="Xen"
+            # Check for virtualization via /sys interface
+            elif [[ -f /sys/class/dmi/id/product_name ]]; then
+                local product_name=$(cat /sys/class/dmi/id/product_name 2>"$NULL")
+                if [[ "$product_name" == *"Virtual"* || "$product_name" == *"VM"* || "$product_name" == *"Cloud"* ]]; then
+                    virtual="VM"
+                else
+                    virtual="Dedicated"
+                fi
+            else
+                virtual="Dedicated"
+            fi
+        else
+            virtual="Dedicated"
+        fi
+    fi
 }
 
 power_time_check(){
