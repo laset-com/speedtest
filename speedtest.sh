@@ -247,19 +247,19 @@ print_speedtest() {
 	speed_test '21016' 'USA, New York (Starry)        ' 'http://speedtest-server-nyc.starry.com'
 	speed_test '17384' 'USA, Chicago (Windstream)     ' 'http://chicago02.speedtest.windstream.net'
 	speed_test '1763' 'USA, Houston (Comcast)        ' 'http://po-1-xar01.greenspoint.tx.houston.comcast.net'
-	speed_test '1779' 'USA, Miami (Comcast)          ' 'http://50.208.232.125'
+	speed_test '14237' 'USA, Miami (Frontier)         ' 'http://miami.fl.speedtest.frontier.com'
 	speed_test '18401' 'USA, Los Angeles (Windstream) ' 'http://la02.speedtest.windstream.net'
 	speed_test '26922' 'UK, London (toob Ltd)         ' 'http://185.82.8.1'
-	speed_test '24215' 'France, Paris (Orange)        ' 'http://178.21.176.100'
+	speed_test '27961' 'France, Paris (KEYYO)         ' 'http://perf.keyyo.net'
 	speed_test '20507' 'Germany, Berlin (DNS:NET)     ' 'http://speedtest01.dns-net.de'
 	speed_test '21378' 'Spain, Madrid (MasMovil)      ' 'http://speedtest-mad.masmovil.com'
 	speed_test '395' 'Italy, Rome (Unidata)         ' 'http://speedtest2.unidata.it'
 	speed_test '23647' 'India, Mumbai (Tatasky)       ' 'http://speedtestmum.tataskybroadband.com'
-	speed_test '51914' 'Singapore (StarHub)           ' 'http://co2dsvr03.speedtest.starhub.com'
+	speed_test '5935' 'Singapore (MyRepublic)        ' 'http://speedtest.myrepublic.com.sg'
 	speed_test '7139' 'Japan, Tsukuba (SoftEther)    ' 'http://speedtest2.softether.co.jp'
-	speed_test '1267' 'Australia, Sydney (Optus)     ' 'http://s1.speedtest.syd.optusnet.com.au'
-	speed_test '6591' 'RSA, Randburg (Cool Ideas)    ' 'http://sp2.cisp.co.za'
-	speed_test '11488' 'Brazil, Sao Paulo (Criare)    ' 'http://ookla.spcom.net.br'
+	speed_test '2629' 'Australia, Sydney (Telstra)   ' 'http://syd1.speedtest.telstra.net'
+	speed_test '15722' 'RSA, Randburg (MTN SA)        ' 'http://speedtest.rb.mtn.co.za'
+	speed_test '3068' 'Brazil, Sao Paulo (TIM)       ' 'http://svstsne0101.timbrasil.com.br'
 	 
 	rm -rf speedtest.py
 }
@@ -383,7 +383,7 @@ print_speedtest_sa() {
 	printf "%-80s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                             '
 	printf "%-80s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '11488' 'Brazil, Sao Paulo (Criare)         ' 'http://ookla.spcom.net.br'
+	speed_test '3068' 'Brazil, Sao Paulo (TIM)            ' 'http://svstsne0101.timbrasil.com.br'
 	speed_test '11435' 'Brazil, Fortaleza (Netonda)        ' 'http://speedtest.netonda.com.br'
 	speed_test '18126' 'Brazil, Manaus (Claro)             ' 'http://spd7.claro.com.br'
 	speed_test '11683' 'Colombia, Bogota (Level 3)         ' 'http://speedtest.globalcrossing.com.co'
@@ -407,11 +407,11 @@ print_speedtest_au() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
         speed_test '' 'Nearby                        '
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
-	speed_test '1267' 'Australia, Sydney (Optus)     ' 'http://s1.speedtest.syd.optusnet.com.au'
+	speed_test '2629' 'Australia, Sydney (Telstra)   ' 'http://syd1.speedtest.telstra.net'
 	speed_test '2225' 'Australia, Melbourne (Telstra)' 'http://mel1.speedtest.telstra.net'
 	speed_test '2604' 'Australia, Brisbane (Telstra) ' 'http://brs1.speedtest.telstra.net'
 	speed_test '18247' 'Australia, Adelaide (Vocus)   ' 'http://speedtest-ade.vocus.net'
-	speed_test '8976' 'Australia, Hobart (Optus)     ' 'http://speedtest.tas.optusnet.com.au'
+	speed_test '22006' 'Australia, Hobart (TasmaNet)  ' 'http://speedtest.tasmanet.com.au'
 	speed_test '22036' 'Australia, Darwin (Telstra)   ' 'http://drw1.speedtest.telstra.net'
 	speed_test '2627' 'Australia, Perth (Telstra)    ' 'http://per1.speedtest.telstra.net'
 	speed_test '5539' 'NZ, Auckland (2degrees)       ' 'http://speed2.snap.net.nz'
