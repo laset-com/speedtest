@@ -17,8 +17,8 @@ TEMP_DIR=$(mktemp -d -t speedtest-XXXXXX) || error_exit "Failed to create genera
 GEEKBENCH_BASE_DIR=""
 RAMDISK_BASE_DIR=""
 
-# Set log file path within the temporary directory
-log="$TEMP_DIR/speedtest.log"
+# Set log file path to the current working directory
+log="speedtest.log"
 true > "$log" # Initialize log file
 
 cleanup() {
@@ -26,16 +26,17 @@ cleanup() {
     if mountpoint -q "$RAMDISK_BASE_DIR" 2>"$NULL"; then
         umount "$RAMDISK_BASE_DIR" 2>"$NULL"
     fi
-    # Remove temporary directories
-    if [[ -n "$TEMP_DIR" && -d "$TEMP_DIR" ]]; then
-        rm -rf "$TEMP_DIR" 2>"$NULL"
-    fi
+    # Remove temporary directories for Geekbench and RAM disk
     if [[ -n "$GEEKBENCH_BASE_DIR" && -d "$GEEKBENCH_BASE_DIR" ]]; then
         rm -rf "$GEEKBENCH_BASE_DIR" 2>"$NULL"
     fi
     if [[ -n "$RAMDISK_BASE_DIR" && -d "$RAMDISK_BASE_DIR" ]]; then
         rm -rf "$RAMDISK_BASE_DIR" 2>"$NULL"
     fi
+    # Remove other specific temporary files within TEMP_DIR
+    rm -f "$TEMP_DIR/speedtest.py" "$TEMP_DIR/tools.py" "$TEMP_DIR/dd_err_$$" "$TEMP_DIR/geekbench_claim.url" 2>"$NULL"
+    # Note: speedtest_upload.log is cleaned by sharetest itself.
+    # The TEMP_DIR itself will be removed by the EXIT trap
 }
 
 cancel() {
@@ -43,7 +44,7 @@ cancel() {
     next;
     echo " Abort ..."
     echo " Cleanup ..."
-    cleanup;
+    cleanup; # Call cleanup for temporary sub-directories and files
     echo " Done"
     exit 0
 }
@@ -52,13 +53,16 @@ error_exit() {
     echo ""
     echo " Error: $1"
     echo " Cleanup ..."
-    cleanup;
+    cleanup; # Call cleanup for temporary sub-directories and files
     echo " Done"
     exit 1
 }
 
 trap cancel SIGINT
 trap 'error_exit "Unexpected error occurred"' SIGTERM
+
+# Final cleanup for the main TEMP_DIR when the script exits
+trap 'rm -rf "$TEMP_DIR" 2>"$NULL"' EXIT
 
 # benchram="$HOME/tmpbenchram" # Цей рядок більше не потрібен, оскільки використовується RAMDISK_BASE_DIR
 NULL="/dev/null"
@@ -999,123 +1003,6 @@ freedisk() {
     else
         printf "1"
     fi
-}
-
-print_system_info() {
-    echo -e " OS           : $opsy ($lbit Bit)" | tee -a "$log"
-    echo -e " Virt/Kernel  : $virtual / $kern" | tee -a "$log"
-    echo -e " CPU Model    : $cname" | tee -a "$log"
-    # Modified line: remove "MHz" if freq contains "GHz"
-    if [[ "$freq" == *"GHz"* ]]; then
-        echo -e " CPU Cores    : $cores @ $freq $arch $corescache Cache" | tee -a "$log"
-    else
-        echo -e " CPU Cores    : $cores @ $freq MHz $arch $corescache Cache" | tee -a "$log"
-    fi
-    echo -e " CPU Flags    : $cpu_aes & $cpu_virt" | tee -a "$log"
-    echo -e " Load Average : $load" | tee -a "$log"
-    echo -e " Total Space  : $hdd ($hddused ~$hddfree used)" | tee -a "$log"
-    echo -e " Total RAM    : $tram MB ($uram MB + $bram MB Buff in use)" | tee -a "$log"
-    echo -e " Total SWAP   : $swap MB ($uswap MB in use)" | tee -a "$log"
-    [[ -z "$IPV4_CHECK" ]] && ONLINE="\xE2\x9D\x8C Offline / " || ONLINE="\xE2\x9C\x94 Online / "
-    [[ -z "$IPV6_CHECK" ]] && ONLINE+="\xE2\x9D\x8C Offline" || ONLINE+="\xE2\x9C\x94 Online"
-    echo -e " IPv4/IPv6    : $ONLINE" | tee -a "$log"
-    echo -e " Uptime       : $up" | tee -a "$log"
-    printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-}
-
-get_system_info() {
-    # Detect CPU model with ARM64 support
-    if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
-        # Try to get CPU model for ARM64
-        cname=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
-        
-        # If model is not defined, try other fields
-        if [[ -z "$cname" ]]; then
-            cname=$(awk -F: '/Hardware/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
-        fi
-        
-        # If still not defined, try other sources
-        if [[ -z "$cname" ]]; then
-            if [[ -f /sys/devices/virtual/dmi/id/product_name ]]; then
-                cname=$(cat /sys/devices/virtual/dmi/id/product_name 2>"$NULL")
-            fi
-        fi
-        
-        # If still not defined, set as "Unknown ARM64 Processor"
-        if [[ -z "$cname" ]]; then
-            cname="Unknown ARM64 Processor"
-        fi
-    else
-        # Standard detection for x86_64
-        cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
-    fi
-    
-    # Detect number of cores with ARM64 support
-    if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
-        cores=$(grep -c ^processor /proc/cpuinfo)
-    else
-        cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
-    fi
-    
-    # Use lscpu for more reliable CPU info if available
-    if hash lscpu 2>"$NULL"; then
-        local model_name_lscpu=$(lscpu | grep "Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        local bios_model_name_lscpu=$(lscpu | grep "BIOS Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-
-        # Extract the 'virt-X.Y' part from bios_model_name_lscpu
-        local virt_version=$(echo "$bios_model_name_lscpu" | awk '{print $1}')
-        # Extract the frequency part from bios_model_name_lscpu (e.g., 2.0GHz)
-        local extracted_freq=$(echo "$bios_model_name_lscpu" | grep -oP '@ \K[^ ]+')
-
-        # Combine Model name and virt_version for cname
-        cname="$model_name_lscpu $virt_version"
-
-        cores=$(lscpu | grep "^CPU(s):" | awk '{print $2}')
-        # Use the extracted frequency
-        freq="$extracted_freq"
-        
-        corescache=$(lscpu | grep "L3 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        [[ -z "$corescache" ]] && corescache=$(lscpu | grep "L2 cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        [[ -z "$corescache" ]] && corescache=$(lscpu | grep "L1d cache" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
-        cpu_aes=$(lscpu | grep "Flags:" | grep -q "aes" && echo "AES-NI Enabled" || echo "AES-NI Disabled")
-        cpu_virt=$(lscpu | grep "Flags:" | grep -q "vmx\|svm" && echo "VM-x/AMD-V Enabled" || echo "VM-x/AMD-V Disabled")
-    else
-        freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
-        corescache=$( awk -F: '/cache size/ {cache=$2} END {print cache}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
-        cpu_aes=$(cat /proc/cpuinfo | grep aes)
-        [[ -z "$cpu_aes" ]] && cpu_aes="AES-NI Disabled" || cpu_aes="AES-NI Enabled"
-        cpu_virt=$(cat /proc/cpuinfo | grep 'vmx\|svm')
-        [[ -z "$cpu_virt" ]] && cpu_virt="VM-x/AMD-V Disabled" || cpu_virt="VM-x/AMD-V Enabled"
-    fi
-
-    tram=$( free -m | awk '/Mem/ {print $2}' )
-    uram=$( free -m | awk '/Mem/ {print $3}' )
-    bram=$( free -m | awk '/Mem/ {print $6}' )
-    swap=$( free -m | awk '/Swap/ {print $2}' )
-    uswap=$( free -m | awk '/Swap/ {print $3}' )
-    up=$( awk '{a=$1/86400;b=($1%86400)/3600;c=($1%3600)/60} {printf("%d days %d:%d\n",a,b,c)}' /proc/uptime )
-    load=$( w | head -1 | awk -F'load average:' '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
-    opsy=$( get_opsy )
-    arch=$( uname -m )
-    lbit=$( getconf LONG_BIT )
-    kern=$( uname -r )
-    #ipv6=$( wget -qO- -t1 -T2 ipv6.icanhazip.com )
-    #disk_size1=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $2}' ))
-    #disk_size2=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $3}' ))
-    #disk_total_size=$( calc_disk "${disk_size1[@]}" )
-    #disk_used_size=$( calc_disk "${disk_size2[@]}" )
-    hdd=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $2 }')
-    hddused=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $3 }')
-    hddfree=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $5 }')
-    #tcp congestion control
-    #tcpctrl=$( sysctl net.ipv4.tcp_congestion_control | awk -F ' ' '{print $3}' )
-
-    #tmp=$(python3 "$TEMP_DIR/tools.py" disk 0)
-    #disk_total_size=$(echo "$tmp" | sed s/G//)
-    #tmp=$(python3 "$TEMP_DIR/tools.py" disk 1)
-    #disk_used_size=$(echo "$tmp" | sed s/G//)
-
-    virt_check
 }
 
 print_system_info() {
