@@ -316,10 +316,10 @@ print_speedtest_in() {
 	speed_test '7236' 'India, New Delhi (iForce)      ' 'http://speed.iforcenetworks.co.in'
 	speed_test '23647' 'India, Mumbai (Tatasky)        ' 'http://speedtestmum.tataskybroadband.com'
 	speed_test '16086' 'India, Nagpur (optbb)          ' 'http://speedtest.optbb.in'
-	speed_test '23244' 'India, Patna (Airtel)          ' 'http://speedtestbhr1.airtel.in'
-	speed_test '15697' 'India, Kolkata (RailTel)       ' 'http://kol.speedtest.rcil.gov.in'
+	speed_test '12309' 'India, Patna (Max-tech)        ' 'http://sp1.foxbroadband.com'
+	speed_test '14314' 'India, Kolkata (Meghbela)      ' 'http://203.147.88.6'
 	speed_test '27524' 'India, Visakhapatnam (Alliance)' 'http://speedtestvtz.alliancebroadband.in'
-	speed_test '13785' 'India, Hyderabad (I-ON)        ' 'http://testspeed.vainavi.net'
+	speed_test '2679' 'India, Hyderabad (Airtel)      ' 'http://speedtestap1.airtel.in'
 	speed_test '10024' 'India, Madurai (Niss Broadband)' 'http://madurai.nissbroadband.com'
 	rm -rf speedtest.py
 }
