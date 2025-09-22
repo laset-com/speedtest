@@ -65,7 +65,7 @@ NULL="/dev/null"
 
 # determine architecture of host
 ARCH=$(uname -m)
-if [[ $ARCH = *x86_64* ]]; then
+if [[ $ARCH = *x88_64* ]]; then
     # host is running a 64-bit kernel
     ARCH="x64"
 elif [[ $ARCH = *i?86* ]]; then
@@ -220,7 +220,7 @@ delete() {
 
 speed_test(){
     if [[ $1 == '' ]]; then
-        temp=$(python3 "$TEMP_DIR/speedtest.py" --secure --share 2>"$NULL") # Changed 2>&1 to 2>"$NULL"
+        temp=$(python3 "$TEMP_DIR/speedtest.py" --secure --share 2>"$NULL")
         is_down=$(echo "$temp" | grep 'Download')
         result_speed=$(echo "$temp" | awk -F ' ' '/results/{print $3}')
         if [[ ${is_down} ]]; then
@@ -242,7 +242,7 @@ speed_test(){
             local cerror="ERROR"
         fi
     else
-        temp=$(python3 "$TEMP_DIR/speedtest.py" --secure --server "$1" --share 2>"$NULL") # Changed 2>&1 to 2>"$NULL"
+        temp=$(python3 "$TEMP_DIR/speedtest.py" --secure --server "$1" --share 2>"$NULL")
         is_down=$(echo "$temp" | grep 'Download') 
         if [[ ${is_down} ]]; then
             local REDownload=$(echo "$temp" | awk -F ':' '/Download/{print $2}')
@@ -291,7 +291,7 @@ print_speedtest() {
     speed_test '15722' 'RSA, Randburg (MTN SA)        ' 'http://speedtest.rb.mtn.co.za'
     speed_test '3068' 'Brazil, Sao Paulo (TIM)       ' 'http://svstsne0101.timbrasil.com.br'
      
-    # rm -rf speedtest.py # REMOVED
+    # rm -rf speedtest.py # REMOVED, handled by cleanup
 }
 
 print_speedtest_usa() {
@@ -303,7 +303,7 @@ print_speedtest_usa() {
         speed_test '' 'Nearby                         '
     printf "%-76s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '21016' 'USA, New York (Starry)         ' 'http://speedtest-server-nyc.starry.com'
-    speed_test '1774' 'USA, Boston (Comcast)          ' 'http://po-2-rur102.needham.ma.boston.comcast.net'
+    speed_test '1774' 'USA, Boston (Comcast)          ' 'http://po-2-rur102.needham.ma.boston.com.comcast.net'
     speed_test '1775' 'USA, Baltimore, MD (Comcast)   ' 'http://po-1-rur101.capitolhghts.md.bad.comcast.net'
     speed_test '17387' 'USA, Atlanta (Windstream)      ' 'http://atlanta02.speedtest.windstream.net'
     speed_test '14237' 'USA, Miami (Frontier)          ' 'http://miami.fl.speedtest.frontier.com'
@@ -326,7 +326,7 @@ print_speedtest_usa() {
     speed_test '980' 'USA, Anchorage (Alaska Com)    ' 'http://speedtest.anc.acsalaska.net'
     speed_test '24031' 'USA, Honolulu (Hawaiian Telcom)' 'http://htspeed.hawaiiantel.net'
      
-    # rm -rf speedtest.py # REMOVED
+    # rm -rf speedtest.py # REMOVED, handled by cleanup
 }
 
 print_speedtest_in() {
@@ -345,7 +345,7 @@ print_speedtest_in() {
     speed_test '27524' 'India, Visakhapatnam (Alliance)' 'http://speedtestvtz.alliancebroadband.in'
     speed_test '13785' 'India, Hyderabad (I-ON)        ' 'http://testspeed.vainavi.net'
     speed_test '10024' 'India, Madurai (Niss Broadband)' 'http://madurai.nissbroadband.com'
-    # rm -rf speedtest.py # REMOVED
+    # rm -rf speedtest.py # REMOVED, handled by cleanup
 }
 
 print_speedtest_europe() {
@@ -374,7 +374,7 @@ print_speedtest_europe() {
     speed_test '1727' 'Greece, Athens (GRNET)          ' 'http://speed-test.gr-ix.gr'
     speed_test '32575' 'Turkey, Urfa (Firatnet)         ' 'http://firatspeedtest.com'
      
-    # rm -rf speedtest.py # REMOVED
+    # rm -rf speedtest.py # REMOVED, handled by cleanup
 }
 
 print_speedtest_asia() {
@@ -402,7 +402,7 @@ print_speedtest_asia() {
     speed_test '13506' 'Taiwan, Taipei (TAIFO)          ' 'http://speedtest.taifo.com.tw'
     speed_test '7139' 'Japan, Tsukuba (SoftEther)      ' 'http://speedtest2.softether.co.jp'
      
-    # rm -rf speedtest.py # REMOVED
+    # rm -rf speedtest.py # REMOVED, handled by cleanup
 }
 
 print_speedtest_sa() {
@@ -426,7 +426,7 @@ print_speedtest_sa() {
     speed_test '31687' 'Argentina, Cordoba (Colsecor)      ' 'http://speedtest.colsecor.com.ar'
     speed_test '20212' 'Uruguay, Montevideo (Movistar)     ' 'http://speedtest.movistar.com.uy'
      
-    # rm -rf speedtest.py # REMOVED
+    # rm -rf speedtest.py # REMOVED, handled by cleanup
 }
 
 print_speedtest_au() {
@@ -448,7 +448,7 @@ print_speedtest_au() {
     speed_test '11326' 'NZ, Wellington (Spark)        ' 'http://speedtest-wellington.spark.co.nz'
     speed_test '4934' 'NZ, Christchurch (Vodafone)   ' 'http://christchurch.speedtest.vodafone.co.nz'
      
-    # rm -rf speedtest.py # REMOVED
+    # rm -rf speedtest.py # REMOVED, handled by cleanup
 }
 
 print_speedtest_ukraine() {
@@ -475,7 +475,7 @@ print_speedtest_ukraine() {
     speed_test '26725' 'Ukraine, Mariupol (CityLine)  ' 'http://speedtest.cl.dn.ua'
     speed_test '2581' 'Ukraine, Yalta (KNET)         ' 'http://speedtest.knet-tele.com'
      
-    # rm -rf speedtest.py # REMOVED
+    # rm -rf speedtest.py # REMOVED, handled by cleanup
 }
 
 print_speedtest_lviv() {
@@ -493,7 +493,7 @@ print_speedtest_lviv() {
     speed_test '1204' 'Ukraine, Lviv (Network) ' 'http://speedtest.network.lviv.ua'
     speed_test '34751' 'Ukraine, Lviv (Wenet)   ' 'http://vds.wenet.lviv.ua'
      
-    # rm -rf speedtest.py # REMOVED
+    # rm -rf speedtest.py # REMOVED, handled by cleanup
 }
 
 print_speedtest_meast() {
@@ -514,7 +514,7 @@ print_speedtest_meast() {
     speed_test '1912' 'Bahrain, Manama (Zain)      ' 'http://62.209.25.182'
     speed_test '18512' 'Iran, Tehran (MCI)          ' 'http://rhaspd2.mci.ir'
      
-    # rm -rf speedtest.py # REMOVED
+    # rm -rf speedtest.py # REMOVED, handled by cleanup
 }
 
 print_speedtest_china() {
@@ -532,7 +532,7 @@ print_speedtest_china() {
     speed_test '4870' 'Changsha (China Unicom 5G)    ' 'http://220.202.152.178'
     speed_test '3633' 'Shanghai (China Telecom)      ' 'http://speedtest1.online.sh.cn'
      
-    # rm -rf speedtest.py # REMOVED
+    # rm -rf speedtest.py # REMOVED, handled by cleanup
 }
 
 geekbench4() {
@@ -858,7 +858,7 @@ ip_info4(){
     echo -e " ASN & ISP    : $asn, $isp / $org" | tee -a "$log"
     #echo -e " Organization : $org" | tee -a "$log"
 
-    # rm -rf tools.py # REMOVED
+    # rm -rf tools.py # REMOVED, handled by cleanup
 }
 
 machine_location(){
@@ -874,7 +874,7 @@ machine_location(){
     echo -e " Machine location: $country, $city ($region)"
     echo -e " ISP & ORG: $asn, $isp / $org"
 
-    # rm -rf tools.py # REMOVED
+    # rm -rf tools.py # REMOVED, handled by cleanup
 }
 
 virt_check(){
@@ -1086,7 +1086,7 @@ get_system_info() {
 }
 
 write_test() {
-    (LANG=C dd if=/dev/zero of="$TEMP_DIR/test_file_$$" bs=512K count=$1 conv=fdatasync && rm -f "$TEMP_DIR/test_file_$$" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' # Changed 2>&1 to 2>"$NULL"
+    (LANG=C dd if=/dev/zero of="$TEMP_DIR/test_file_$$" bs=512K count=$1 conv=fdatasync && rm -f "$TEMP_DIR/test_file_$$" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
 }
 
 averageio() {
@@ -1131,7 +1131,7 @@ cpubench() {
         local steal_before=$(measure_steal_time 1)
         
         # Run performance test
-        io=$( ( dd if=/dev/zero bs=512K count="$2" | "$1" ) 2>"$NULL" | grep 'copied' | awk -F, '{io=$NF} END {print io}' ) # Changed 2>&1 to 2>"$NULL"
+        io=$( ( dd if=/dev/zero bs=512K count="$2" | "$1" ) 2>"$NULL" | grep 'copied' | awk -F, '{io=$NF} END {print io}' )
         
         # Measure steal time after the test
         local steal_after=$(measure_steal_time 1)
@@ -1184,12 +1184,12 @@ iotest() {
     mkdir -p "$RAMDISK_BASE_DIR" # Ensure it exists, though mktemp -d already created it
     mount -t tmpfs -o size="$sbram" tmpfs "$RAMDISK_BASE_DIR"/
     echostyle "RAM Speed:"
-    iow1=$( ( dd if=/dev/zero of="$RAMDISK_BASE_DIR/zero" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' ) # Changed 2>&1 to 2>"$NULL"
-    ior1=$( ( dd if="$RAMDISK_BASE_DIR/zero" of="$NULL" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' ) # Changed 2>&1 to 2>"$NULL"
-    iow2=$( ( dd if=/dev/zero of="$RAMDISK_BASE_DIR/zero" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' ) # Changed 2>&1 to 2>"$NULL"
-    ior2=$( ( dd if="$RAMDISK_BASE_DIR/zero" of="$NULL" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' ) # Changed 2>&1 to 2>"$NULL"
-    iow3=$( ( dd if=/dev/zero of="$RAMDISK_BASE_DIR/zero" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' ) # Changed 2>&1 to 2>"$NULL"
-    ior3=$( ( dd if="$RAMDISK_BASE_DIR/zero" of="$NULL" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' ) # Changed 2>&1 to 2>"$NULL"
+    iow1=$( ( dd if=/dev/zero of="$RAMDISK_BASE_DIR/zero" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' )
+    ior1=$( ( dd if="$RAMDISK_BASE_DIR/zero" of="$NULL" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' )
+    iow2=$( ( dd if=/dev/zero of="$RAMDISK_BASE_DIR/zero" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' )
+    ior2=$( ( dd if="$RAMDISK_BASE_DIR/zero" of="$NULL" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' )
+    iow3=$( ( dd if=/dev/zero of="$RAMDISK_BASE_DIR/zero" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' )
+    ior3=$( ( dd if="$RAMDISK_BASE_DIR/zero" of="$NULL" bs=512K count="$sbcount" ) 2>"$NULL" | awk -F, '{io=$NF} END { print io}' )
     echo "   Avg. write : $(averageio "$iow1" "$iow2" "$iow3") MB/s" | tee -a "$log"
     echo "   Avg. read  : $(averageio "$ior1" "$ior2" "$ior3") MB/s" | tee -a "$log"
     rm "$RAMDISK_BASE_DIR/zero"
@@ -1301,7 +1301,7 @@ sharetest() {
 log_preupload() {
     log_up="$TEMP_DIR/speedtest_upload.log"
     true > "$log_up"
-    $(cat "$log" 2>"$NULL" | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" > "$log_up") # Changed speedtest.log to "$log" and added 2>"$NULL"
+    $(cat "$log" 2>"$NULL" | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" > "$log_up")
 }
 
 get_ip_whois_org_name(){
@@ -1316,7 +1316,7 @@ pingtest() {
     local ping_link=$(echo "${1#*//}" | cut -d"/" -f1)
 
     # Send three pings and capture the output
-    local ping_output=$(ping -w 1 -c 3 -q "$ping_link" 2>"$NULL") # Added 2>"$NULL"
+    local ping_output=$(ping -w 1 -c 3 -q "$ping_link" 2>"$NULL")
 
     # Extract the avg value from the output
     local ping_avg=$(echo "$ping_output" | grep 'rtt' | awk -F'/' '{print $6}')
@@ -1535,3 +1535,95 @@ meast_bench(){
     cleanup;
     sharetest clbin;
 }
+
+case $1 in
+    'info'|'i'|'-i'|'--i'|'-info'|'--info' )
+        about;sleep 3;benchinit;next;get_system_info;print_system_info;next;cleanup;;
+    'version'|'v'|'-v'|'--v'|'-version'|'--version')
+        next;about;next;cleanup;;
+      'gb4'|'-gb4'|'--gb4'|'geek4'|'-geek4'|'--geek4' )
+        benchinit;next;geekbench4;next;cleanup;;
+       'gb5'|'-gb5'|'--gb5'|'geek5'|'-geek5'|'--geek5' )
+        benchinit;next;geekbench5;next;cleanup;;
+         'gb6'|'-gb6'|'--gb6'|'geek6'|'-geek6'|'--geek6' )
+        benchinit;next;geekbench6;next;cleanup;;
+    'gb'|'-gb'|'--gb'|'geek'|'-geek'|'--geek' )
+        benchinit;next;geekbench;next;cleanup;;
+    'io'|'-io'|'--io'|'ioping'|'-ioping'|'--ioping' )
+        benchinit;next;iotest;write_io;next;cleanup;;
+    'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
+        about;benchinit;machine_location;print_speedtest;next;cleanup;;
+    'usas'|'-usas'|'uss'|'-uss'|'uspeed'|'-uspeed' )
+        about;benchinit;machine_location;print_speedtest_usa;next;cleanup;;
+    'eus'|'-eus'|'es'|'-es'|'espeed'|'-espeed' )
+        about;benchinit;machine_location;print_speedtest_europe;next;cleanup;;
+    'as'|'-as'|'aspeed'|'-aspeed' )
+        about;benchinit;machine_location;print_speedtest_asia;next;cleanup;;
+    'aus'|'-aus'|'auspeed'|'-auspeed' )
+        about;benchinit;machine_location;print_speedtest_au;next;cleanup;;
+    'sas'|'-sas'|'saspeed'|'-saspeed' )
+        about;benchinit;machine_location;print_speedtest_sa;next;cleanup;;
+    'mes'|'-mes'|'mespeed'|'-mespeed' )
+        about;benchinit;machine_location;print_speedtest_meast;next;cleanup;;
+    'ins'|'-ins'|'inspeed'|'-inspeed' )
+        about;benchinit;machine_location;print_speedtest_in;next;cleanup;;
+    'cns'|'-cns'|'cnspeed'|'-cnspeed' )
+        about;benchinit;machine_location;print_speedtest_china;next;cleanup;;
+    'uas'|'-uas'|'uaspeed'|'-uaspeed' )
+        about;benchinit;machine_location;print_speedtest_ukraine;next;cleanup;;
+    'lvivs'|'-lvivs' )
+        about;benchinit;machine_location;print_speedtest_lviv;next;cleanup;;
+    'ip'|'-ip'|'--ip'|'geoip'|'-geoip'|'--geoip' )
+        about;benchinit;next;ip_info4;next;cleanup;;
+    'a'|'-a'|'about'|'-about'|'--about' )
+        about;next;cleanup;;
+      'all'|'-all'|'bench'|'-bench'|'--bench'|'-Global' )
+        bench_all;;
+    'usa'|'-usa'|'--usa'|'us'|'-us'|'--us'|'USA'|'-USA'|'--USA' )
+        usa_bench;;
+    'in'|'-india'|'--in'|'in'|'-in'|'IN'|'-IN'|'--IN' )
+        in_bench;;
+    'europe'|'-europe'|'--europe'|'eu'|'-eu'|'--eu'|'Europe'|'-Europe'|'--Europe' )
+        europe_bench;;
+    'asia'|'-asia'|'--asia'|'Asia'|'-Asia'|'--Asia' )
+        asia_bench;;
+    'china'|'-china'|'--china'|'mjj'|'-mjj'|'cn'|'-cn'|'--cn'|'China'|'-China'|'--China' )
+        china_bench;;
+    'au'|'-au'|'nz'|'-nz'|'AU'|'-AU'|'NZ'|'-NZ'|'-AU-NZ' )
+        au_bench;;
+    'sa'|'-sa'|'--sa'|'-South-America' )
+        sa_bench;;
+    'ukraine'|'-ukraine'|'--ukraine'|'ua'|'-ua'|'--ua'|'ukr'|'-ukr'|'--ukr'|'Ukraine'|'-Ukraine'|'--Ukraine' )
+        ukraine_bench;;
+    'lviv'|'-lviv'|'--lviv'|'-Lviv'|'--Lviv' )
+        lviv_bench;;
+    'M-East'|'-M-East'|'--M-East'|'-m-east'|'--m-east'|'-meast'|'--meast'|'-Middle-East'|'-me' )
+        meast_bench;;
+    '-s'|'--s'|'share'|'-share'|'--share' )
+        bench_all;
+        is_share="share"
+        if [[ $2 == "" ]]; then
+            sharetest ubuntu;
+        else
+            sharetest "$2";
+        fi
+        ;;
+    'debug'|'-d'|'--d'|'-debug'|'--debug' )
+        get_ip_whois_org_name;;
+*)
+    bench_all;;
+esac
+
+
+
+if [[  ! $is_share == "share" ]]; then
+    case $2 in
+        'share'|'-s'|'--s'|'-share'|'--share' )
+            if [[ $3 == '' ]]; then
+                sharetest ubuntu;
+            else
+                sharetest "$3";
+            fi
+            ;;
+    esac
+fi
