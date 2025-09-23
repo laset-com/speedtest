@@ -21,7 +21,7 @@ The script provides a comprehensive system performance analysis, which includes:
 *   Speedtest.net network speed tests (global and regional).
 *   Virtualization type and geographical location detection.
 
-The script requires `bash` to run. It will automatically install necessary tools such as `curl` or `wget`, `python3`, `bzip2`, `tar`, and `smartmontools` (for extended disk information) if they are not already present. Running the script requires `root` privileges.
+The script requires `curl` and `bash` to run. It will automatically install necessary tools such as `wget`, `python3`, `bzip2`, `tar`, and `smartmontools` (for extended disk information) if they are not already present. Running the script requires `root` privileges.
 
 ## Global Speedtest
 
@@ -171,7 +171,7 @@ Here are the available arguments and example commands:
 
 ## Compatibility
 
-This script is engineered for broad compatibility across diverse Linux distributions and architectures, relying on standard `bash` and common system utilities. To run the script, you must have either `curl` or `wget` installed. The script includes built-in logic to automatically install other necessary dependencies (e.g., `python3`, `bzip2`, `tar`, `smartmontools`) to simplify deployment. For optimal operation, ensure `bash` is installed and the script is executed with `root` privileges. If you encounter any issues, please report them on the [GitHub Issues page](https://github.com/laset-com/speedtest/issues).
+This script is engineered for broad compatibility across diverse Linux distributions and architectures, relying on standard `bash` and common system utilities. To run the script, you must have `curl` installed. The script includes built-in logic to automatically install other necessary dependencies (e.g., `wget`, `python3`, `bzip2`, `tar`, `smartmontools`) to simplify deployment. For optimal operation, ensure `bash` is installed and the script is executed with `root` privileges. If you encounter any issues, please report them on the [GitHub Issues page](https://github.com/laset-com/speedtest/issues).
 
 ## Sample Output (Global)
 
