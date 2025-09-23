@@ -252,7 +252,7 @@ root@chicago:~# curl -sL bench.laset.com | bash
  Share results:
  - https://www.speedtest.net/result/18260986594.png
  - https://browser.geekbench.com/v6/cpu/14012322
-```text
+```
 
 ## Where to get a cheap VPS
 
