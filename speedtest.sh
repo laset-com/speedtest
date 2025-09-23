@@ -5,7 +5,7 @@ bench_d="2025-09-22"
 about() {
 	echo ""
 	echo " ========================================================= "
-	echo " \            Speedtest https://bench.laset.com            / "
+	echo " \            Speedtest https://bench.laset.com          / "
 	echo " \    System info, Geekbench, I/O test and speedtest     / "
 	echo " \                  $bench_v    $bench_d                 / "
 	echo " ========================================================= "
@@ -292,7 +292,7 @@ print_speedtest_usa() {
 	speed_test '2917' 'USA, Minneapolis (US Internet) ' 'http://speedtest.usiwireless.com'
 	speed_test '13628' 'USA, Kansas City (Nocix)       ' 'http://speedtest.nocix.net'
 	speed_test '1763' 'USA, Houston (Comcast)         ' 'http://speedtest.pslightwave.com'
-	speed_test '10051' 'USA, Denver (Comcast)          ' 'http://stosat-dvre-01.sys.comcast.net'
+	speed_test '10051' 'USA, Denver (Comcast)          ' 'http://denver.speedtest.centurylink.net'
 	speed_test '16869' 'USA, Albuquerque (Plateau Tel) ' 'http://speedtest4.plateautel.net'
 	speed_test '28800' 'USA, Phoenix (PhoenixNAP)      ' 'http://speedtest.phoenixnap.com'
 	speed_test '1781' 'USA, Salt Lake City (Comcast)  ' 'http://be-36711-ar01.saltlakecity.ut.utah.comcast.net'
