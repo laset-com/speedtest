@@ -501,6 +501,8 @@ print_speedtest_china() {
 	printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a $log
 	speed_test '5396' 'Suzhou (China Telecom 5G)     ' 'http://4gsuzhou1.speedtest.jsinfo.net'
 	speed_test '26352' 'Nanjing (China Telecom 5G)    ' 'http://5gnanjing.speedtest.jsinfo.net'
+	speed_test '71313' 'Xuzhou (中国电信)              ' 'http://server-71313.prod.hosts.ooklaserver.net'
+	speed_test '36663' 'Zhenjiang (China Telecom 5G)  ' 'http://5gzhenjiang.speedtest.jsinfo.net'
 	 
 	rm -rf speedtest.py
 }
@@ -1237,8 +1239,8 @@ sharetest() {
 	#		grep "Location" | awk '{print "https://paste.ubuntu.com"$3}' );;
 	#'haste' )
 	#	share_link=$( curl -X POST -s -d "$(cat $log)" https://hastebin.com/documents | awk -F '"' '{print "https://hastebin.com/"$4}' );;
-	#'clbin' )
-	#	share_link=$( curl -sF 'clbin=<-' https://clbin.com < $log );;
+	'clbin' )
+		share_link=$( curl -sF 'clbin=<-' https://clbin.com < $log );;
 		#sprunge_link=$(curl -sF 'sprunge=<-' https://sprunge.us < $log);;
 	esac
 
@@ -1247,7 +1249,7 @@ sharetest() {
 
 	# print result info
 	echo " - $GEEKBENCH_URL" | tee -a $log
-	#echo " - $share_link"
+	echo " - $share_link"
 	echo ""
 	rm -f $log_up
 
@@ -1571,7 +1573,7 @@ case $1 in
 		bench_all;
 		is_share="share"
 		if [[ $2 == "" ]]; then
-			sharetest ubuntu;
+			sharetest clbin;
 		else
 			sharetest $2;
 		fi
@@ -1588,7 +1590,7 @@ if [[  ! $is_share == "share" ]]; then
 	case $2 in
 		'share'|'-s'|'--s'|'-share'|'--share' )
 			if [[ $3 == '' ]]; then
-				sharetest ubuntu;
+				sharetest clbin;
 			else
 				sharetest $3;
 			fi
