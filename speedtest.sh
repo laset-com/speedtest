@@ -319,17 +319,17 @@ speed_test(){
 
         # Check if download speed is greater than 0 for printing
         if (( $(echo "$REDownload_mbps > 0" | bc -l) )); then
-            printf "%-17s%-17s%-17s%-11s%-7s\n" " ${nodeName}" "${formatted_upload}" "${formatted_download}" "${formatted_latency}" "${formatted_loss}" | tee -a "$log"
+            printf "%-30s   %14s   %14s   %10s  %6s\n" " ${nodeName}" "${formatted_upload}" "${formatted_download}" "${formatted_latency}" "${formatted_loss}" | tee -a "$log"
         else
             # If download speed is 0 or less, it's likely an error or very poor connection
-            printf "%-17s%-17s%-17s%-11s%-7s\n" " ${nodeName}" "ERROR" "ERROR" "ERROR" "ERROR" | tee -a "$log"
+            printf "%-30s   %14s   %14s   %10s  %6s\n" " ${nodeName}" "ERROR" "ERROR" "ERROR" "ERROR" | tee -a "$log"
             echo "--- Speedtest CLI raw output for ${nodeName} (Error/Zero Speed) ---" | tee -a "$log"
             echo "$json_output" | tee -a "$log"
             echo "-----------------------------------------------------" | tee -a "$log"
         fi
     else
         local cerror="ERROR"
-        printf "%-17s%-17s%-17s%-11s%-7s\n" " ${nodeName}" "ERROR" "ERROR" "ERROR" "ERROR" | tee -a "$log"
+        printf "%-30s   %14s   %14s   %10s  %6s\n" " ${nodeName}" "ERROR" "ERROR" "ERROR" "ERROR" | tee -a "$log"
         echo "--- Speedtest CLI raw output for ${nodeName} (Error) ---" | tee -a "$log"
         echo "$json_output" | tee -a "$log"
         echo "-----------------------------------------------------" | tee -a "$log"
@@ -342,12 +342,12 @@ print_total_traffic() {
     local total_download_gb=$(awk "BEGIN {printf \"%.2f\", $TOTAL_DOWNLOAD_TRAFFIC_MB / 1024}")
     local total_upload_gb=$(awk "BEGIN {printf \"%.2f\", $TOTAL_UPLOAD_TRAFFIC_MB / 1024}")
     local total_sum_gb=$(awk "BEGIN {printf \"%.2f\", $total_sum_mb / 1024}")
-	local avg_packet_loss=$(awk "BEGIN {printf \"%.2f\", $TOTAL_PACKET_LOSS_SUM / $SPEEDTEST_SUCCESS_COUNT}")
+    local avg_packet_loss=$(awk "BEGIN {printf \"%.2f\", $TOTAL_PACKET_LOSS_SUM / $SPEEDTEST_SUCCESS_COUNT}")
 
     echo "" | tee -a "$log"
     echostyle "## Statistics"
     echo "" | tee -a "$log"
-	echo -e " Total Sum        : ${total_sum_gb} GB (${total_sum_mb} MB)" | tee -a "$log"
+    echo -e " Total Sum        : ${total_sum_gb} GB (${total_sum_mb} MB)" | tee -a "$log"
     echo -e " Total Downloaded : ${total_download_gb} GB (${TOTAL_DOWNLOAD_TRAFFIC_MB} MB)" | tee -a "$log"
     echo -e " Total Uploaded   : ${total_upload_gb} GB (${TOTAL_UPLOAD_TRAFFIC_MB} MB)" | tee -a "$log"
     echo "" | tee -a "$log"
@@ -366,10 +366,10 @@ print_speedtest() {
     echo "" | tee -a "$log"
     echostyle "## Global Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-32s%-17s%-17s%-11s%-7s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-84s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-84s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '21016' 'USA, New York (Starry)        '
     speed_test '17384' 'USA, Chicago (Windstream)     '
     speed_test '1763' 'USA, Houston (Comcast)        '
@@ -394,32 +394,32 @@ print_speedtest_usa() {
     echo "" | tee -a "$log"
     echostyle "## USA Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-33s%-17s%-17s%-11s%-7s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
     printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-        speed_test '' 'Nearby                         '
+        speed_test '' 'Nearby                        '
     printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '21016' 'USA, New York (Starry)         '
-    speed_test '1774' 'USA, Boston (Comcast)          '
-    speed_test '1775' 'USA, Baltimore, MD (Comcast)   '
-    speed_test '17387' 'USA, Atlanta (Windstream)      '
-    speed_test '14237' 'USA, Miami (Frontier)          '
-    speed_test '1764' 'USA, Nashville (Comcast)       '
+    speed_test '21016' 'USA, New York (Starry)        '
+    speed_test '1774' 'USA, Boston (Comcast)         '
+    speed_test '1775' 'USA, Baltimore, MD (Comcast)  '
+    speed_test '17387' 'USA, Atlanta (Windstream)     '
+    speed_test '14237' 'USA, Miami (Frontier)         '
+    speed_test '1764' 'USA, Nashville (Comcast)      '
     speed_test '10152' 'USA, Indianapolis (CenturyLink)'
-    speed_test '27834' 'USA, Cleveland (Windstream)    '
-    speed_test '1778' 'USA, Detroit, MI (Comcast)     '
-    speed_test '17384' 'USA, Chicago (Windstream)      '
-    speed_test '4557' 'USA, St. Louis (Elite Fiber)   '
-    speed_test '2917' 'USA, Minneapolis (US Internet) '
-    speed_test '13628' 'USA, Kansas City (Nocix)       '
-    speed_test '1763' 'USA, Houston (Comcast)         '
-    speed_test '10051' 'USA, Denver (Comcast)          '
-    speed_test '16869' 'USA, Albuquerque (Plateau Tel) '
-    speed_test '28800' 'USA, Phoenix (PhoenixNAP)      '
-    speed_test '1781' 'USA, Salt Lake City (Comcast)  '
-    speed_test '1782' 'USA, Seattle (Comcast)         '
-    speed_test '1783' 'USA, San Francisco (Comcast)   '
-    speed_test '18401' 'USA, Los Angeles (Windstream)  '
-    speed_test '980' 'USA, Anchorage (Alaska Com)    '
+    speed_test '27834' 'USA, Cleveland (Windstream)   '
+    speed_test '1778' 'USA, Detroit, MI (Comcast)    '
+    speed_test '17384' 'USA, Chicago (Windstream)     '
+    speed_test '4557' 'USA, St. Louis (Elite Fiber)  '
+    speed_test '2917' 'USA, Minneapolis (US Internet)'
+    speed_test '13628' 'USA, Kansas City (Nocix)      '
+    speed_test '1763' 'USA, Houston (Comcast)        '
+    speed_test '10051' 'USA, Denver (Comcast)         '
+    speed_test '16869' 'USA, Albuquerque (Plateau Tel)'
+    speed_test '28800' 'USA, Phoenix (PhoenixNAP)     '
+    speed_test '1781' 'USA, Salt Lake City (Comcast) '
+    speed_test '1782' 'USA, Seattle (Comcast)        '
+    speed_test '1783' 'USA, San Francisco (Comcast)  '
+    speed_test '18401' 'USA, Los Angeles (Windstream) '
+    speed_test '980' 'USA, Anchorage (Alaska Com)   '
     speed_test '24031' 'USA, Honolulu (Hawaiian Telcom)'
 
     print_total_traffic # Print total traffic after all speed tests
@@ -429,17 +429,17 @@ print_speedtest_in() {
     echo "" | tee -a "$log"
     echostyle "## India Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-33s%-17s%-17s%-11s%-7s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
     printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-        speed_test '' 'Nearby                         '
+        speed_test '' 'Nearby                        '
     printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '7236' 'India, New Delhi (iForce)      '
-    speed_test '23647' 'India, Mumbai (Tatasky)        '
-    speed_test '16086' 'India, Nagpur (optbb)          '
-    speed_test '12309' 'India, Patna (Max-tech)        '
-    speed_test '14314' 'India, Kolkata (Meghbela)      '
+    speed_test '7236' 'India, New Delhi (iForce)     '
+    speed_test '23647' 'India, Mumbai (Tatasky)       '
+    speed_test '16086' 'India, Nagpur (optbb)         '
+    speed_test '12309' 'India, Patna (Max-tech)       '
+    speed_test '14314' 'India, Kolkata (Meghbela)     '
     speed_test '27524' 'India, Visakhapatnam (Alliance)'
-    speed_test '2679' 'India, Hyderabad (Airtel)      '
+    speed_test '2679' 'India, Hyderabad (Airtel)     '
     speed_test '10024' 'India, Madurai (Niss Broadband)'
 
     print_total_traffic # Print total traffic after all speed tests
@@ -449,27 +449,27 @@ print_speedtest_europe() {
     echo "" | tee -a "$log"
     echostyle "## Europe Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-34s%-17s%-17s%-11s%-7s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-86s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-        speed_test '' 'Nearby                          '
-    printf "%-86s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '11445' 'UK, London (Structured Com)     '
+    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                        '
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    speed_test '11445' 'UK, London (Structured Com)   '
     speed_test '29076' 'Netherlands, Amsterdam (XS News)'
-    speed_test '20507' 'Germany, Berlin (DNS:NET)       '
-    speed_test '31470' 'Germany, Munich (Telekom)       '
-    speed_test '26852' 'Sweden, Stockholm (SUNET)       '
-    speed_test '8018' 'Norway, Oslo (NextGenTel)       '
-    speed_test '27961' 'France, Paris (KEYYO)           '
-    speed_test '21378' 'Spain, Madrid (MasMovil)        '
-    speed_test '395' 'Italy, Rome (Unidata)           '
-    speed_test '30620' 'Czechia, Prague (O2)            '
-    speed_test '12390' 'Austria, Vienna (A1)            '
-    speed_test '7103' 'Poland, Warsaw (ISP Emitel)     '
-    speed_test '30813' 'Ukraine, Kyiv (KyivStar)        '
-    speed_test '5834' 'Latvia, Riga (Bite)             '
-    speed_test '4290' 'Romania, Bucharest (iNES)       '
-    speed_test '1727' 'Greece, Athens (GRNET)          '
-    speed_test '32575' 'Turkey, Urfa (Firatnet)         '
+    speed_test '20507' 'Germany, Berlin (DNS:NET)     '
+    speed_test '31470' 'Germany, Munich (Telekom)     '
+    speed_test '26852' 'Sweden, Stockholm (SUNET)     '
+    speed_test '8018' 'Norway, Oslo (NextGenTel)     '
+    speed_test '27961' 'France, Paris (KEYYO)         '
+    speed_test '21378' 'Spain, Madrid (MasMovil)      '
+    speed_test '395' 'Italy, Rome (Unidata)         '
+    speed_test '30620' 'Czechia, Prague (O2)          '
+    speed_test '12390' 'Austria, Vienna (A1)          '
+    speed_test '7103' 'Poland, Warsaw (ISP Emitel)   '
+    speed_test '30813' 'Ukraine, Kyiv (KyivStar)      '
+    speed_test '5834' 'Latvia, Riga (Bite)           '
+    speed_test '4290' 'Romania, Bucharest (iNES)     '
+    speed_test '1727' 'Greece, Athens (GRNET)        '
+    speed_test '32575' 'Turkey, Urfa (Firatnet)       '
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -478,26 +478,26 @@ print_speedtest_asia() {
     echo "" | tee -a "$log"
     echostyle "## Asia Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-34s%-17s%-17s%-11s%-7s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-86s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-        speed_test '' 'Nearby                          '
-    printf "%-86s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '16475' 'India, New Delhi (Weebo)        '
-    speed_test '23647' 'India, Mumbai (Tatasky)         '
-    speed_test '12329' 'Sri Lanka, Colombo (Mobitel)    '
-    speed_test '31336' 'Bangladesh, Dhaka (Banglalink)  '
-    speed_test '24514' 'Myanmar, Yangon (TrueNET)       '
-    speed_test '26845' 'Laos, Vientaine (Mangkone)      '
-    speed_test '13871' 'Thailand, Bangkok (CAT Telecom) '
-    speed_test '5828' 'Cambodia, Phnom Penh (SINET)    '
-    speed_test '9903' 'Vietnam, Hanoi (Viettel)        '
+    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                        '
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    speed_test '16475' 'India, New Delhi (Weebo)      '
+    speed_test '23647' 'India, Mumbai (Tatasky)       '
+    speed_test '12329' 'Sri Lanka, Colombo (Mobitel)  '
+    speed_test '31336' 'Bangladesh, Dhaka (Banglalink)'
+    speed_test '24514' 'Myanmar, Yangon (TrueNET)     '
+    speed_test '26845' 'Laos, Vientaine (Mangkone)    '
+    speed_test '13871' 'Thailand, Bangkok (CAT Telecom)'
+    speed_test '5828' 'Cambodia, Phnom Penh (SINET)  '
+    speed_test '9903' 'Vietnam, Hanoi (Viettel)      '
     speed_test '27261' 'Malaysia, Kuala Lumpur (Extreme)'
-    speed_test '5935' 'Singapore (MyRepublic)          '
-    speed_test '7582' 'Indonesia, Jakarta (Telekom)    '
-    speed_test '7167' 'Philippines, Manila (PLDT)      '
-    speed_test '16176' 'Hong Kong (HGC Global)          '
-    speed_test '13506' 'Taiwan, Taipei (TAIFO)          '
-    speed_test '7139' 'Japan, Tsukuba (SoftEther)      '
+    speed_test '5935' 'Singapore (MyRepublic)        '
+    speed_test '7582' 'Indonesia, Jakarta (Telekom)  '
+    speed_test '7167' 'Philippines, Manila (PLDT)    '
+    speed_test '16176' 'Hong Kong (HGC Global)        '
+    speed_test '13506' 'Taiwan, Taipei (TAIFO)        '
+    speed_test '7139' 'Japan, Tsukuba (SoftEther)    '
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -506,22 +506,22 @@ print_speedtest_sa() {
     echo "" | tee -a "$log"
     echostyle "## South America Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-37s%-17s%-17s%-11s%-7s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-89s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-        speed_test '' 'Nearby                             '
-    printf "%-89s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '3068' 'Brazil, Sao Paulo (TIM)            '
-    speed_test '11102' 'Brazil, Fortaleza (Connect)        '
-    speed_test '18126' 'Brazil, Manaus (Claro)             '
-    speed_test '15018' 'Colombia, Bogota (Tigoune)         '
-    speed_test '31043' 'Ecuador, Ambato (EXTREME)          '
-    speed_test '5272' 'Peru, Lima (Fiberluxperu)          '
-    speed_test '1053' 'Bolivia, La Paz (Nuevatel)         '
-    speed_test '6776' 'Paraguay, Asuncion (TEISA)         '
-    speed_test '21436' 'Chile, Santiago (Movistar)         '
-    speed_test '5181' 'Argentina, Buenos Aires (Claro)    '
-    speed_test '31687' 'Argentina, Cordoba (Colsecor)      '
-    speed_test '20212' 'Uruguay, Montevideo (Movistar)     '
+    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                        '
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    speed_test '3068' 'Brazil, Sao Paulo (TIM)       '
+    speed_test '11102' 'Brazil, Fortaleza (Connect)   '
+    speed_test '18126' 'Brazil, Manaus (Claro)        '
+    speed_test '15018' 'Colombia, Bogota (Tigoune)    '
+    speed_test '31043' 'Ecuador, Ambato (EXTREME)     '
+    speed_test '5272' 'Peru, Lima (Fiberluxperu)     '
+    speed_test '1053' 'Bolivia, La Paz (Nuevatel)    '
+    speed_test '6776' 'Paraguay, Asuncion (TEISA)    '
+    speed_test '21436' 'Chile, Santiago (Movistar)    '
+    speed_test '5181' 'Argentina, Buenos Aires (Claro)'
+    speed_test '31687' 'Argentina, Cordoba (Colsecor) '
+    speed_test '20212' 'Uruguay, Montevideo (Movistar)'
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -530,10 +530,10 @@ print_speedtest_au() {
     echo "" | tee -a "$log"
     echostyle "## Australia & New Zealand Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-32s%-17s%-17s%-11s%-7s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-84s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-84s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '2629' 'Australia, Sydney (Telstra)   '
     speed_test '2225' 'Australia, Melbourne (Telstra)'
     speed_test '2604' 'Australia, Brisbane (Telstra) '
@@ -552,14 +552,14 @@ print_speedtest_ukraine() {
     echo "" | tee -a "$log"
     echostyle "## Ukraine Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-32s%-17s%-17s%-11s%-7s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-84s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-84s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '29112' 'Ukraine, Kyiv (Datagroup)     '
     speed_test '30813' 'Ukraine, Kyiv (KyivStar)      '
     speed_test '14887' 'Ukraine, Lviv (UARNet)        '
-    speed_test '29259' 'Ukraine, Lviv (KyivStar)'
+    speed_test '29259' 'Ukraine, Lviv (KyivStar)      '
     speed_test '2445' 'Ukraine, Lviv (KOMiTEX)       '
     speed_test '3022' 'Ukraine, Uzhgorod (TransCom)  '
     speed_test '19332' 'Ukraine, Chernivtsi (C.T.Net) '
@@ -578,15 +578,15 @@ print_speedtest_lviv() {
     echo "" | tee -a "$log"
     echostyle "## Lviv Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-26s%-17s%-17s%-11s%-7s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-78s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-        speed_test '' 'Nearby                  '
-    printf "%-78s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '14887' 'Ukraine, Lviv (UARNet)  '
-    speed_test '29259' 'Ukraine, Lviv (KyivStar)'
-    speed_test '2445' 'Ukraine, Lviv (KOMiTEX) '
-    speed_test '12786' 'Ukraine, Lviv (ASTRA)   '
-    speed_test '1204' 'Ukraine, Lviv (Network) '
+    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                        '
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    speed_test '14887' 'Ukraine, Lviv (UARNet)        '
+    speed_test '29259' 'Ukraine, Lviv (KyivStar)      '
+    speed_test '2445' 'Ukraine, Lviv (KOMiTEX)       '
+    speed_test '12786' 'Ukraine, Lviv (ASTRA)         '
+    speed_test '1204' 'Ukraine, Lviv (Network)       '
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -595,19 +595,19 @@ print_speedtest_meast() {
     echo "" | tee -a "$log"
     echostyle "## Middle East Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s%-17s%-17s%-11s%-7s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-82s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-        speed_test '' 'Nearby                      '
-    printf "%-82s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '610' 'Cyprus, Limassol (PrimeTel) '
-    speed_test '2434' 'Israel, Haifa (013Netvision)'
-    speed_test '1689' 'Egypt, Cairo (Vodafone)     '
-    speed_test '9137' 'Lebanon, Tripoli (Be-Wise)  '
-    speed_test '22129' 'UAE, Dubai (i3D)            '
-    speed_test '24742' 'Qatar, Doha (Ooredoo)       '
-    speed_test '608' 'SA, Riyadh (STC)            '
-    speed_test '1912' 'Bahrain, Manama (Zain)      '
-    speed_test '18512' 'Iran, Tehran (MCI)          '
+    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                        '
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    speed_test '610' 'Cyprus, Limassol (PrimeTel)   '
+    speed_test '2434' 'Israel, Haifa (013Netvision)  '
+    speed_test '1689' 'Egypt, Cairo (Vodafone)       '
+    speed_test '9137' 'Lebanon, Tripoli (Be-Wise)    '
+    speed_test '22129' 'UAE, Dubai (i3D)              '
+    speed_test '24742' 'Qatar, Doha (Ooredoo)         '
+    speed_test '608' 'SA, Riyadh (STC)              '
+    speed_test '1912' 'Bahrain, Manama (Zain)        '
+    speed_test '18512' 'Iran, Tehran (MCI)            '
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -616,10 +616,10 @@ print_speedtest_china() {
     echo "" | tee -a "$log"
     echostyle "## China Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-32s%-17s%-17s%-11s%-7s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-84s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-84s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '5396' 'Suzhou (China Telecom 5G)     '
     speed_test '26352' 'Nanjing (China Telecom 5G)    '
     speed_test '71313' 'Xuzhou (中国电信)              '
@@ -1330,7 +1330,7 @@ print_end_time() {
     time=$(( end - start ))
     if [[ $time -gt 60 ]]; then
         min=$(expr $time / 60)
-        sec=$(expr $time % 60)
+        sec=$(expr $time / 60)
         echo "${min} min ${sec} sec"
     else
         echo "${time} sec"
