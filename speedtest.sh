@@ -93,7 +93,7 @@ benchinit() {
         release="almalinux"
     elif cat /etc/issue | grep -Eqi "debian"; then
         release="debian"
-    elif cat /etc/issue | grep -Eqi "ubuntu"; then then
+    elif cat /etc/issue | grep -Eqi "ubuntu"; then
         release="ubuntu"
     elif cat /etc/issue | grep -Eqi "centos|red hat|redhat"; then
         release="centos"
