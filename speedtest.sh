@@ -163,8 +163,7 @@ benchinit() {
     # Install official Speedtest CLI
     if ! command -v speedtest &> /dev/null; then
         echo " Installing official Speedtest CLI ..." | tee -a "$log"
-        # Clear the previous line's output if it was a status message
-        echo -ne "\e[1A"; echo -ne "\e[0K\r"
+        # Removed: echo -ne "\e[1A"; echo -ne "\e[0K\r" # This might interfere with tee output
 
         if [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
             echo "  Adding Speedtest CLI repository for Debian/Ubuntu..." | tee -a "$log"
@@ -225,7 +224,7 @@ delete() {
     echo -ne "\e[1A"; echo -ne "\e[0K\r"
 }
 
-# Helper function to convert "X.XX unit" to MB
+# Helper function to convert "X.XX unit" to MB (no longer used for speedtest output parsing)
 convert_to_mb() {
     local value_unit="$1"
     local value=$(echo "$value_unit" | awk '{print $1}')
@@ -244,68 +243,76 @@ convert_to_mb() {
 
 speed_test(){
     local nodeName=$2
-    # Add --accept-license --accept-gdpr for the first run of the official Speedtest CLI
-    local speedtest_cmd="speedtest --accept-license --accept-gdpr"
-    local temp
-    local REDownload
-    local reupload
+    # Use --accept-license --accept-gdpr for the first run of the official Speedtest CLI
+    # Use --format=json to get machine-readable output
+    local speedtest_cmd="speedtest --accept-license --accept-gdpr --format=json"
+    local json_output
+    local REDownload_mbps
+    local reupload_mbps
     local relatency
-    local current_result_url # Use a local variable for the URL within this function
-    local download_data_used_str
-    local upload_data_used_str
+    local current_result_url
+    local download_total_bytes
+    local upload_total_bytes
     local download_mb
     local upload_mb
 
     if [[ $1 == '' ]]; then
         # Default test (nearby server)
-        temp=$($speedtest_cmd --share 2>&1)
+        json_output=$($speedtest_cmd 2>&1)
     else
         # Server-specific test
-        # The official Speedtest CLI uses -s <server_id>
-        temp=$($speedtest_cmd -s "$1" --share 2>&1)
+        json_output=$($speedtest_cmd -s "$1" 2>&1)
     fi
 
-    # Check if the speedtest command was successful and produced expected output
-    if echo "$temp" | grep -q "Download:"; then
-        REDownload=$(echo "$temp" | grep "Download:" | awk '{print $2, $3}')
-        reupload=$(echo "$temp" | grep "Upload:" | awk '{print $2, $3}')
-        relatency=$(echo "$temp" | grep "Latency:" | awk '{print $2, $3}')
-        current_result_url=$(echo "$temp" | grep "Result URL:" | awk '{print $3}') # Capture the result URL
+    # Check if the output is valid JSON and contains expected data
+    if echo "$json_output" | jq -e '.type == "result"' >/dev/null 2>&1; then
+        # Parse JSON output
+        REDownload_mbps=$(echo "$json_output" | jq -r '.download.bandwidth / 125000') # Convert bytes/sec to Mbps
+        reupload_mbps=$(echo "$json_output" | jq -r '.upload.bandwidth / 125000')   # Convert bytes/sec to Mbps
+        relatency=$(echo "$json_output" | jq -r '.ping.latency')
+        current_result_url=$(echo "$json_output" | jq -r '.result.url // ""') # Use // "" to handle null/missing URL
+
+        download_total_bytes=$(echo "$json_output" | jq -r '.download.bytes // 0')
+        upload_total_bytes=$(echo "$json_output" | jq -r '.upload.bytes // 0')
+
+        # Convert total bytes to MB (decimal)
+        download_mb=$(awk "BEGIN {printf \"%.2f\", $download_total_bytes / 1000000}")
+        upload_mb=$(awk "BEGIN {printf \"%.2f\", $upload_total_bytes / 1000000}")
+
+        # Accumulate in global variables
+        TOTAL_DOWNLOAD_TRAFFIC_MB=$(awk "BEGIN {printf \"%.2f\", $TOTAL_DOWNLOAD_TRAFFIC_MB + $download_mb}")
+        TOTAL_UPLOAD_TRAFFIC_MB=$(awk "BEGIN {printf \"%.2f\", $TOTAL_UPLOAD_TRAFFIC_MB + $upload_mb}")
 
         # Store the last result URL globally if it's a "Nearby" test (or the first one)
         if [[ $1 == '' ]]; then
             LAST_SPEEDTEST_URL="$current_result_url"
         fi
 
-        # Extract "data used" for download and upload
-        download_data_used_str=$(echo "$temp" | grep "Download:" | grep -oP '\(data used: \K[^)]+')
-        upload_data_used_str=$(echo "$temp" | grep "Upload:" | grep -oP '\(data used: \K[^)]+')
-
-        # Convert to MB and accumulate in global variables
-        download_mb=$(convert_to_mb "$download_data_used_str")
-        upload_mb=$(convert_to_mb "$upload_data_used_str")
-
-        TOTAL_DOWNLOAD_TRAFFIC_MB=$(awk "BEGIN {printf \"%.2f\", $TOTAL_DOWNLOAD_TRAFFIC_MB + $download_mb}")
-        TOTAL_UPLOAD_TRAFFIC_MB=$(awk "BEGIN {printf \"%.2f\", $TOTAL_UPLOAD_TRAFFIC_MB + $upload_mb}")
-
-        # Extract only the number for comparison (e.g., "100.00" from "100.00 Mbps")
-        local download_num=$(echo "${REDownload}" | awk '{print $1}')
+        # Format speeds and latency for display
+        local formatted_download=$(printf "%.2f Mbps" "$REDownload_mbps")
+        local formatted_upload=$(printf "%.2f Mbps" "$reupload_mbps")
+        local formatted_latency=$(printf "%.2f ms" "$relatency")
 
         # Original script had a check for latency > 50 and adding an asterisk.
-        # We keep this for consistency if the user desires it.
-        local latency_num=$(echo "${relatency}" | awk -F'.' '{print $1}')
-        if [[ ${latency_num} -gt 50 ]]; then
-            relatency="*"${relatency}
+        if (( $(echo "$relatency > 50" | bc -l) )); then
+            formatted_latency="*"${formatted_latency}
         fi
 
-        if [[ $(awk -v num1=${download_num} -v num2=0 'BEGIN{print(num1>num2)?"1":"0"}') -eq 1 ]]; then
-            printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${reupload}" "${REDownload}" "${relatency}" | tee -a "$log"
+        # Check if download speed is greater than 0 for printing
+        if (( $(echo "$REDownload_mbps > 0" | bc -l) )); then
+            printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "${formatted_upload}" "${formatted_download}" "${formatted_latency}" | tee -a "$log"
+        else
+            # If download speed is 0 or less, it's likely an error or very poor connection
+            printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "ERROR" "ERROR" "ERROR" | tee -a "$log"
+            echo "--- Speedtest CLI raw output for ${nodeName} (Error/Zero Speed) ---" | tee -a "$log"
+            echo "$json_output" | tee -a "$log"
+            echo "-----------------------------------------------------" | tee -a "$log"
         fi
     else
         local cerror="ERROR"
         printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "ERROR" "ERROR" "ERROR" | tee -a "$log"
         echo "--- Speedtest CLI raw output for ${nodeName} (Error) ---" | tee -a "$log"
-        echo "$temp" | tee -a "$log"
+        echo "$json_output" | tee -a "$log"
         echo "-----------------------------------------------------" | tee -a "$log"
     fi
 }
@@ -614,7 +621,7 @@ geekbench4() {
     echo -e "\nGeekbench 4 is not compatible with ARM64 architectures. Skipping the test"
     else
     echo "" | tee -a "$log"
-    echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..." | tee -a "$log"
+    echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..."
 
     # Start steal time measurement
     local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
@@ -685,7 +692,7 @@ geekbench5() {
     echo -e "\nGeekbench 5 cannot run on 32-bit architectures. Skipping the test"
     else
     echo "" | tee -a "$log"
-    echo -e " Performing Geekbench v5 CPU Benchmark test. Please wait..." | tee -a "$log"
+    echo -e " Performing Geekbench v5 CPU Benchmark test. Please wait..."
 
     # Start steal time measurement
     local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
@@ -762,7 +769,7 @@ geekbench6() {
     echo -e "\nGeekbench 6 cannot run on 32-bit architectures. Skipping the test"
     else
     echo "" | tee -a "$log"
-    echo -e " Performing Geekbench v6 CPU Benchmark test. Please wait..." | tee -a "$log"
+    echo -e " Performing Geekbench v6 CPU Benchmark test. Please wait..."
 
     # Start steal time measurement
     local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
@@ -1304,7 +1311,7 @@ write_io() {
 }
 
 print_end_time() {
-    echo -e "\n" | tee -a "$log"
+    echo "" | tee -a "$log"
     end=$(date +%s) 
     time=$(( end - start ))
     if [[ $time -gt 60 ]]; then
