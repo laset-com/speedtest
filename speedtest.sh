@@ -14,7 +14,7 @@ about() {
 
 cleanup() {
     # Remove temporary files
-    rm -f tools.py 2>/dev/null # Removed speedtest.py
+    rm -f tools.py 2>/dev/null
     rm -rf "$benchram" 2>/dev/null
 }
 
@@ -170,34 +170,34 @@ benchinit() {
 
     # Install official Speedtest CLI
     if ! command -v speedtest &> /dev/null; then
-        echo " Installing official Speedtest CLI ..." | tee -a "$log"
+        echo " Installing official Speedtest CLI ..."
         # Removed: echo -ne "\e[1A"; echo -ne "\e[0K\r" # This might interfere with tee output
 
         if [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
-            echo "  Adding Speedtest CLI repository for Debian/Ubuntu..." | tee -a "$log"
-            curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash 2>&1 | tee -a "$log"
-            echo "  Updating package lists..." | tee -a "$log"
-            apt-get update -y 2>&1 | tee -a "$log"
-            echo "  Installing speedtest package..." | tee -a "$log"
-            apt-get -y install speedtest 2>&1 | tee -a "$log"
+            echo "  Adding Speedtest CLI repository for Debian/Ubuntu..."
+            curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash 2>&1
+            echo "  Updating package lists..."
+            apt-get update -y 2>&1
+            echo "  Installing speedtest package..."
+            apt-get -y install speedtest 2>&1
         elif [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" || "${release}" == "fedora" ]]; then
-            echo "  Adding Speedtest CLI repository for RHEL-based systems..." | tee -a "$log"
-            curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.rpm.sh | bash 2>&1 | tee -a "$log"
-            echo "  Updating package lists..." | tee -a "$log"
-            dnf update -y 2>&1 | tee -a "$log" || yum update -y 2>&1 | tee -a "$log"
-            echo "  Installing speedtest package..." | tee -a "$log"
-            dnf -y install speedtest 2>&1 | tee -a "$log" || yum -y install speedtest 2>&1 | tee -a "$log"
+            echo "  Adding Speedtest CLI repository for RHEL-based systems..."
+            curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.rpm.sh | bash 2>&1
+            echo "  Updating package lists..."
+            dnf update -y 2>&1 || yum update -y 2>&1
+            echo "  Installing speedtest package..."
+            dnf -y install speedtest 2>&1 || yum -y install speedtest 2>&1
         else
             # Fallback for other distributions using the generic script
-            echo "  Attempting generic Speedtest CLI installation for unknown distribution..." | tee -a "$log"
-            curl -s https://install.speedtest.net/app/cli/install.sh | bash 2>&1 | tee -a "$log"
+            echo "  Attempting generic Speedtest CLI installation for unknown distribution..."
+            curl -s https://install.speedtest.net/app/cli/install.sh | bash 2>&1
         fi
 
         # Verify installation
         if ! command -v speedtest &> /dev/null; then
             error_exit "Failed to install Speedtest CLI. Please check the log for details."
         else
-            echo " Speedtest CLI installed successfully." | tee -a "$log"
+            echo " Speedtest CLI installed successfully."
         fi
     fi
 
@@ -319,17 +319,17 @@ speed_test(){
 
         # Check if download speed is greater than 0 for printing
         if (( $(echo "$REDownload_mbps > 0" | bc -l) )); then
-            printf "%-30s   %14s   %14s   %10s  %6s\n" " ${nodeName}" "${formatted_upload}" "${formatted_download}" "${formatted_latency}" "${formatted_loss}" | tee -a "$log"
+            printf "%-30s  %12s  %12s  %9s  %6s\n" " ${nodeName}" "${formatted_upload}" "${formatted_download}" "${formatted_latency}" "${formatted_loss}" | tee -a "$log"
         else
             # If download speed is 0 or less, it's likely an error or very poor connection
-            printf "%-30s   %14s   %14s   %10s  %6s\n" " ${nodeName}" "ERROR" "ERROR" "ERROR" "ERROR" | tee -a "$log"
+            printf "%-30s  %12s  %12s  %9s  %6s\n" " ${nodeName}" "ERROR" "ERROR" "ERROR" "ERROR" | tee -a "$log"
             echo "--- Speedtest CLI raw output for ${nodeName} (Error/Zero Speed) ---" | tee -a "$log"
             echo "$json_output" | tee -a "$log"
             echo "-----------------------------------------------------" | tee -a "$log"
         fi
     else
         local cerror="ERROR"
-        printf "%-30s   %14s   %14s   %10s  %6s\n" " ${nodeName}" "ERROR" "ERROR" "ERROR" "ERROR" | tee -a "$log"
+        printf "%-30s  %12s  %12s  %9s  %6s\n" " ${nodeName}" "ERROR" "ERROR" "ERROR" "ERROR" | tee -a "$log"
         echo "--- Speedtest CLI raw output for ${nodeName} (Error) ---" | tee -a "$log"
         echo "$json_output" | tee -a "$log"
         echo "-----------------------------------------------------" | tee -a "$log"
@@ -366,10 +366,10 @@ print_speedtest() {
     echo "" | tee -a "$log"
     echostyle "## Global Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '21016' 'USA, New York (Starry)        '
     speed_test '17384' 'USA, Chicago (Windstream)     '
     speed_test '1763' 'USA, Houston (Comcast)        '
@@ -394,10 +394,10 @@ print_speedtest_usa() {
     echo "" | tee -a "$log"
     echostyle "## USA Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '21016' 'USA, New York (Starry)        '
     speed_test '1774' 'USA, Boston (Comcast)         '
     speed_test '1775' 'USA, Baltimore, MD (Comcast)  '
@@ -429,10 +429,10 @@ print_speedtest_in() {
     echo "" | tee -a "$log"
     echostyle "## India Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '7236' 'India, New Delhi (iForce)     '
     speed_test '23647' 'India, Mumbai (Tatasky)       '
     speed_test '16086' 'India, Nagpur (optbb)         '
@@ -449,10 +449,10 @@ print_speedtest_europe() {
     echo "" | tee -a "$log"
     echostyle "## Europe Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '11445' 'UK, London (Structured Com)   '
     speed_test '29076' 'Netherlands, Amsterdam (XS News)'
     speed_test '20507' 'Germany, Berlin (DNS:NET)     '
@@ -478,10 +478,10 @@ print_speedtest_asia() {
     echo "" | tee -a "$log"
     echostyle "## Asia Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '16475' 'India, New Delhi (Weebo)      '
     speed_test '23647' 'India, Mumbai (Tatasky)       '
     speed_test '12329' 'Sri Lanka, Colombo (Mobitel)  '
@@ -506,10 +506,10 @@ print_speedtest_sa() {
     echo "" | tee -a "$log"
     echostyle "## South America Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '3068' 'Brazil, Sao Paulo (TIM)       '
     speed_test '11102' 'Brazil, Fortaleza (Connect)   '
     speed_test '18126' 'Brazil, Manaus (Claro)        '
@@ -530,10 +530,10 @@ print_speedtest_au() {
     echo "" | tee -a "$log"
     echostyle "## Australia & New Zealand Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '2629' 'Australia, Sydney (Telstra)   '
     speed_test '2225' 'Australia, Melbourne (Telstra)'
     speed_test '2604' 'Australia, Brisbane (Telstra) '
@@ -552,10 +552,10 @@ print_speedtest_ukraine() {
     echo "" | tee -a "$log"
     echostyle "## Ukraine Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '29112' 'Ukraine, Kyiv (Datagroup)     '
     speed_test '30813' 'Ukraine, Kyiv (KyivStar)      '
     speed_test '14887' 'Ukraine, Lviv (UARNet)        '
@@ -578,10 +578,10 @@ print_speedtest_lviv() {
     echo "" | tee -a "$log"
     echostyle "## Lviv Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '14887' 'Ukraine, Lviv (UARNet)        '
     speed_test '29259' 'Ukraine, Lviv (KyivStar)      '
     speed_test '2445' 'Ukraine, Lviv (KOMiTEX)       '
@@ -595,10 +595,10 @@ print_speedtest_meast() {
     echo "" | tee -a "$log"
     echostyle "## Middle East Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '610' 'Cyprus, Limassol (PrimeTel)   '
     speed_test '2434' 'Israel, Haifa (013Netvision)  '
     speed_test '1689' 'Egypt, Cairo (Vodafone)       '
@@ -616,10 +616,10 @@ print_speedtest_china() {
     echo "" | tee -a "$log"
     echostyle "## China Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s   %14s   %14s   %10s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-85s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '5396' 'Suzhou (China Telecom 5G)     '
     speed_test '26352' 'Nanjing (China Telecom 5G)    '
     speed_test '71313' 'Xuzhou (中国电信)              '
@@ -1330,7 +1330,7 @@ print_end_time() {
     time=$(( end - start ))
     if [[ $time -gt 60 ]]; then
         min=$(expr $time / 60)
-        sec=$(expr $time / 60)
+        sec=$(expr $time % 60) # Corrected calculation for seconds
         echo "${min} min ${sec} sec"
     else
         echo "${time} sec"
