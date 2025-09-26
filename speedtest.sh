@@ -323,16 +323,18 @@ speed_test(){
         else
             # If download speed is 0 or less, it's likely an error or very poor connection
             printf "%-30s  %12s  %12s  %9s  %6s\n" " ${nodeName}" "ERROR" "ERROR" "ERROR" "ERROR" | tee -a "$log"
-            echo "--- Speedtest CLI raw output for ${nodeName} (Error/Zero Speed) ---" | tee -a "$log"
-            echo "$json_output" | tee -a "$log"
-            echo "-----------------------------------------------------" | tee -a "$log"
+            # Removed the detailed error output as requested
+            # echo "--- Speedtest CLI raw output for ${nodeName} (Error/Zero Speed) ---" | tee -a "$log"
+            # echo "$json_output" | tee -a "$log"
+            # echo "-----------------------------------------------------" | tee -a "$log"
         fi
     else
         local cerror="ERROR"
         printf "%-30s  %12s  %12s  %9s  %6s\n" " ${nodeName}" "ERROR" "ERROR" "ERROR" "ERROR" | tee -a "$log"
-        echo "--- Speedtest CLI raw output for ${nodeName} (Error) ---" | tee -a "$log"
-        echo "$json_output" | tee -a "$log"
-        echo "-----------------------------------------------------" | tee -a "$log"
+        # Removed the detailed error output as requested
+        # echo "--- Speedtest CLI raw output for ${nodeName} (Error) ---" | tee -a "$log"
+        # echo "$json_output" | tee -a "$log"
+        # echo "-----------------------------------------------------" | tee -a "$log"
     fi
 }
 
@@ -342,7 +344,11 @@ print_total_traffic() {
     local total_download_gb=$(awk "BEGIN {printf \"%.2f\", $TOTAL_DOWNLOAD_TRAFFIC_MB / 1024}")
     local total_upload_gb=$(awk "BEGIN {printf \"%.2f\", $TOTAL_UPLOAD_TRAFFIC_MB / 1024}")
     local total_sum_gb=$(awk "BEGIN {printf \"%.2f\", $total_sum_mb / 1024}")
-    local avg_packet_loss=$(awk "BEGIN {printf \"%.2f\", $TOTAL_PACKET_LOSS_SUM / $SPEEDTEST_SUCCESS_COUNT}")
+    
+    local avg_packet_loss="N/A"
+    if [[ "$SPEEDTEST_SUCCESS_COUNT" -gt 0 ]]; then
+        avg_packet_loss=$(awk "BEGIN {printf \"%.2f\", $TOTAL_PACKET_LOSS_SUM / $SPEEDTEST_SUCCESS_COUNT}")
+    fi
 
     echo "" | tee -a "$log"
     echostyle "## Statistics"
@@ -367,9 +373,9 @@ print_speedtest() {
     echostyle "## Global Speedtest.net"
     echo "" | tee -a "$log"
     printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '21016' 'USA, New York (Starry)        '
     speed_test '17384' 'USA, Chicago (Windstream)     '
     speed_test '1763' 'USA, Houston (Comcast)        '
@@ -395,9 +401,9 @@ print_speedtest_usa() {
     echostyle "## USA Speedtest.net"
     echo "" | tee -a "$log"
     printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '21016' 'USA, New York (Starry)        '
     speed_test '1774' 'USA, Boston (Comcast)         '
     speed_test '1775' 'USA, Baltimore, MD (Comcast)  '
@@ -430,9 +436,9 @@ print_speedtest_in() {
     echostyle "## India Speedtest.net"
     echo "" | tee -a "$log"
     printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '7236' 'India, New Delhi (iForce)     '
     speed_test '23647' 'India, Mumbai (Tatasky)       '
     speed_test '16086' 'India, Nagpur (optbb)         '
@@ -450,9 +456,9 @@ print_speedtest_europe() {
     echostyle "## Europe Speedtest.net"
     echo "" | tee -a "$log"
     printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '11445' 'UK, London (Structured Com)   '
     speed_test '29076' 'Netherlands, Amsterdam (XS News)'
     speed_test '20507' 'Germany, Berlin (DNS:NET)     '
@@ -479,9 +485,9 @@ print_speedtest_asia() {
     echostyle "## Asia Speedtest.net"
     echo "" | tee -a "$log"
     printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '16475' 'India, New Delhi (Weebo)      '
     speed_test '23647' 'India, Mumbai (Tatasky)       '
     speed_test '12329' 'Sri Lanka, Colombo (Mobitel)  '
@@ -507,9 +513,9 @@ print_speedtest_sa() {
     echostyle "## South America Speedtest.net"
     echo "" | tee -a "$log"
     printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '3068' 'Brazil, Sao Paulo (TIM)       '
     speed_test '11102' 'Brazil, Fortaleza (Connect)   '
     speed_test '18126' 'Brazil, Manaus (Claro)        '
@@ -531,9 +537,9 @@ print_speedtest_au() {
     echostyle "## Australia & New Zealand Speedtest.net"
     echo "" | tee -a "$log"
     printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '2629' 'Australia, Sydney (Telstra)   '
     speed_test '2225' 'Australia, Melbourne (Telstra)'
     speed_test '2604' 'Australia, Brisbane (Telstra) '
@@ -553,9 +559,9 @@ print_speedtest_ukraine() {
     echostyle "## Ukraine Speedtest.net"
     echo "" | tee -a "$log"
     printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '29112' 'Ukraine, Kyiv (Datagroup)     '
     speed_test '30813' 'Ukraine, Kyiv (KyivStar)      '
     speed_test '14887' 'Ukraine, Lviv (UARNet)        '
@@ -579,9 +585,9 @@ print_speedtest_lviv() {
     echostyle "## Lviv Speedtest.net"
     echo "" | tee -a "$log"
     printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '14887' 'Ukraine, Lviv (UARNet)        '
     speed_test '29259' 'Ukraine, Lviv (KyivStar)      '
     speed_test '2445' 'Ukraine, Lviv (KOMiTEX)       '
@@ -596,9 +602,9 @@ print_speedtest_meast() {
     echostyle "## Middle East Speedtest.net"
     echo "" | tee -a "$log"
     printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '610' 'Cyprus, Limassol (PrimeTel)   '
     speed_test '2434' 'Israel, Haifa (013Netvision)  '
     speed_test '1689' 'Egypt, Cairo (Vodafone)       '
@@ -617,9 +623,9 @@ print_speedtest_china() {
     echostyle "## China Speedtest.net"
     echo "" | tee -a "$log"
     printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-77s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '5396' 'Suzhou (China Telecom 5G)     '
     speed_test '26352' 'Nanjing (China Telecom 5G)    '
     speed_test '71313' 'Xuzhou (中国电信)              '
@@ -650,8 +656,9 @@ geekbench4() {
     GEEKBENCH_URL=$(echo "$GEEKBENCH_URL" | awk '{ print $1 }')
     sleep 20
     GEEKBENCH_SCORES=$(curl -s "$GEEKBENCH_URL" | grep "span class='score'")
-    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES" | awk -v FS="(>|<)" '{ print $3 }')
-    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | awk -v FS="(>|<)" '{ print $7 }')
+    # Corrected parsing for single and multi-core scores
+    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES" | head -n 1 | awk -v FS="(>|<)" '{ print $3 }')
+    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | tail -n 1 | awk -v FS="(>|<)" '{ print $3 }')
     
     # End steal time measurement
     local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
@@ -668,17 +675,21 @@ geekbench4() {
         STEAL_PERCENT="0.00"
     fi
     
-    if [[ $GEEKBENCH_SCORES_SINGLE -le 1700 ]]; then
+    # Ensure scores are treated as numbers for comparison
+    local single_score_num=$(echo "$GEEKBENCH_SCORES_SINGLE" | tr -cd '0-9.')
+    if [[ -z "$single_score_num" ]]; then single_score_num=0; fi # Default to 0 if empty
+
+    if (( $(echo "$single_score_num <= 1700" | bc -l) )); then
         grank="(POOR)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1700 && $GEEKBENCH_SCORES_SINGLE -le 2500 ]]; then
+    elif (( $(echo "$single_score_num >= 1700 && $single_score_num <= 2500" | bc -l) )); then
         grank="(FAIR)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2500 && $GEEKBENCH_SCORES_SINGLE -le 3500 ]]; then
+    elif (( $(echo "$single_score_num >= 2500 && $single_score_num <= 3500" | bc -l) )); then
         grank="(GOOD)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 3500 && $GEEKBENCH_SCORES_SINGLE -le 4500 ]]; then
+    elif (( $(echo "$single_score_num >= 3500 && $single_score_num <= 4500" | bc -l) )); then
         grank="(VERY GOOD)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 4500 && $GEEKBENCH_SCORES_SINGLE -le 6000 ]]; then
+    elif (( $(echo "$single_score_num >= 4500 && $single_score_num <= 6000" | bc -l) )); then
         grank="(EXCELLENT)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 6000 && $GEEKBENCH_SCORES_SINGLE -le 7000 ]]; then
+    elif (( $(echo "$single_score_num >= 6000 && $single_score_num <= 7000" | bc -l) )); then
         grank="(THE BEAST)"
     else
         grank="(MONSTER)"
@@ -727,8 +738,9 @@ geekbench5() {
     GEEKBENCH_URL=$(echo "$GEEKBENCH_URL" | awk '{ print $1 }')
     sleep 20
     GEEKBENCH_SCORES=$(curl -s "$GEEKBENCH_URL" | grep "div class='score'")
-    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES" | awk -v FS="(>|<)" '{ print $3 }')
-    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | awk -v FS="(<|>)" '{ print $7 }')
+    # Corrected parsing for single and multi-core scores
+    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES" | head -n 1 | awk -v FS="(>|<)" '{ print $3 }')
+    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | tail -n 1 | awk -v FS="(>|<)" '{ print $3 }')
 
     # End steal time measurement
     local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
@@ -745,17 +757,21 @@ geekbench5() {
         STEAL_PERCENT="0.00"
     fi
     
-    if [[ $GEEKBENCH_SCORES_SINGLE -le 300 ]]; then
+    # Ensure scores are treated as numbers for comparison
+    local single_score_num=$(echo "$GEEKBENCH_SCORES_SINGLE" | tr -cd '0-9.')
+    if [[ -z "$single_score_num" ]]; then single_score_num=0; fi # Default to 0 if empty
+
+    if (( $(echo "$single_score_num <= 300" | bc -l) )); then
         grank="(POOR)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 300 && $GEEKBENCH_SCORES_SINGLE -le 500 ]]; then
+    elif (( $(echo "$single_score_num >= 300 && $single_score_num <= 500" | bc -l) )); then
         grank="(FAIR)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 500 && $GEEKBENCH_SCORES_SINGLE -le 700 ]]; then
+    elif (( $(echo "$single_score_num >= 500 && $single_score_num <= 700" | bc -l) )); then
         grank="(GOOD)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 700 && $GEEKBENCH_SCORES_SINGLE -le 1000 ]]; then
+    elif (( $(echo "$single_score_num >= 700 && $single_score_num <= 1000" | bc -l) )); then
         grank="(VERY GOOD)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1000 && $GEEKBENCH_SCORES_SINGLE -le 1500 ]]; then
+    elif (( $(echo "$single_score_num >= 1000 && $single_score_num <= 1500" | bc -l) )); then
         grank="(EXCELLENT)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1500 && $GEEKBENCH_SCORES_SINGLE -le 2000 ]]; then
+    elif (( $(echo "$single_score_num >= 1500 && $single_score_num <= 2000" | bc -l) )); then
         grank="(THE BEAST)"
     else
         grank="(MONSTER)"
@@ -804,8 +820,9 @@ geekbench6() {
     GEEKBENCH_URL=$(echo "$GEEKBENCH_URL" | awk '{ print $1 }')
     sleep 15
     GEEKBENCH_SCORES=$(curl -s "$GEEKBENCH_URL" | grep "div class='score'")
-    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES" | awk -v FS="(>|<)" '{ print $3 }')
-    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | awk -v FS="(<|>)" '{ print $7 }')
+    # Corrected parsing for single and multi-core scores
+    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES" | head -n 1 | awk -v FS="(>|<)" '{ print $3 }')
+    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | tail -n 1 | awk -v FS="(>|<)" '{ print $3 }')
 
     # End steal time measurement
     local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
@@ -822,17 +839,21 @@ geekbench6() {
         STEAL_PERCENT="0.00"
     fi
     
-    if [[ $GEEKBENCH_SCORES_SINGLE -le 400 ]]; then
+    # Ensure scores are treated as numbers for comparison
+    local single_score_num=$(echo "$GEEKBENCH_SCORES_SINGLE" | tr -cd '0-9.')
+    if [[ -z "$single_score_num" ]]; then single_score_num=0; fi # Default to 0 if empty
+
+    if (( $(echo "$single_score_num <= 400" | bc -l) )); then
         grank="(POOR)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 400 && $GEEKBENCH_SCORES_SINGLE -le 660 ]]; then
+    elif (( $(echo "$single_score_num >= 400 && $single_score_num <= 660" | bc -l) )); then
         grank="(FAIR)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 660 && $GEEKBENCH_SCORES_SINGLE -le 925 ]]; then
+    elif (( $(echo "$single_score_num >= 660 && $single_score_num <= 925" | bc -l) )); then
         grank="(GOOD)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 925 && $GEEKBENCH_SCORES_SINGLE -le 1350 ]]; then
+    elif (( $(echo "$single_score_num >= 925 && $single_score_num <= 1350" | bc -l) )); then
         grank="(VERY GOOD)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 1350 && $GEEKBENCH_SCORES_SINGLE -le 2000 ]]; then
+    elif (( $(echo "$single_score_num >= 1350 && $single_score_num <= 2000" | bc -l) )); then
         grank="(EXCELLENT)"
-    elif [[ $GEEKBENCH_SCORES_SINGLE -ge 2000 && $GEEKBENCH_SCORES_SINGLE -le 2600 ]]; then
+    elif (( $(echo "$single_score_num >= 2000 && $single_score_num <= 2600" | bc -l) )); then
         grank="(THE BEAST)"
     else
         grank="(MONSTER)"
@@ -1171,14 +1192,35 @@ write_test() {
 }
 
 averageio() {
-    ioraw1=$( echo "$1" | awk 'NR==1 {print $1}' )
-        [ "`echo "$1" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
-    ioraw2=$( echo "$2" | awk 'NR==1 {print $1}' )
-        [ "`echo "$2" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw2=$( awk 'BEGIN{print '$ioraw2' * 1024}' )
-    ioraw3=$( echo "$3" | awk 'NR==1 {print $1}' )
-        [ "`echo "$3" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
-    ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
-    ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
+    local ioraw1_val=$(echo "$1" | awk 'NR==1 {print $1}')
+    local ioraw1_unit=$(echo "$1" | awk 'NR==1 {print $2}')
+    local ioraw1=0
+    if [[ -n "$ioraw1_val" ]]; then
+        ioraw1="$ioraw1_val"
+        [ "$ioraw1_unit" == "GB/s" ] && ioraw1=$(awk "BEGIN{print $ioraw1 * 1024}")
+    fi
+
+    local ioraw2_val=$(echo "$2" | awk 'NR==1 {print $1}')
+    local ioraw2_unit=$(echo "$2" | awk 'NR==1 {print $2}')
+    local ioraw2=0
+    if [[ -n "$ioraw2_val" ]]; then
+        ioraw2="$ioraw2_val"
+        [ "$ioraw2_unit" == "GB/s" ] && ioraw2=$(awk "BEGIN{print $ioraw2 * 1024}")
+    fi
+
+    local ioraw3_val=$(echo "$3" | awk 'NR==1 {print $1}')
+    local ioraw3_unit=$(echo "$3" | awk 'NR==1 {print $2}')
+    local ioraw3=0
+    if [[ -n "$ioraw3_val" ]]; then
+        ioraw3="$ioraw3_val"
+        [ "$ioraw3_unit" == "GB/s" ] && ioraw3=$(awk "BEGIN{print $ioraw3 * 1024}")
+    fi
+
+    local ioall=$(awk "BEGIN{print $ioraw1 + $ioraw2 + $ioraw3}")
+    local ioavg="N/A"
+    if (( $(echo "$ioall > 0" | bc -l) )); then # Check if ioall is greater than 0 to avoid division by zero
+        ioavg=$(awk "BEGIN{printf \"%.1f\", $ioall / 3}")
+    fi
     printf "%s" "$ioavg"
 }
 
