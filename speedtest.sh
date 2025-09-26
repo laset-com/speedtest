@@ -916,75 +916,47 @@ fi
 
 ip_info(){
     # no jq
-    country="$(curl -s https://ipapi.co/country_name/)"
+    country="$(curl -s https://ipapi.co/country_name/ 2>/dev/null)"
+    city="$(curl -s https://ipapi.co/city/ 2>/dev/null)"
+    asn="$(curl -s https://ipapi.co/asn/ 2>/dev/null)"
+    org="$(curl -s https://ipapi.co/org/ 2>/dev/null)"
+    countryCode="$(curl -s https://ipapi.co/country/ 2>/dev/null)"
+    region="$(curl -s https://ipapi.co/region/ 2>/dev/null)"
 
-    city="$(curl -s https://ipapi.co/city/)"
-
-    asn="$(curl -s https://ipapi.co/asn/)"
-
-    org="$(curl -s https://ipapi.co/org/)"
-
-    countryCode="$(curl -s https://ipapi.co/country/)"
-
-    region="$(curl -s https://ipapi.co/region/)"
-
-
-    printf " ASN & ISP            : %s\n" "$asn" | tee -a "$log"
-    printf " Organization         : %s\n" "$org" | tee -a "$log"
-    printf " Location             : %s, %s (%s)\n" "$city" "$country" "$countryCode" | tee -a "$log"
-    printf " Region               : %s\n" "$region" | tee -a "$log"
+    echo " ASN & ISP            : $asn" | tee -a "$log"
+    echo " Organization         : $org" | tee -a "$log"
+    echo " Location             : $city, $country ($countryCode)" | tee -a "$log"
+    echo " Region               : $region" | tee -a "$log"
 }
 
 ip_info4(){
-    isp="$(python3 tools.py geoip isp)"
-
-    as_tmp="$(python3 tools.py geoip as)"
-
+    isp="$(python3 tools.py geoip isp 2>/dev/null)"
+    as_tmp="$(python3 tools.py geoip as 2>/dev/null)"
     asn="$(echo "$as_tmp" | awk -F ' ' '{print $1}')"
-
-
-    org="$(python3 tools.py geoip org)"
-
-    country="$(python3 tools.py geoip country)"
-
-    city="$(python3 tools.py geoip city)"
-
+    org="$(python3 tools.py geoip org 2>/dev/null)"
+    country="$(python3 tools.py geoip country 2>/dev/null)"
+    city="$(python3 tools.py geoip city 2>/dev/null)"
     #countryCode="$(python3 tools.py geoip countryCode)"
+    region="$(python3 tools.py geoip regionName 2>/dev/null)"
 
-    region="$(python3 tools.py geoip regionName)"
-
-
-    printf " Location     : %s, %s (%s)\n" "$country" "$city" "$region" | tee -a "$log"
+    echo " Location     : $country, $city ($region)" | tee -a "$log"
     #echo -e " Region       : $region" | tee -a $log
-    printf " ASN & ISP    : %s, %s / %s\n" "$asn" "$isp" "$org" | tee -a "$log"
+    echo " ASN & ISP    : $asn, $isp / $org" | tee -a "$log"
     #echo -e " Organization : $org" | tee -a $log
-
-    # Removed redundant rm -rf tools.py, it's handled in cleanup
 }
 
 machine_location(){
-    isp="$(python3 tools.py geoip isp)"
-
-    as_tmp="$(python3 tools.py geoip as)"
-
+    isp="$(python3 tools.py geoip isp 2>/dev/null)"
+    as_tmp="$(python3 tools.py geoip as 2>/dev/null)"
     asn="$(echo "$as_tmp" | awk -F ' ' '{print $1}')"
-
-
-    org="$(python3 tools.py geoip org)"
-
-    country="$(python3 tools.py geoip country)"
-
-    city="$(python3 tools.py geoip city)"
-
+    org="$(python3 tools.py geoip org 2>/dev/null)"
+    country="$(python3 tools.py geoip country 2>/dev/null)"
+    city="$(python3 tools.py geoip city 2>/dev/null)"
     #countryCode="$(python3 tools.py geoip countryCode)"
+    region="$(python3 tools.py geoip regionName 2>/dev/null)"	
 
-    region="$(python3 tools.py geoip regionName)"	
-
-
-    printf " Machine location: %s, %s (%s)\n" "$country" "$city" "$region"
-    printf " ISP & ORG: %s, %s / %s\n" "$asn" "$isp" "$org"
-
-    # Removed redundant rm -rf tools.py, it's handled in cleanup
+    echo " Machine location: $country, $city ($region)"
+    echo " ISP & ORG: $asn, $isp / $org"
 }
 
 virt_check(){
