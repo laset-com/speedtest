@@ -923,10 +923,10 @@ ip_info(){
     countryCode=$(curl -s https://ipapi.co/country/)
     region=$(curl -s https://ipapi.co/region/)
 
-    echo -e " ASN & ISP            : $asn" | tee -a "$log"
-    echo -e " Organization         : $org" | tee -a "$log"
-    echo -e " Location             : $city, $country ($countryCode)" | tee -a "$log"
-    echo -e " Region               : $region" | tee -a "$log"
+    printf " ASN & ISP            : %s\n" "$asn" | tee -a "$log"
+    printf " Organization         : %s\n" "$org" | tee -a "$log"
+    printf " Location             : %s, %s (%s)\n" "$city" "$country" "$countryCode" | tee -a "$log"
+    printf " Region               : %s\n" "$region" | tee -a "$log"
 }
 
 ip_info4(){
@@ -939,9 +939,9 @@ ip_info4(){
     #countryCode=$(python3 tools.py geoip countryCode)
     region=$(python3 tools.py geoip regionName)
 
-    echo -e " Location     : $country, $city ($region)" | tee -a "$log"
+    printf " Location     : %s, %s (%s)\n" "$country" "$city" "$region" | tee -a "$log"
     #echo -e " Region       : $region" | tee -a $log
-    echo -e " ASN & ISP    : $asn, $isp / $org" | tee -a "$log"
+    printf " ASN & ISP    : %s, %s / %s\n" "$asn" "$isp" "$org" | tee -a "$log"
     #echo -e " Organization : $org" | tee -a $log
 
     # Removed redundant rm -rf tools.py, it's handled in cleanup
@@ -957,8 +957,8 @@ machine_location(){
     #countryCode=$(python3 tools.py geoip countryCode)
     region=$(python3 tools.py geoip regionName)	
 
-    echo -e " Machine location: $country, $city ($region)"
-    echo -e " ISP & ORG: $asn, $isp / $org"
+    printf " Machine location: %s, %s (%s)\n" "$country" "$city" "$region"
+    printf " ISP & ORG: %s, %s / %s\n" "$asn" "$isp" "$org"
 
     # Removed redundant rm -rf tools.py, it's handled in cleanup
 }
@@ -1165,6 +1165,7 @@ write_test() {
 averageio() {
     ioraw1=$( echo "$1" | awk 'NR==1 {print $1}' )
         [ "`echo "$1" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
+   
     ioraw2=$( echo "$2" | awk 'NR==1 {print $1}' )
         [ "`echo "$2" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw2=$( awk 'BEGIN{print '$ioraw2' * 1024}' )
     ioraw3=$( echo "$3" | awk 'NR==1 {print $1}' )
