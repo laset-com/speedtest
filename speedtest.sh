@@ -162,10 +162,36 @@ benchinit() {
 
     # Install official Speedtest CLI
     if ! command -v speedtest &> /dev/null; then
-        echo " Installing official Speedtest CLI ..."
-        # Use the official installation script for broader compatibility
-        curl -s https://install.speedtest.net/app/cli/install.sh | bash > /dev/null 2>&1
+        echo " Installing official Speedtest CLI ..." | tee -a "$log"
+        # Clear the previous line's output if it was a status message
         echo -ne "\e[1A"; echo -ne "\e[0K\r"
+
+        if [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
+            echo "  Adding Speedtest CLI repository for Debian/Ubuntu..." | tee -a "$log"
+            curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash 2>&1 | tee -a "$log"
+            echo "  Updating package lists..." | tee -a "$log"
+            apt-get update -y 2>&1 | tee -a "$log"
+            echo "  Installing speedtest package..." | tee -a "$log"
+            apt-get -y install speedtest 2>&1 | tee -a "$log"
+        elif [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" || "${release}" == "fedora" ]]; then
+            echo "  Adding Speedtest CLI repository for RHEL-based systems..." | tee -a "$log"
+            curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.rpm.sh | bash 2>&1 | tee -a "$log"
+            echo "  Updating package lists..." | tee -a "$log"
+            dnf update -y 2>&1 | tee -a "$log" || yum update -y 2>&1 | tee -a "$log"
+            echo "  Installing speedtest package..." | tee -a "$log"
+            dnf -y install speedtest 2>&1 | tee -a "$log" || yum -y install speedtest 2>&1 | tee -a "$log"
+        else
+            # Fallback for other distributions using the generic script
+            echo "  Attempting generic Speedtest CLI installation for unknown distribution..." | tee -a "$log"
+            curl -s https://install.speedtest.net/app/cli/install.sh | bash 2>&1 | tee -a "$log"
+        fi
+
+        # Verify installation
+        if ! command -v speedtest &> /dev/null; then
+            error_exit "Failed to install Speedtest CLI. Please check the log for details."
+        else
+            echo " Speedtest CLI installed successfully." | tee -a "$log"
+        fi
     fi
 
     # install tools.py
@@ -588,7 +614,7 @@ geekbench4() {
     echo -e "\nGeekbench 4 is not compatible with ARM64 architectures. Skipping the test"
     else
     echo "" | tee -a "$log"
-    echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..."
+    echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..." | tee -a "$log"
 
     # Start steal time measurement
     local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
@@ -659,7 +685,7 @@ geekbench5() {
     echo -e "\nGeekbench 5 cannot run on 32-bit architectures. Skipping the test"
     else
     echo "" | tee -a "$log"
-    echo -e " Performing Geekbench v5 CPU Benchmark test. Please wait..."
+    echo -e " Performing Geekbench v5 CPU Benchmark test. Please wait..." | tee -a "$log"
 
     # Start steal time measurement
     local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
@@ -736,7 +762,7 @@ geekbench6() {
     echo -e "\nGeekbench 6 cannot run on 32-bit architectures. Skipping the test"
     else
     echo "" | tee -a "$log"
-    echo -e " Performing Geekbench v6 CPU Benchmark test. Please wait..."
+    echo -e " Performing Geekbench v6 CPU Benchmark test. Please wait..." | tee -a "$log"
 
     # Start steal time measurement
     local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
@@ -843,7 +869,8 @@ install_smart() {
     # install smartctl
     if  [ ! -e '/usr/sbin/smartctl' ]; then
         echo "Installing Smartctl ..."
-        if [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" || "${release}" == "fedora" ]]; then
+
+        if [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" ]]; then
             dnf update -y > "$NULL" 2>&1 || yum update -y > "$NULL" 2>&1 # Added update for RHEL-based
             dnf -y install smartmontools > "$NULL" 2>&1 || yum -y install smartmontools > "$NULL" 2>&1
         elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
@@ -1172,9 +1199,9 @@ cpubench() {
         steal_avg=$(awk "BEGIN {printf \"%.2f\", ($steal_before + $steal_after) / 2}")
         
         if [[ $io != *"."* ]]; then
-            printf "%4i %s (Steal: %s%%)" "${io% *}" "${io##* }" "$steal_avg"
+            printf " %4i %s (Steal: %s%%)" "${io% *}" "${io##* }" "$steal_avg"
         else
-            printf "%4i.%s (Steal: %s%%)" "${io%.*}" "${io#*.}" "$steal_avg"
+            printf " %4i.%s (Steal: %s%%)" "${io%.*}" "${io#*.}" "$steal_avg"
         fi
     else
         printf " %s not found on system." "$1"
