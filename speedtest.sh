@@ -170,34 +170,36 @@ benchinit() {
 
     # Install official Speedtest CLI
     if ! command -v speedtest &> /dev/null; then
-        echo " Installing official Speedtest CLI ..."
-        # Removed: echo -ne "\e[1A"; echo -ne "\e[0K\r" # This might interfere with tee output
+        # Display a temporary message in the terminal, not in the log
+        printf " Installing official Speedtest CLI ...\r" >/dev/tty
 
         if [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
-            echo "  Adding Speedtest CLI repository for Debian/Ubuntu..."
-            curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash 2>&1
-            echo "  Updating package lists..."
-            apt-get update -y 2>&1
-            echo "  Installing speedtest package..."
-            apt-get -y install speedtest 2>&1
+            printf "  Adding Speedtest CLI repository for Debian/Ubuntu...\r" >/dev/tty
+            curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash > /dev/null 2>&1
+            printf "  Updating package lists...\r" >/dev/tty
+            apt-get update -y > /dev/null 2>&1
+            printf "  Installing speedtest package...\r" >/dev/tty
+            apt-get -y install speedtest > /dev/null 2>&1
         elif [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" || "${release}" == "fedora" ]]; then
-            echo "  Adding Speedtest CLI repository for RHEL-based systems..."
-            curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.rpm.sh | bash 2>&1
-            echo "  Updating package lists..."
-            dnf update -y 2>&1 || yum update -y 2>&1
-            echo "  Installing speedtest package..."
-            dnf -y install speedtest 2>&1 || yum -y install speedtest 2>&1
+            printf "  Adding Speedtest CLI repository for RHEL-based systems...\r" >/dev/tty
+            curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.rpm.sh | bash > /dev/null 2>&1
+            printf "  Updating package lists...\r" >/dev/tty
+            dnf update -y > /dev/null 2>&1 || yum update -y > /dev/null 2>&1
+            printf "  Installing speedtest package...\r" >/dev/tty
+            dnf -y install speedtest > /dev/null 2>&1 || yum -y install speedtest > /dev/null 2>&1
         else
             # Fallback for other distributions using the generic script
-            echo "  Attempting generic Speedtest CLI installation for unknown distribution..."
-            curl -s https://install.speedtest.net/app/cli/install.sh | bash 2>&1
+            printf "  Attempting generic Speedtest CLI installation for unknown distribution...\r" >/dev/tty
+            curl -s https://install.speedtest.net/app/cli/install.sh | bash > /dev/null 2>&1
         fi
 
         # Verify installation
         if ! command -v speedtest &> /dev/null; then
+            # Error message will be printed to terminal and logged
             error_exit "Failed to install Speedtest CLI. Please check the log for details."
         else
-            echo " Speedtest CLI installed successfully."
+            printf " Speedtest CLI installed successfully.\r" >/dev/tty
+            printf "\n" >/dev/tty # Add a newline to clear the last temporary message from the terminal
         fi
     fi
 
@@ -377,20 +379,20 @@ print_speedtest() {
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '21016' 'USA, New York (Starry)        '
-    speed_test '17384' 'USA, Chicago (Windstream)     '
-    speed_test '1763' 'USA, Houston (Comcast)        '
-    speed_test '14237' 'USA, Miami (Frontier)         '
-    speed_test '18401' 'USA, Los Angeles (Windstream) '
+    speed_test '17384' 'USA, Chicago (Uniti)          '
+    #speed_test '1763' 'USA, Houston (Comcast)        '
+    #speed_test '14237' 'USA, Miami (Frontier)         '
+    speed_test '18401' 'USA, Los Angeles (Uniti)      '
     speed_test '11445' 'UK, London (Structured Com)   '
-    speed_test '27961' 'France, Paris (KEYYO)         '
-    speed_test '20507' 'Germany, Berlin (DNS:NET)     '
-    speed_test '21378' 'Spain, Madrid (MasMovil)      '
-    speed_test '395' 'Italy, Rome (Unidata)         '
-    speed_test '23647' 'India, Mumbai (Tatasky)       '
+    #speed_test '27961' 'France, Paris (KEYYO)         '
+    speed_test '44477' 'Germany, Frankfurt (TELE AG)  '
+    #speed_test '21378' 'Spain, Madrid (MasMovil)      '
+    #speed_test '395' 'Italy, Rome (Unidata)         '
+    speed_test '23647' 'India, Mumbai (Tata Play)     '
     speed_test '5935' 'Singapore (MyRepublic)        '
-    speed_test '7139' 'Japan, Tsukuba (SoftEther)    '
-    speed_test '2629' 'Australia, Sydney (Telstra)   '
-    speed_test '15722' 'RSA, Randburg (MTN SA)        '
+    speed_test '69575' 'Japan, Tokyo (Nearoute)       '
+    speed_test '1257' 'Australia, Sydney (Optus)     '
+    #speed_test '15722' 'RSA, Randburg (MTN SA)        '
     speed_test '3068' 'Brazil, Sao Paulo (TIM)       '
 
     print_total_traffic # Print total traffic after all speed tests
@@ -405,28 +407,28 @@ print_speedtest_usa() {
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '21016' 'USA, New York (Starry)        '
-    speed_test '1774' 'USA, Boston (Comcast)         '
-    speed_test '1775' 'USA, Baltimore, MD (Comcast)  '
-    speed_test '17387' 'USA, Atlanta (Windstream)     '
+    #speed_test '1774' 'USA, Boston (Comcast)         '
+    #speed_test '1775' 'USA, Baltimore, MD (Comcast)  '
+    speed_test '17387' 'USA, Atlanta (Uniti)          '
     speed_test '14237' 'USA, Miami (Frontier)         '
-    speed_test '1764' 'USA, Nashville (Comcast)      '
-    speed_test '10152' 'USA, Indianapolis (CenturyLink)'
-    speed_test '27834' 'USA, Cleveland (Windstream)   '
-    speed_test '1778' 'USA, Detroit, MI (Comcast)    '
-    speed_test '17384' 'USA, Chicago (Windstream)     '
-    speed_test '4557' 'USA, St. Louis (Elite Fiber)  '
-    speed_test '2917' 'USA, Minneapolis (US Internet)'
-    speed_test '13628' 'USA, Kansas City (Nocix)      '
+    #speed_test '1764' 'USA, Nashville (Comcast)      '
+    #speed_test '10152' 'USA, Indianapolis (CenturyLink)'
+    #speed_test '27834' 'USA, Cleveland (Windstream)   '
+    #speed_test '1778' 'USA, Detroit, MI (Comcast)    '
+    speed_test '17384' 'USA, Chicago (Uniti)          '
+    #speed_test '4557' 'USA, St. Louis (Elite Fiber)  '
+    #speed_test '2917' 'USA, Minneapolis (US Internet)'
+    #speed_test '13628' 'USA, Kansas City (Nocix)      '
     speed_test '1763' 'USA, Houston (Comcast)        '
     speed_test '10051' 'USA, Denver (Comcast)         '
-    speed_test '16869' 'USA, Albuquerque (Plateau Tel)'
-    speed_test '28800' 'USA, Phoenix (PhoenixNAP)     '
+    #speed_test '16869' 'USA, Albuquerque (Plateau Tel)'
+    #speed_test '28800' 'USA, Phoenix (PhoenixNAP)     '
     speed_test '1781' 'USA, Salt Lake City (Comcast) '
     speed_test '1782' 'USA, Seattle (Comcast)        '
-    speed_test '1783' 'USA, San Francisco (Comcast)  '
-    speed_test '18401' 'USA, Los Angeles (Windstream) '
-    speed_test '980' 'USA, Anchorage (Alaska Com)   '
-    speed_test '24031' 'USA, Honolulu (Hawaiian Telcom)'
+    #speed_test '1783' 'USA, San Francisco (Comcast)  '
+    speed_test '18401' 'USA, Los Angeles (Uniti)      '
+    #speed_test '980' 'USA, Anchorage (Alaska Com)   '
+    speed_test '22494' 'USA, Honolulu (Xiber Hawaii)  '
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -439,11 +441,11 @@ print_speedtest_in() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '7236' 'India, New Delhi (iForce)     '
-    speed_test '23647' 'India, Mumbai (Tatasky)       '
-    speed_test '16086' 'India, Nagpur (optbb)         '
-    speed_test '12309' 'India, Patna (Max-tech)       '
-    speed_test '14314' 'India, Kolkata (Meghbela)     '
+    speed_test '29658' 'India, New Delhi (Tata Play)  '
+    speed_test '23647' 'India, Mumbai (Tata Play)     '
+    speed_test '25961' 'India, Nagpur (UCN Fiber)     '
+    speed_test '34084' 'India, Patna (SMARTCONNECT)   '
+    speed_test '12221' 'India, Kolkata (Alliance)     '
     speed_test '27524' 'India, Visakhapatnam (Alliance)'
     speed_test '2679' 'India, Hyderabad (Airtel)     '
     speed_test '10024' 'India, Madurai (Niss Broadband)'
@@ -461,8 +463,8 @@ print_speedtest_europe() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '11445' 'UK, London (Structured Com)   '
     speed_test '29076' 'Netherlands, Amsterdam (XS News)'
-    speed_test '20507' 'Germany, Berlin (DNS:NET)     '
-    speed_test '31470' 'Germany, Munich (Telekom)     '
+    speed_test '44477' 'Germany, Frankfurt (TELE AG)  '
+    #speed_test '31470' 'Germany, Munich (Telekom)     '
     speed_test '26852' 'Sweden, Stockholm (SUNET)     '
     speed_test '8018' 'Norway, Oslo (NextGenTel)     '
     speed_test '27961' 'France, Paris (KEYYO)         '
@@ -492,10 +494,10 @@ print_speedtest_asia() {
     speed_test '23647' 'India, Mumbai (Tatasky)       '
     speed_test '12329' 'Sri Lanka, Colombo (Mobitel)  '
     speed_test '31336' 'Bangladesh, Dhaka (Banglalink)'
-    speed_test '24514' 'Myanmar, Yangon (TrueNET)     '
-    speed_test '26845' 'Laos, Vientaine (Mangkone)    '
+    #speed_test '24514' 'Myanmar, Yangon (TrueNET)     '
+    #speed_test '26845' 'Laos, Vientaine (Mangkone)    '
     speed_test '13871' 'Thailand, Bangkok (CAT Telecom)'
-    speed_test '5828' 'Cambodia, Phnom Penh (SINET)  '
+    #speed_test '5828' 'Cambodia, Phnom Penh (SINET)  '
     speed_test '9903' 'Vietnam, Hanoi (Viettel)      '
     speed_test '27261' 'Malaysia, Kuala Lumpur (Extreme)'
     speed_test '5935' 'Singapore (MyRepublic)        '
@@ -503,7 +505,7 @@ print_speedtest_asia() {
     speed_test '7167' 'Philippines, Manila (PLDT)    '
     speed_test '16176' 'Hong Kong (HGC Global)        '
     speed_test '13506' 'Taiwan, Taipei (TAIFO)        '
-    speed_test '7139' 'Japan, Tsukuba (SoftEther)    '
+    speed_test '69575' 'Japan, Tokyo (Nearoute)       '
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -517,16 +519,16 @@ print_speedtest_sa() {
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '3068' 'Brazil, Sao Paulo (TIM)       '
-    speed_test '11102' 'Brazil, Fortaleza (Connect)   '
-    speed_test '18126' 'Brazil, Manaus (Claro)        '
+    #speed_test '11102' 'Brazil, Fortaleza (Connect)   '
+    #speed_test '18126' 'Brazil, Manaus (Claro)        '
     speed_test '15018' 'Colombia, Bogota (Tigoune)    '
-    speed_test '31043' 'Ecuador, Ambato (EXTREME)     '
+    #speed_test '31043' 'Ecuador, Ambato (EXTREME)     '
     speed_test '5272' 'Peru, Lima (Fiberluxperu)     '
     speed_test '1053' 'Bolivia, La Paz (Nuevatel)    '
     speed_test '6776' 'Paraguay, Asuncion (TEISA)    '
     speed_test '21436' 'Chile, Santiago (Movistar)    '
     speed_test '5181' 'Argentina, Buenos Aires (Claro)'
-    speed_test '31687' 'Argentina, Cordoba (Colsecor) '
+    #speed_test '31687' 'Argentina, Cordoba (Colsecor) '
     speed_test '20212' 'Uruguay, Montevideo (Movistar)'
 
     print_total_traffic # Print total traffic after all speed tests
@@ -540,7 +542,7 @@ print_speedtest_au() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '2629' 'Australia, Sydney (Telstra)   '
+    speed_test '1267' 'Australia, Sydney (Optus)     '
     speed_test '2225' 'Australia, Melbourne (Telstra)'
     speed_test '2604' 'Australia, Brisbane (Telstra) '
     speed_test '18247' 'Australia, Adelaide (Vocus)   '
@@ -562,11 +564,11 @@ print_speedtest_ukraine() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '29112' 'Ukraine, Kyiv (Datagroup)     '
+    #speed_test '29112' 'Ukraine, Kyiv (Datagroup)     '
     speed_test '30813' 'Ukraine, Kyiv (KyivStar)      '
     speed_test '14887' 'Ukraine, Lviv (UARNet)        '
-    speed_test '29259' 'Ukraine, Lviv (KyivStar)      '
-    speed_test '2445' 'Ukraine, Lviv (KOMiTEX)       '
+    #speed_test '29259' 'Ukraine, Lviv (KyivStar)      '
+    #speed_test '2445' 'Ukraine, Lviv (KOMiTEX)       '
     speed_test '3022' 'Ukraine, Uzhgorod (TransCom)  '
     speed_test '19332' 'Ukraine, Chernivtsi (C.T.Net) '
     speed_test '3861' 'Ukraine, Zhytomyr (DKS)       '
@@ -592,7 +594,7 @@ print_speedtest_lviv() {
     speed_test '29259' 'Ukraine, Lviv (KyivStar)      '
     speed_test '2445' 'Ukraine, Lviv (KOMiTEX)       '
     speed_test '12786' 'Ukraine, Lviv (ASTRA)         '
-    speed_test '1204' 'Ukraine, Lviv (Network)       '
+    #speed_test '1204' 'Ukraine, Lviv (Network)       '
 
     print_total_traffic # Print total traffic after all speed tests
 }
