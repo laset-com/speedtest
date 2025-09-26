@@ -342,6 +342,7 @@ print_total_traffic() {
     local total_download_gb=$(awk "BEGIN {printf \"%.2f\", $TOTAL_DOWNLOAD_TRAFFIC_MB / 1024}")
     local total_upload_gb=$(awk "BEGIN {printf \"%.2f\", $TOTAL_UPLOAD_TRAFFIC_MB / 1024}")
     local total_sum_gb=$(awk "BEGIN {printf \"%.2f\", $total_sum_mb / 1024}")
+	local avg_packet_loss=$(awk "BEGIN {printf \"%.2f\", $TOTAL_PACKET_LOSS_SUM / $SPEEDTEST_SUCCESS_COUNT}")
 
     echo "" | tee -a "$log"
     echostyle "## Statistics"
@@ -356,9 +357,6 @@ print_total_traffic() {
     # Reset global variables for subsequent runs if the script were to be called multiple times in one session
     TOTAL_DOWNLOAD_TRAFFIC_MB=0
     TOTAL_UPLOAD_TRAFFIC_MB=0
-    # TOTAL_DOWNLOAD_MBPS_SUM=0
-    # TOTAL_UPLOAD_MBPS_SUM=0
-    # TOTAL_PING_LATENCY_SUM=0
     TOTAL_PACKET_LOSS_SUM=0
     SPEEDTEST_SUCCESS_COUNT=0
 }
@@ -388,8 +386,7 @@ print_speedtest() {
     speed_test '2629' 'Australia, Sydney (Telstra)   '
     speed_test '15722' 'RSA, Randburg (MTN SA)        '
     speed_test '3068' 'Brazil, Sao Paulo (TIM)       '
-     
-    # rm -rf speedtest.py # Removed
+
     print_total_traffic # Print total traffic after all speed tests
 }
 
@@ -424,8 +421,7 @@ print_speedtest_usa() {
     speed_test '18401' 'USA, Los Angeles (Windstream)  '
     speed_test '980' 'USA, Anchorage (Alaska Com)    '
     speed_test '24031' 'USA, Honolulu (Hawaiian Telcom)'
-     
-    # rm -rf speedtest.py # Removed
+
     print_total_traffic # Print total traffic after all speed tests
 }
 
@@ -445,7 +441,7 @@ print_speedtest_in() {
     speed_test '27524' 'India, Visakhapatnam (Alliance)'
     speed_test '2679' 'India, Hyderabad (Airtel)      '
     speed_test '10024' 'India, Madurai (Niss Broadband)'
-    # rm -rf speedtest.py # Removed
+
     print_total_traffic # Print total traffic after all speed tests
 }
 
@@ -474,8 +470,7 @@ print_speedtest_europe() {
     speed_test '4290' 'Romania, Bucharest (iNES)       '
     speed_test '1727' 'Greece, Athens (GRNET)          '
     speed_test '32575' 'Turkey, Urfa (Firatnet)         '
-     
-    # rm -rf speedtest.py # Removed
+
     print_total_traffic # Print total traffic after all speed tests
 }
 
@@ -503,8 +498,7 @@ print_speedtest_asia() {
     speed_test '16176' 'Hong Kong (HGC Global)          '
     speed_test '13506' 'Taiwan, Taipei (TAIFO)          '
     speed_test '7139' 'Japan, Tsukuba (SoftEther)      '
-     
-    # rm -rf speedtest.py # Removed
+
     print_total_traffic # Print total traffic after all speed tests
 }
 
@@ -528,8 +522,7 @@ print_speedtest_sa() {
     speed_test '5181' 'Argentina, Buenos Aires (Claro)    '
     speed_test '31687' 'Argentina, Cordoba (Colsecor)      '
     speed_test '20212' 'Uruguay, Montevideo (Movistar)     '
-     
-    # rm -rf speedtest.py # Removed
+
     print_total_traffic # Print total traffic after all speed tests
 }
 
@@ -551,8 +544,7 @@ print_speedtest_au() {
     speed_test '5539' 'NZ, Auckland (2degrees)       '
     speed_test '11326' 'NZ, Wellington (Spark)        '
     speed_test '4934' 'NZ, Christchurch (Vodafone)   '
-     
-    # rm -rf speedtest.py # Removed
+
     print_total_traffic # Print total traffic after all speed tests
 }
 
@@ -578,8 +570,7 @@ print_speedtest_ukraine() {
     speed_test '2796' 'Ukraine, Odesa (Black Sea)    '
     speed_test '26725' 'Ukraine, Mariupol (CityLine)  '
     speed_test '21617' 'Ukraine, Yalta (Yaltanet)     '
-     
-    # rm -rf speedtest.py # Removed
+
     print_total_traffic # Print total traffic after all speed tests
 }
 
@@ -596,8 +587,7 @@ print_speedtest_lviv() {
     speed_test '2445' 'Ukraine, Lviv (KOMiTEX) '
     speed_test '12786' 'Ukraine, Lviv (ASTRA)   '
     speed_test '1204' 'Ukraine, Lviv (Network) '
-     
-    # rm -rf speedtest.py # Removed
+
     print_total_traffic # Print total traffic after all speed tests
 }
 
@@ -618,8 +608,7 @@ print_speedtest_meast() {
     speed_test '608' 'SA, Riyadh (STC)            '
     speed_test '1912' 'Bahrain, Manama (Zain)      '
     speed_test '18512' 'Iran, Tehran (MCI)          '
-     
-    # rm -rf speedtest.py # Removed
+
     print_total_traffic # Print total traffic after all speed tests
 }
 
@@ -635,8 +624,7 @@ print_speedtest_china() {
     speed_test '26352' 'Nanjing (China Telecom 5G)    '
     speed_test '71313' 'Xuzhou (中国电信)              '
     speed_test '36663' 'Zhenjiang (China Telecom 5G)  '
-     
-    # rm -rf speedtest.py # Removed
+
     print_total_traffic # Print total traffic after all speed tests
 }
 
@@ -647,7 +635,7 @@ geekbench4() {
     echo -e "\nGeekbench 4 is not compatible with ARM64 architectures. Skipping the test"
     else
     echo "" | tee -a "$log"
-    echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..." | tee -a "$log"
+    echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..."
 
     # Start steal time measurement
     local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
@@ -718,7 +706,7 @@ geekbench5() {
     echo -e "\nGeekbench 5 cannot run on 32-bit architectures. Skipping the test"
     else
     echo "" | tee -a "$log"
-    echo -e " Performing Geekbench v5 CPU Benchmark test. Please wait..." | tee -a "$log"
+    echo -e " Performing Geekbench v5 CPU Benchmark test. Please wait..."
 
     # Start steal time measurement
     local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
@@ -795,7 +783,7 @@ geekbench6() {
     echo -e "\nGeekbench 6 cannot run on 32-bit architectures. Skipping the test"
     else
     echo "" | tee -a "$log"
-    echo -e " Performing Geekbench v6 CPU Benchmark test. Please wait..." | tee -a "$log"
+    echo -e " Performing Geekbench v6 CPU Benchmark test. Please wait..."
 
     # Start steal time measurement
     local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
