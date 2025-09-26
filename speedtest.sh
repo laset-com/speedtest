@@ -93,7 +93,7 @@ benchinit() {
         release="almalinux"
     elif cat /etc/issue | grep -Eqi "debian"; then
         release="debian"
-    elif cat /etc/issue | grep -Eqi "ubuntu"; then
+    elif cat /etc/issue | grep -Eqi "ubuntu"; then then
         release="ubuntu"
     elif cat /etc/issue | grep -Eqi "centos|red hat|redhat"; then
         release="centos"
@@ -337,10 +337,10 @@ print_total_traffic() {
     echo "" | tee -a "$log"
     echostyle "## Total Traffic Used"
     echo "" | tee -a "$log"
-    echo -e " Total Downloaded    : ${total_download_gb} GB (${TOTAL_DOWNLOAD_TRAFFIC_MB} MB)" | tee -a "$log"
-    echo -e " Total Uploaded      : ${total_upload_gb} GB (${TOTAL_UPLOAD_TRAFFIC_MB} MB)" | tee -a "$log"
-    echo -e " Total Sum           : ${total_sum_gb} GB (${total_sum_mb} MB)" | tee -a "$log"
-    echo -e " Average Packet Loss : ${avg_packet_loss}%" | tee -a "$log" # Display average packet loss
+    printf " Total Downloaded    : %s GB (%s MB)\n" "${total_download_gb}" "${TOTAL_DOWNLOAD_TRAFFIC_MB}" | tee -a "$log"
+    printf " Total Uploaded      : %s GB (%s MB)\n" "${total_upload_gb}" "${TOTAL_UPLOAD_TRAFFIC_MB}" | tee -a "$log"
+    printf " Total Sum           : %s GB (%s MB)\n" "${total_sum_gb}" "${total_sum_mb}" | tee -a "$log"
+    printf " Average Packet Loss : %s%%\n" "${avg_packet_loss}" | tee -a "$log" # Display average packet loss
     echo "" | tee -a "$log"
 
     # Reset global variables for subsequent runs if the script were to be called multiple times in one session
@@ -677,10 +677,10 @@ geekbench4() {
     echo -ne "\e[1A"; echo -ne "\033[0K\r"
     echostyle "## Geekbench v4 CPU Benchmark:"
     echo "" | tee -a "$log"
-    echo -e "  Single Core : $GEEKBENCH_SCORES_SINGLE  $grank" | tee -a "$log"
-    echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a "$log"
-    echo -e "    CPU Steal : ${STEAL_PERCENT}%" | tee -a "$log"
-    [ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" >> geekbench_claim.url 2> /dev/null
+    printf "  Single Core : %s  %s\n" "$GEEKBENCH_SCORES_SINGLE" "$grank" | tee -a "$log"
+    printf "   Multi Core : %s\n" "$GEEKBENCH_SCORES_MULTI" | tee -a "$log"
+    printf "    CPU Steal : %s%%\n" "${STEAL_PERCENT}" | tee -a "$log"
+    [ ! -z "$GEEKBENCH_URL_CLAIM" ] && printf "%s\n" "$GEEKBENCH_URL_CLAIM" >> geekbench_claim.url 2> /dev/null
     echo "" | tee -a "$log"
     echo -e " Cooling down..."
     sleep 9
@@ -755,10 +755,10 @@ geekbench5() {
     echo -ne "\e[1A"; echo -ne "\033[0K\r"
     echostyle "## Geekbench v5 CPU Benchmark:"
     echo "" | tee -a "$log"
-    echo -e "  Single Core : $GEEKBENCH_SCORES_SINGLE  $grank" | tee -a "$log"
-    echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a "$log"
-    echo -e "    CPU Steal : ${STEAL_PERCENT}%" | tee -a "$log"
-    [ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" >> geekbench_claim.url 2> /dev/null
+    printf "  Single Core : %s  %s\n" "$GEEKBENCH_SCORES_SINGLE" "$grank" | tee -a "$log"
+    printf "   Multi Core : %s\n" "$GEEKBENCH_SCORES_MULTI" | tee -a "$log"
+    printf "    CPU Steal : %s%%\n" "${STEAL_PERCENT}" | tee -a "$log"
+    [ ! -z "$GEEKBENCH_URL_CLAIM" ] && printf "%s\n" "$GEEKBENCH_URL_CLAIM" >> geekbench_claim.url 2> /dev/null
     echo "" | tee -a "$log"
     echo -e " Cooling down..."
     sleep 9
@@ -833,10 +833,10 @@ geekbench6() {
     echo -ne "\e[1A"; echo -ne "\033[0K\r"
     echostyle "## Geekbench v6 CPU Benchmark:"
     echo "" | tee -a "$log"
-    echo -e "  Single Core : $GEEKBENCH_SCORES_SINGLE  $grank" | tee -a "$log"
-    echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a "$log"
-    echo -e "    CPU Steal : ${STEAL_PERCENT}%" | tee -a "$log"
-    [ ! -z "$GEEKBENCH_URL_CLAIM" ] && echo -e "$GEEKBENCH_URL_CLAIM" >> geekbench_claim.url 2> /dev/null
+    printf "  Single Core : %s  %s\n" "$GEEKBENCH_SCORES_SINGLE" "$grank" | tee -a "$log"
+    printf "   Multi Core : %s\n" "$GEEKBENCH_SCORES_MULTI" | tee -a "$log"
+    printf "    CPU Steal : %s%%\n" "${STEAL_PERCENT}" | tee -a "$log"
+    [ ! -z "$GEEKBENCH_URL_CLAIM" ] && printf "%s\n" "$GEEKBENCH_URL_CLAIM" >> geekbench_claim.url 2> /dev/null
     echo "" | tee -a "$log"
     echo -e " Cooling down..."
     sleep 9
@@ -923,10 +923,10 @@ ip_info(){
     countryCode="$(curl -s https://ipapi.co/country/ 2>/dev/null)"
     region="$(curl -s https://ipapi.co/region/ 2>/dev/null)"
 
-    echo " ASN & ISP            : $asn" | tee -a "$log"
-    echo " Organization         : $org" | tee -a "$log"
-    echo " Location             : $city, $country ($countryCode)" | tee -a "$log"
-    echo " Region               : $region" | tee -a "$log"
+    printf " ASN & ISP            : %s\n" "$asn" | tee -a "$log"
+    printf " Organization         : %s\n" "$org" | tee -a "$log"
+    printf " Location             : %s, %s (%s)\n" "$city" "$country" "$countryCode" | tee -a "$log"
+    printf " Region               : %s\n" "$region" | tee -a "$log"
 }
 
 ip_info4(){
@@ -939,9 +939,9 @@ ip_info4(){
     #countryCode="$(python3 tools.py geoip countryCode)"
     region="$(python3 tools.py geoip regionName 2>/dev/null)"
 
-    echo " Location     : $country, $city ($region)" | tee -a "$log"
+    printf " Location     : %s, %s (%s)\n" "$country" "$city" "$region" | tee -a "$log"
     #echo -e " Region       : $region" | tee -a $log
-    echo " ASN & ISP    : $asn, $isp / $org" | tee -a "$log"
+    printf " ASN & ISP    : %s, %s / %s\n" "$asn" "$isp" "$org" | tee -a "$log"
     #echo -e " Organization : $org" | tee -a $log
 }
 
@@ -955,8 +955,8 @@ machine_location(){
     #countryCode="$(python3 tools.py geoip countryCode)"
     region="$(python3 tools.py geoip regionName 2>/dev/null)"	
 
-    echo " Machine location: $country, $city ($region)"
-    echo " ISP & ORG: $asn, $isp / $org"
+    printf " Machine location: %s, %s (%s)\n" "$country" "$city" "$region"
+    printf " ISP & ORG: %s, %s / %s\n" "$asn" "$isp" "$org"
 }
 
 virt_check(){
@@ -1038,7 +1038,7 @@ power_time_check(){
     echo -ne " Power time of disk   : "
     install_smart
     ptime=$(power_time)
-    echo -e "$ptime Hours"
+    printf "%s Hours\n" "$ptime"
 }
 
 freedisk() {
@@ -1068,19 +1068,19 @@ freedisk() {
 }
 
 print_system_info() {
-    echo -e " OS           : $opsy ($lbit Bit)" | tee -a "$log"
-    echo -e " Virt/Kernel  : $virtual / $kern" | tee -a "$log"
-    echo -e " CPU Model    : $cname" | tee -a "$log"
-    echo -e " CPU Cores    : $cores @ $freq MHz $arch $corescache Cache" | tee -a "$log"
-    echo -e " CPU Flags    : $cpu_aes & $cpu_virt" | tee -a "$log"
-    echo -e " Load Average : $load" | tee -a "$log"
-    echo -e " Total Space  : $hdd ($hddused ~$hddfree used)" | tee -a "$log"
-    echo -e " Total RAM    : $tram MB ($uram MB + $bram MB Buff in use)" | tee -a "$log"
-    echo -e " Total SWAP   : $swap MB ($uswap MB in use)" | tee -a "$log"
+    printf " OS           : %s (%s Bit)\n" "$opsy" "$lbit" | tee -a "$log"
+    printf " Virt/Kernel  : %s / %s\n" "$virtual" "$kern" | tee -a "$log"
+    printf " CPU Model    : %s\n" "$cname" | tee -a "$log"
+    printf " CPU Cores    : %s @ %s MHz %s %s Cache\n" "$cores" "$freq" "$arch" "$corescache" | tee -a "$log"
+    printf " CPU Flags    : %s & %s\n" "$cpu_aes" "$cpu_virt" | tee -a "$log"
+    printf " Load Average : %s\n" "$load" | tee -a "$log"
+    printf " Total Space  : %s (%s ~%s used)\n" "$hdd" "$hddused" "$hddfree" | tee -a "$log"
+    printf " Total RAM    : %s MB (%s MB + %s MB Buff in use)\n" "$tram" "$uram" "$bram" | tee -a "$log"
+    printf " Total SWAP   : %s MB (%s MB in use)\n" "$swap" "$uswap" | tee -a "$log"
     [[ -z "$IPV4_CHECK" ]] && ONLINE="\xE2\x9D\x8C Offline / " || ONLINE="\xE2\x9C\x94 Online / "
     [[ -z "$IPV6_CHECK" ]] && ONLINE+="\xE2\x9D\x8C Offline" || ONLINE+="\xE2\x9C\x94 Online"
-    echo -e " IPv4/IPv6    : $ONLINE" | tee -a "$log"
-    echo -e " Uptime       : $up" | tee -a "$log"
+    printf " IPv4/IPv6    : %s\n" "$ONLINE" | tee -a "$log"
+    printf " Uptime       : %s\n" "$up" | tee -a "$log"
     printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
 }
 
@@ -1234,9 +1234,9 @@ iotest() {
 
     # CPU Speed test
     echostyle "CPU Speed:"
-    echo "    bzip2     :$( cpubench bzip2 "$writemb_cpu" )" | tee -a "$log" 
-    echo "   sha256     :$( cpubench sha256sum "$writemb_cpu" )" | tee -a "$log"
-    echo "   md5sum     :$( cpubench md5sum "$writemb_cpu" )" | tee -a "$log"
+    printf "    bzip2     :%s\n" "$( cpubench bzip2 "$writemb_cpu" )" | tee -a "$log" 
+    printf "   sha256     :%s\n" "$( cpubench sha256sum "$writemb_cpu" )" | tee -a "$log"
+    printf "   md5sum     :%s\n" "$( cpubench md5sum "$writemb_cpu" )" | tee -a "$log"
     echo "" | tee -a "$log"
 
     # RAM Speed test
@@ -1249,7 +1249,7 @@ iotest() {
         sbram=$(( tram_mb / 2 ))M
         sbcount=$tram_mb
     fi
-    [[ -d $benchram ]] || mkdir "$benchram"
+    [[ -d "$benchram" ]] || mkdir "$benchram"
     mount -t tmpfs -o size="$sbram" tmpfs "$benchram"/
     echostyle "RAM Speed:"
     iow1=$( ( dd if=/dev/zero of="$benchram"/zero bs=512K count="$sbcount" ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
@@ -1258,8 +1258,8 @@ iotest() {
     ior2=$( ( dd if="$benchram"/zero of="$NULL" bs=512K count="$sbcount"; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
     iow3=$( ( dd if=/dev/zero of="$benchram"/zero bs=512K count="$sbcount" ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
     ior3=$( ( dd if="$benchram"/zero of="$NULL" bs=512K count="$sbcount"; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-    echo "   Avg. write : $(averageio "$iow1" "$iow2" "$iow3") MB/s" | tee -a "$log"
-    echo "   Avg. read  : $(averageio "$ior1" "$ior2" "$ior3") MB/s" | tee -a "$log"
+    printf "   Avg. write : %s MB/s\n" "$(averageio "$iow1" "$iow2" "$iow3")" | tee -a "$log"
+    printf "   Avg. read  : %s MB/s\n" "$(averageio "$ior1" "$ior2" "$ior3")" | tee -a "$log"
     rm "$benchram"/zero
     umount "$benchram"
     rm -rf "$benchram"
@@ -1291,13 +1291,13 @@ write_io() {
         echostyle "Disk Speed:"
         echo -n "   1st run    : " | tee -a "$log"
         io1=$( write_test "$writemb" )
-        echo -e "$io1" | tee -a "$log"
+        printf "%s\n" "$io1" | tee -a "$log"
         echo -n "   2nd run    : " | tee -a "$log"
         io2=$( write_test "$writemb" )
-        echo -e "$io2" | tee -a "$log"
+        printf "%s\n" "$io2" | tee -a "$log"
         echo -n "   3rd run    : " | tee -a "$log"
         io3=$( write_test "$writemb" )
-        echo -e "$io3" | tee -a "$log"
+        printf "%s\n" "$io3" | tee -a "$log"
         ioraw1=$( echo "$io1" | awk 'NR==1 {print $1}' )
         [ "`echo "$io1" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
         ioraw2=$( echo "$io2" | awk 'NR==1 {print $1}' )
@@ -1307,7 +1307,7 @@ write_io() {
         ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
         ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
         echo -e "   -----------------------" | tee -a "$log"
-        echo -e "   Average    : $ioavg MB/s" | tee -a "$log"
+        printf "   Average    : %s MB/s\n" "$ioavg" | tee -a "$log"
     else
         echo -e " Not enough space!"
     fi
@@ -1328,9 +1328,9 @@ print_end_time() {
     #echo $(date +%Y-%m-%d" "%H:%M:%S)
     printf '\n'
     utc_time=$(date -u '+%F %T')
-    echo " Timestamp   : $utc_time GMT" | tee -a "$log"
+    printf " Timestamp   : %s GMT\n" "$utc_time" | tee -a "$log"
     #echo " Finished!"
-    echo " Saved in    : $log"
+    printf " Saved in    : %s\n" "$log"
     echo "" | tee -a "$log"
 }
 
@@ -1361,8 +1361,8 @@ sharetest() {
     #share_link=$(echo "$sprunge_link" | sed 's/http:/https:/')
 
     # print result info
-    [ ! -z "$LAST_SPEEDTEST_URL" ] && echo " - $LAST_SPEEDTEST_URL" | tee -a "$log" # Added official Speedtest result URL
-    echo " - $GEEKBENCH_URL" | tee -a "$log"
+    [ ! -z "$LAST_SPEEDTEST_URL" ] && printf " - %s\n" "$LAST_SPEEDTEST_URL" | tee -a "$log" # Added official Speedtest result URL
+    printf " - %s\n" "$GEEKBENCH_URL" | tee -a "$log"
     # echo " - $share_link"
     echo ""
     rm -f "$log_up"
