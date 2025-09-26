@@ -199,7 +199,8 @@ benchinit() {
             error_exit "Failed to install Speedtest CLI. Please check the log for details."
         else
             printf " Speedtest CLI installed successfully.\r" >/dev/tty
-            printf "\n" >/dev/tty # Add a newline to clear the last temporary message from the terminal
+            # Clear the line completely by printing spaces and then a newline
+            printf "%-80s\n" "" >/dev/tty # Ensure the line is fully cleared in the terminal
         fi
     fi
 
@@ -391,7 +392,7 @@ print_speedtest() {
     speed_test '23647' 'India, Mumbai (Tata Play)     '
     speed_test '5935' 'Singapore (MyRepublic)        '
     speed_test '69575' 'Japan, Tokyo (Nearoute)       '
-    speed_test '1257' 'Australia, Sydney (Optus)     '
+    speed_test '1267' 'Australia, Sydney (Optus)     '
     #speed_test '15722' 'RSA, Randburg (MTN SA)        '
     speed_test '3068' 'Brazil, Sao Paulo (TIM)       '
 
@@ -471,13 +472,13 @@ print_speedtest_europe() {
     speed_test '21378' 'Spain, Madrid (MasMovil)      '
     speed_test '395' 'Italy, Rome (Unidata)         '
     speed_test '30620' 'Czechia, Prague (O2)          '
-    speed_test '12390' 'Austria, Vienna (A1)          '
+    speed_test '3744' 'Austria, Vienna (Nessus GmbH) '
     speed_test '7103' 'Poland, Warsaw (ISP Emitel)   '
     speed_test '30813' 'Ukraine, Kyiv (KyivStar)      '
     speed_test '5834' 'Latvia, Riga (Bite)           '
     speed_test '4290' 'Romania, Bucharest (iNES)     '
     speed_test '1727' 'Greece, Athens (GRNET)        '
-    speed_test '32575' 'Turkey, Urfa (Firatnet)       '
+    speed_test '3151' 'Turkey, Istanbul (Vodafone)   '
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -490,21 +491,21 @@ print_speedtest_asia() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '16475' 'India, New Delhi (Weebo)      '
-    speed_test '23647' 'India, Mumbai (Tatasky)       '
+    speed_test '29658' 'India, New Delhi (Tata Play)  '
+    speed_test '23647' 'India, Mumbai (Tata Play)     '
     speed_test '12329' 'Sri Lanka, Colombo (Mobitel)  '
     speed_test '31336' 'Bangladesh, Dhaka (Banglalink)'
     #speed_test '24514' 'Myanmar, Yangon (TrueNET)     '
     #speed_test '26845' 'Laos, Vientaine (Mangkone)    '
-    speed_test '13871' 'Thailand, Bangkok (CAT Telecom)'
+    speed_test '8990' 'Thailand, Bangkok (3BB)       '
     #speed_test '5828' 'Cambodia, Phnom Penh (SINET)  '
     speed_test '9903' 'Vietnam, Hanoi (Viettel)      '
-    speed_test '27261' 'Malaysia, Kuala Lumpur (Extreme)'
+    speed_test '27261' 'Malaysia, CyberJaya (Orient)  '
     speed_test '5935' 'Singapore (MyRepublic)        '
     speed_test '7582' 'Indonesia, Jakarta (Telekom)  '
     speed_test '7167' 'Philippines, Manila (PLDT)    '
-    speed_test '16176' 'Hong Kong (HGC Global)        '
-    speed_test '13506' 'Taiwan, Taipei (TAIFO)        '
+    speed_test '37639' 'Hong Kong (CMHK Broadband)   '
+    speed_test '61136' 'Taiwan, Taipei (Pittqiao)     '
     speed_test '69575' 'Japan, Tokyo (Nearoute)       '
 
     print_total_traffic # Print total traffic after all speed tests
@@ -521,9 +522,9 @@ print_speedtest_sa() {
     speed_test '3068' 'Brazil, Sao Paulo (TIM)       '
     #speed_test '11102' 'Brazil, Fortaleza (Connect)   '
     #speed_test '18126' 'Brazil, Manaus (Claro)        '
-    speed_test '15018' 'Colombia, Bogota (Tigoune)    '
+    speed_test '15018' 'Colombia, Bogota (Tigo)       '
     #speed_test '31043' 'Ecuador, Ambato (EXTREME)     '
-    speed_test '5272' 'Peru, Lima (Fiberluxperu)     '
+    speed_test '5272' 'Peru, Lima (FIBERLUX)         '
     speed_test '1053' 'Bolivia, La Paz (Nuevatel)    '
     speed_test '6776' 'Paraguay, Asuncion (TEISA)    '
     speed_test '21436' 'Chile, Santiago (Movistar)    '
