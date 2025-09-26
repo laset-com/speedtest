@@ -1332,7 +1332,6 @@ iotest() {
     #echo "" | tee -a $log
 }
 
-
 write_io() {
     writemb=$(freedisk)
     writemb_size="$(( writemb / 2 ))MB"
@@ -1351,14 +1350,7 @@ write_io() {
         echo -n "   3rd run    : " | tee -a "$log"
         io3=$( write_test "$writemb" )
         echo -e "$io3" | tee -a "$log"
-        ioraw1=$( echo "$io1" | awk 'NR==1 {print $1}' )
-        [ "`echo "$io1" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
-        ioraw2=$( echo "$io2" | awk 'NR==1 {print $2}' )
-        [ "`echo "$io2" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw2=$( awk 'BEGIN{print '$ioraw2' * 1024}' )
-        ioraw3=$( echo "$io3" | awk 'NR==1 {print $1}' )
-        [ "`echo "$io3" | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
-        ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
-        ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
+        ioavg=$(averageio "$io1" "$io2" "$io3")
         echo -e "   -----------------------" | tee -a "$log"
         echo -e "   Average    : $ioavg MB/s" | tee -a "$log"
     else
