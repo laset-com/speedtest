@@ -149,6 +149,7 @@ benchinit() {
     # Check and install required packages
     install_package "python3" "/usr/bin/python3"
     install_package "jq" "/usr/bin/jq" # Install jq for JSON parsing
+	install_package "bc" "/usr/bin/bc" # Install bc for floating point arithmetic
     
     # Set python3 as default if needed (for RHEL-based systems)
     if [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" ]] && [ -e '/usr/bin/python3' ]; then # Added rocky
