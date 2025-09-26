@@ -278,6 +278,9 @@ speed_test(){
     else
         local cerror="ERROR"
         printf "%-17s%-17s%-17s%-7s\n" " ${nodeName}" "ERROR" "ERROR" "ERROR" | tee -a "$log"
+        echo "--- Speedtest CLI raw output for ${nodeName} (Error) ---" | tee -a "$log"
+        echo "$temp" | tee -a "$log"
+        echo "-----------------------------------------------------" | tee -a "$log"
     fi
 }
 
@@ -1274,7 +1277,7 @@ write_io() {
 }
 
 print_end_time() {
-    echo "" | tee -a "$log"
+    echo -e "\n" | tee -a "$log"
     end=$(date +%s) 
     time=$(( end - start ))
     if [[ $time -gt 60 ]]; then
