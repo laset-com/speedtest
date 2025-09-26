@@ -916,12 +916,18 @@ fi
 
 ip_info(){
     # no jq
-    country=$(curl -s https://ipapi.co/country_name/)
-    city=$(curl -s https://ipapi.co/city/)
-    asn=$(curl -s https://ipapi.co/asn/)
-    org=$(curl -s https://ipapi.co/org/)
-    countryCode=$(curl -s https://ipapi.co/country/)
-    region=$(curl -s https://ipapi.co/region/)
+    country="$(curl -s https://ipapi.co/country_name/)"
+
+    city="$(curl -s https://ipapi.co/city/)"
+
+    asn="$(curl -s https://ipapi.co/asn/)"
+
+    org="$(curl -s https://ipapi.co/org/)"
+
+    countryCode="$(curl -s https://ipapi.co/country/)"
+
+    region="$(curl -s https://ipapi.co/region/)"
+
 
     printf " ASN & ISP            : %s\n" "$asn" | tee -a "$log"
     printf " Organization         : %s\n" "$org" | tee -a "$log"
@@ -930,14 +936,23 @@ ip_info(){
 }
 
 ip_info4(){
-    isp=$(python3 tools.py geoip isp)
-    as_tmp=$(python3 tools.py geoip as)
-    asn=$(echo "$as_tmp" | awk -F ' ' '{print $1}')
-    org=$(python3 tools.py geoip org)
-    country=$(python3 tools.py geoip country)
-    city=$(python3 tools.py geoip city)
-    #countryCode=$(python3 tools.py geoip countryCode)
-    region=$(python3 tools.py geoip regionName)
+    isp="$(python3 tools.py geoip isp)"
+
+    as_tmp="$(python3 tools.py geoip as)"
+
+    asn="$(echo "$as_tmp" | awk -F ' ' '{print $1}')"
+
+
+    org="$(python3 tools.py geoip org)"
+
+    country="$(python3 tools.py geoip country)"
+
+    city="$(python3 tools.py geoip city)"
+
+    #countryCode="$(python3 tools.py geoip countryCode)"
+
+    region="$(python3 tools.py geoip regionName)"
+
 
     printf " Location     : %s, %s (%s)\n" "$country" "$city" "$region" | tee -a "$log"
     #echo -e " Region       : $region" | tee -a $log
@@ -948,14 +963,23 @@ ip_info4(){
 }
 
 machine_location(){
-    isp=$(python3 tools.py geoip isp)
-    as_tmp=$(python3 tools.py geoip as)
-    asn=$(echo "$as_tmp" | awk -F ' ' '{print $1}')
-    org=$(python3 tools.py geoip org)
-    country=$(python3 tools.py geoip country)
-    city=$(python3 tools.py geoip city)
-    #countryCode=$(python3 tools.py geoip countryCode)
-    region=$(python3 tools.py geoip regionName)	
+    isp="$(python3 tools.py geoip isp)"
+
+    as_tmp="$(python3 tools.py geoip as)"
+
+    asn="$(echo "$as_tmp" | awk -F ' ' '{print $1}')"
+
+
+    org="$(python3 tools.py geoip org)"
+
+    country="$(python3 tools.py geoip country)"
+
+    city="$(python3 tools.py geoip city)"
+
+    #countryCode="$(python3 tools.py geoip countryCode)"
+
+    region="$(python3 tools.py geoip regionName)"	
+
 
     printf " Machine location: %s, %s (%s)\n" "$country" "$city" "$region"
     printf " ISP & ORG: %s, %s / %s\n" "$asn" "$isp" "$org"
@@ -1023,7 +1047,7 @@ virt_check(){
                 virtual="Xen"
             # Check for virtualization via /sys interface
             elif [[ -f /sys/class/dmi/id/product_name ]]; then
-                local product_name=$(cat /sys/class/dmi/id/product_name 2>"$NULL")
+                local product_name=$(cat /sys/class/dmi/id/product_name 2>/dev/null)
                 if [[ "$product_name" == *"Virtual"* || "$product_name" == *"VM"* || "$product_name" == *"Cloud"* ]]; then
                     virtual="VM"
                 else
