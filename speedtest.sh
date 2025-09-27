@@ -12,10 +12,6 @@ about() {
     echo ""
 }
 
-# NOTE: There is a duplicate 'cleanup' function definition later in the script.
-# It is recommended to have only one definition for a function.
-# The definition below (lines 999-1007 in the original file) will override this earlier one.
-# I'm keeping this one for now as it was in your provided file, but be aware of the duplication.
 cleanup() {
     # Remove temporary files
     rm -f tools.py 2>/dev/null
@@ -47,9 +43,6 @@ trap 'error_exit "Unexpected error occurred"' SIGTERM
 benchram="$HOME/tmpbenchram"
 NULL="/dev/null"
 LAST_SPEEDTEST_URL="" # Global variable to store the last Speedtest result URL
-
-# Global variable for the temporary packet loss log file
-PACKET_LOSS_DEBUG_LOG="$HOME/packetLoss.log"
 
 # Global variables for total traffic
 TOTAL_DOWNLOAD_TRAFFIC_MB=0
@@ -259,16 +252,6 @@ convert_to_mb() {
     echo "$mb_value"
 }
 
-# New function to log raw JSON output for debugging packet loss
-log_speedtest_json_output() {
-    local json_data=$1
-    local node_name=$2
-    echo "--- Start Speedtest JSON Output for $node_name ($(date +%Y-%m-%d" "%H:%M:%S %Z")) ---" >> "$PACKET_LOSS_DEBUG_LOG"
-    echo "$json_data" >> "$PACKET_LOSS_DEBUG_LOG"
-    echo "--- End Speedtest JSON Output for $node_name ---" >> "$PACKET_LOSS_DEBUG_LOG"
-    echo "" >> "$PACKET_LOSS_DEBUG_LOG"
-}
-
 speed_test(){
     local nodeName=$2
     # Use --accept-license --accept-gdpr for the first run of the official Speedtest CLI
@@ -294,26 +277,15 @@ speed_test(){
         json_output=$($speedtest_cmd -s "$1" 2>&1)
     fi
 
-    # Log the raw JSON output to the debug file
-    log_speedtest_json_output "$json_output" "$nodeName"
-
     # Check if the output is valid JSON and contains expected data
     if echo "$json_output" | jq -e '.type == "result"' >/dev/null 2>&1; then
         # Parse JSON output
-        # Corrected jq paths to handle null/missing bandwidth values
-        REDownload_mbps=$(echo "$json_output" | jq -r '(.download.bandwidth // 0) / 125000') # Convert bytes/sec to Mbps
-        reupload_mbps=$(echo "$json_output" | jq -r '(.upload.bandwidth // 0) / 125000')   # Convert bytes/sec to Mbps
+        REDownload_mbps=$(echo "$json_output" | jq -r '.download.bandwidth / 125000') # Convert bytes/sec to Mbps
+        reupload_mbps=$(echo "$json_output" | jq -r '.upload.bandwidth / 125000')   # Convert bytes/sec to Mbps
         relatency=$(echo "$json_output" | jq -r '.ping.latency')
 
         # Handle packet loss: check if it's available and numeric
-        # Try to get packetLoss from the top level first
         packet_loss_raw=$(echo "$json_output" | jq -r '.packetLoss')
-        
-        # If not found at the top level (null or empty), try looking under .ping
-        if [[ "$packet_loss_raw" == "null" || -z "$packet_loss_raw" ]]; then
-            packet_loss_raw=$(echo "$json_output" | jq -r '.ping.packetLoss')
-        fi
-
         if [[ "$packet_loss_raw" == "null" || -z "$packet_loss_raw" ]]; then
             formatted_loss="N/A"
             # Do not accumulate for N/A values in TOTAL_PACKET_LOSS_SUM or SPEEDTEST_SUCCESS_COUNT
@@ -1414,7 +1386,7 @@ print_end_time() {
 }
 
 print_intro() {
-    printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "%-75s\n" "-" | sed 's/\s/-/g'
     printf ' Region: %s  https://bench.laset.com %s %s \n' "$region_name" "$bench_v" "$bench_d" | tee -a "$log"
     printf " Usage : curl -sL bench.laset.com | bash -s -- -%s\n" "$region_name" | tee -a "$log"
 }
@@ -1488,7 +1460,6 @@ cleanup() {
     rm -f ip_json.json;
     rm -f geekbench_claim.url;
     rm -rf geekbench;
-    # rm -f "$PACKET_LOSS_DEBUG_LOG" # This line is intentionally removed to keep the log file
 }
 
 bench_all(){
