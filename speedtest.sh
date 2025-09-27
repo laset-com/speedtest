@@ -544,15 +544,15 @@ print_speedtest_au() {
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '1267' 'Australia, Sydney (Optus)     '
-    speed_test '2225' 'Australia, Melbourne (Telstra)'
-    speed_test '2604' 'Australia, Brisbane (Telstra) '
-    speed_test '18247' 'Australia, Adelaide (Vocus)   '
-    speed_test '22006' 'Australia, Hobart (TasmaNet)  '
+    speed_test '25134' 'Australia, Melbourne (Leaptel)'
+    speed_test '13276' 'Australia, Brisbane (Exetel)  '
+    #speed_test '18247' 'Australia, Adelaide (Vocus)   '
+    speed_test '18712' 'Australia, Hobart (Telstra)   '
     speed_test '22036' 'Australia, Darwin (Telstra)   '
-    speed_test '2627' 'Australia, Perth (Telstra)    '
-    speed_test '5539' 'NZ, Auckland (2degrees)       '
+    speed_test '17109' 'Australia, Perth (Pentanet)   '
+    speed_test '38177' 'NZ, Auckland (Sky Broadband)  '
     speed_test '11326' 'NZ, Wellington (Spark)        '
-    speed_test '4934' 'NZ, Christchurch (Vodafone)   '
+    speed_test '4934' 'NZ, Christchurch (One NZ)      '
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -571,14 +571,14 @@ print_speedtest_ukraine() {
     #speed_test '29259' 'Ukraine, Lviv (KyivStar)      '
     #speed_test '2445' 'Ukraine, Lviv (KOMiTEX)       '
     speed_test '3022' 'Ukraine, Uzhgorod (TransCom)  '
-    speed_test '19332' 'Ukraine, Chernivtsi (C.T.Net) '
-    speed_test '3861' 'Ukraine, Zhytomyr (DKS)       '
+    speed_test '19332' 'Ukraine, Chernivtsi Citynet)  '
+    #speed_test '3861' 'Ukraine, Zhytomyr (DKS)       '
     speed_test '8633' 'Ukraine, Cherkasy (McLaut)    '
     speed_test '20285' 'Ukraine, Kharkiv (Maxnet)     '
-    speed_test '20953' 'Ukraine, Dnipro (Trifle)      '
-    speed_test '2796' 'Ukraine, Odesa (Black Sea)    '
-    speed_test '26725' 'Ukraine, Mariupol (CityLine)  '
-    speed_test '21617' 'Ukraine, Yalta (Yaltanet)     '
+    speed_test '23620' 'Ukraine, Dnipro (Fregat)      '
+    speed_test '31295' 'Ukraine, Odesa (OptoLAN)      '
+    #speed_test '26725' 'Ukraine, Mariupol (CityLine)  '
+    #speed_test '21617' 'Ukraine, Yalta (Yaltanet)     '
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -608,14 +608,14 @@ print_speedtest_meast() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '610' 'Cyprus, Limassol (PrimeTel)   '
-    speed_test '2434' 'Israel, Haifa (013Netvision)  '
+    speed_test '31332' 'Cyprus, Nicosia (NetFlash)    '
+    speed_test '38212' 'Israel, Tel Aviv (Bezeq)      '
     speed_test '1689' 'Egypt, Cairo (Vodafone)       '
     speed_test '9137' 'Lebanon, Tripoli (Be-Wise)    '
-    speed_test '22129' 'UAE, Dubai (i3D)              '
-    speed_test '24742' 'Qatar, Doha (Ooredoo)         '
+    speed_test '17336' 'UAE, Dubai (e&amp; UAE)       '
+    speed_test '24742' 'Qatar, Al Rayyan (Ooredoo)    '
     speed_test '608' 'SA, Riyadh (STC)              '
-    speed_test '1912' 'Bahrain, Manama (Zain)        '
+    #speed_test '1912' 'Bahrain, Manama (Zain)        '
     speed_test '18512' 'Iran, Tehran (MCI)            '
 
     print_total_traffic # Print total traffic after all speed tests
@@ -630,9 +630,13 @@ print_speedtest_china() {
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '5396' 'Suzhou (China Telecom 5G)     '
-    speed_test '26352' 'Nanjing (China Telecom 5G)    '
+    speed_test '16204' 'Suzhou (JSQY)                 '
+    speed_test '2444' 'Shanghai (China Unicom 5G)    '
     speed_test '71313' 'Xuzhou (中国电信)              '
     speed_test '36663' 'Zhenjiang (China Telecom 5G)  '
+    speed_test '59387' 'NingBo (浙江电信)             '
+    speed_test '59386' 'HangZhou (浙江电信)           '
+    speed_test '43752' 'Beijing (BJ Unicom)          '
 
     print_total_traffic # Print total traffic after all speed tests
 }
