@@ -675,6 +675,10 @@ geekbench4() {
     else
         STEAL_PERCENT="0"
     fi
+    # Convert "0.00" to "0" for display
+    if [[ "$STEAL_PERCENT" == "0.00" ]]; then
+        STEAL_PERCENT="0"
+    fi
     
     # Ensure scores are treated as numbers for comparison
     local single_score_num=$(echo "$GEEKBENCH_SCORES_SINGLE" | tr -cd '0-9.')
@@ -757,6 +761,10 @@ geekbench5() {
     else
         STEAL_PERCENT="0"
     fi
+    # Convert "0.00" to "0" for display
+    if [[ "$STEAL_PERCENT" == "0.00" ]]; then
+        STEAL_PERCENT="0"
+    fi
     
     # Ensure scores are treated as numbers for comparison
     local single_score_num=$(echo "$GEEKBENCH_SCORES_SINGLE" | tr -cd '0-9.')
@@ -837,6 +845,10 @@ geekbench6() {
     if [[ $total_diff -gt 0 ]]; then
         STEAL_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
     else
+        STEAL_PERCENT="0"
+    fi
+    # Convert "0.00" to "0" for display
+    if [[ "$STEAL_PERCENT" == "0.00" ]]; then
         STEAL_PERCENT="0"
     fi
     
@@ -1249,6 +1261,10 @@ cpubench() {
         
         # Save average steal time value
         steal_avg=$(awk "BEGIN {printf \"%.2f\", ($steal_before + $steal_after) / 2}")
+        # Convert "0.00" to "0" for display
+        if [[ "$steal_avg" == "0.00" ]]; then
+            steal_avg="0"
+        fi
         
         if [[ $io != *"."* ]]; then
             printf "%4i %s (Steal: %s%%)" "${io% *}" "${io##* }" "$steal_avg"
