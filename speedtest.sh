@@ -261,7 +261,8 @@ speed_test(){
     local REDownload_mbps
     local reupload_mbps
     local relatency
-    local packet_loss # New variable for packet loss
+    local packet_loss_raw # New variable to store the raw value from jq
+    local formatted_loss # New variable to store the string for display
     local current_result_url
     local download_total_bytes
     local upload_total_bytes
@@ -282,7 +283,19 @@ speed_test(){
         REDownload_mbps=$(echo "$json_output" | jq -r '.download.bandwidth / 125000') # Convert bytes/sec to Mbps
         reupload_mbps=$(echo "$json_output" | jq -r '.upload.bandwidth / 125000')   # Convert bytes/sec to Mbps
         relatency=$(echo "$json_output" | jq -r '.ping.latency')
-        packet_loss=$(echo "$json_output" | jq -r '.ping.packetLoss // 0') # Extract packet loss, default to 0 if null/missing
+
+        # Handle packet loss: check if it's available and numeric
+        packet_loss_raw=$(echo "$json_output" | jq -r '.ping.packetLoss')
+        if [[ "$packet_loss_raw" == "null" || -z "$packet_loss_raw" ]]; then
+            formatted_loss="N/A"
+            # Do not accumulate for N/A values in TOTAL_PACKET_LOSS_SUM or SPEEDTEST_SUCCESS_COUNT
+        else
+            # It's a numeric value, format it and accumulate
+            formatted_loss=$(printf "%.2f%%" "$packet_loss_raw")
+            TOTAL_PACKET_LOSS_SUM=$(awk "BEGIN {printf \"%.2f\", $TOTAL_PACKET_LOSS_SUM + $packet_loss_raw}")
+            SPEEDTEST_SUCCESS_COUNT=$((SPEEDTEST_SUCCESS_COUNT + 1))
+        fi
+
         current_result_url=$(echo "$json_output" | jq -r '.result.url // ""') # Use // "" to handle null/missing URL
 
         download_total_bytes=$(echo "$json_output" | jq -r '.download.bytes // 0')
@@ -296,13 +309,6 @@ speed_test(){
         TOTAL_DOWNLOAD_TRAFFIC_MB=$(awk "BEGIN {printf \"%.2f\", $TOTAL_DOWNLOAD_TRAFFIC_MB + $download_mb}")
         TOTAL_UPLOAD_TRAFFIC_MB=$(awk "BEGIN {printf \"%.2f\", $TOTAL_UPLOAD_TRAFFIC_MB + $upload_mb}")
 
-        # Accumulate in new global variables for average speeds
-        # TOTAL_DOWNLOAD_MBPS_SUM=$(awk "BEGIN {printf \"%.2f\", $TOTAL_DOWNLOAD_MBPS_SUM + $REDownload_mbps}")
-        # TOTAL_UPLOAD_MBPS_SUM=$(awk "BEGIN {printf \"%.2f\", $TOTAL_UPLOAD_MBPS_SUM + $reupload_mbps}")
-        # TOTAL_PING_LATENCY_SUM=$(awk "BEGIN {printf \"%.2f\", $TOTAL_PING_LATENCY_SUM + $relatency}")
-        TOTAL_PACKET_LOSS_SUM=$(awk "BEGIN {printf \"%.2f\", $TOTAL_PACKET_LOSS_SUM + $packet_loss}")
-        SPEEDTEST_SUCCESS_COUNT=$((SPEEDTEST_SUCCESS_COUNT + 1))
-
         # Store the last result URL globally if it's a "Nearby" test (or the first one)
         if [[ $1 == '' ]]; then
             LAST_SPEEDTEST_URL="$current_result_url"
@@ -312,7 +318,7 @@ speed_test(){
         local formatted_download=$(printf "%.2f Mbps" "$REDownload_mbps")
         local formatted_upload=$(printf "%.2f Mbps" "$reupload_mbps")
         local formatted_latency=$(printf "%.2f ms" "$relatency")
-        local formatted_loss=$(printf "%.2f%%" "$packet_loss")
+        # formatted_loss is already set above
 
         # Original script had a check for latency > 50 and adding an asterisk.
         # Now, the asterisk is only for "Nearby" tests.
@@ -325,19 +331,12 @@ speed_test(){
             printf "%-30s  %12s  %12s  %9s  %6s\n" " ${nodeName}" "${formatted_upload}" "${formatted_download}" "${formatted_latency}" "${formatted_loss}" | tee -a "$log"
         else
             # If download speed is 0 or less, it's likely an error or very poor connection
-            printf "%-30s  %12s  %12s  %9s  %6s\n" " ${nodeName}" "ERROR" "ERROR" "ERROR" "ERROR" | tee -a "$log"
-            # Removed the detailed error output as requested
-            # echo "--- Speedtest CLI raw output for ${nodeName} (Error/Zero Speed) ---" | tee -a "$log"
-            # echo "$json_output" | tee -a "$log"
-            # echo "-----------------------------------------------------" | tee -a "$log"
+            # Instead of printing ERROR, we just return to skip this server
+            return 0 # Exit the function for this server
         fi
     else
-        local cerror="ERROR"
-        printf "%-30s  %12s  %12s  %9s  %6s\n" " ${nodeName}" "ERROR" "ERROR" "ERROR" "ERROR" | tee -a "$log"
-        # Removed the detailed error output as requested
-        # echo "--- Speedtest CLI raw output for ${nodeName} (Error) ---" | tee -a "$log"
-        # echo "$json_output" | tee -a "$log"
-        # echo "-----------------------------------------------------" | tee -a "$log"
+        # If the output is not valid JSON or doesn't contain expected data, skip this server
+        return 0 # Exit the function for this server
     fi
 }
 
