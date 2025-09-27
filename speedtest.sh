@@ -48,6 +48,9 @@ LAST_SPEEDTEST_URL="" # Global variable to store the last Speedtest result URL
 TOTAL_DOWNLOAD_TRAFFIC_MB=0
 TOTAL_UPLOAD_TRAFFIC_MB=0
 
+# New global variable for debugging packet loss JSON output
+PACKET_LOSS_DEBUG_LOG="$HOME/speedtest_packet_loss_debug.log"
+
 # New global variables for average speedtest results
 # TOTAL_DOWNLOAD_MBPS_SUM=0
 # TOTAL_UPLOAD_MBPS_SUM=0
@@ -252,6 +255,17 @@ convert_to_mb() {
     echo "$mb_value"
 }
 
+# New function to log raw JSON output for debugging packet loss
+log_speedtest_json_output() {
+    local json_data=$1
+    local node_name=$2
+
+    echo "--- Start Speedtest JSON Output for $node_name ($(date +"%Y-%m-%d %H:%M:%S %Z")) ---" >> "$PACKET_LOSS_DEBUG_LOG"
+    echo "$json_data" >> "$PACKET_LOSS_DEBUG_LOG"
+    echo "--- End Speedtest JSON Output for $node_name ---" >> "$PACKET_LOSS_DEBUG_LOG"
+    echo "" >> "$PACKET_LOSS_DEBUG_LOG"
+}
+
 speed_test(){
     local nodeName=$2
     # Use --accept-license --accept-gdpr for the first run of the official Speedtest CLI
@@ -277,15 +291,26 @@ speed_test(){
         json_output=$($speedtest_cmd -s "$1" 2>&1)
     fi
 
+    # Log the raw JSON output to the debug file
+    log_speedtest_json_output "$json_output" "$nodeName"
+
     # Check if the output is valid JSON and contains expected data
     if echo "$json_output" | jq -e '.type == "result"' >/dev/null 2>&1; then
         # Parse JSON output
-        REDownload_mbps=$(echo "$json_output" | jq -r '.download.bandwidth / 125000') # Convert bytes/sec to Mbps
-        reupload_mbps=$(echo "$json_output" | jq -r '.upload.bandwidth / 125000')   # Convert bytes/sec to Mbps
+        # Corrected jq paths to handle null/missing bandwidth values
+        REDownload_mbps=$(echo "$json_output" | jq -r '(.download.bandwidth // 0) / 125000') # Convert bytes/sec to Mbps
+        reupload_mbps=$(echo "$json_output" | jq -r '(.upload.bandwidth // 0) / 125000')   # Convert bytes/sec to Mbps
         relatency=$(echo "$json_output" | jq -r '.ping.latency')
 
         # Handle packet loss: check if it's available and numeric
+        # Try to get packetLoss from the top level first
         packet_loss_raw=$(echo "$json_output" | jq -r '.packetLoss')
+        
+        # If not found at the top level (null or empty), try looking under .ping
+        if [[ "$packet_loss_raw" == "null" || -z "$packet_loss_raw" ]]; then
+            packet_loss_raw=$(echo "$json_output" | jq -r '.ping.packetLoss')
+        fi
+
         if [[ "$packet_loss_raw" == "null" || -z "$packet_loss_raw" ]]; then
             formatted_loss="N/A"
             # Do not accumulate for N/A values in TOTAL_PACKET_LOSS_SUM or SPEEDTEST_SUCCESS_COUNT
@@ -901,7 +926,7 @@ calc_disk() {
         [ "${size}" == "0" ] && size_t=0 || size_t=`echo "${size:0:${#size}-1}"`
         [ "`echo "${size:(-1)}"`" == "K" ] && size=0
         [ "`echo "${size:(-1)}"`" == "M" ] && size=$( awk 'BEGIN{printf "%.1f", '$size_t' / 1024}' )
-        [ "`echo "${size:(-1)}"`" == "T" ] && size=$( awk 'BEGIN{printf "%.1f", '$size_t' * 1024}' )
+        [ "`echo "${size:(-1)}"`" == "T" ] ] && size=$( awk 'BEGIN{printf "%.1f", '$size_t' * 1024}' )
         [ "`echo "${size:(-1)}"`" == "G" ] && size=${size_t}
         total_size=$( awk 'BEGIN{printf "%.1f", '$total_size' + '$size'}' )
     done
@@ -1460,6 +1485,7 @@ cleanup() {
     rm -f ip_json.json;
     rm -f geekbench_claim.url;
     rm -rf geekbench;
+    #rm -f "$PACKET_LOSS_DEBUG_LOG" # Clean up the debug log file
 }
 
 bench_all(){
