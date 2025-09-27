@@ -44,9 +44,6 @@ benchram="$HOME/tmpbenchram"
 NULL="/dev/null"
 LAST_SPEEDTEST_URL="" # Global variable to store the last Speedtest result URL
 
-# Global variable for the temporary packet loss log file
-PACKET_LOSS_DEBUG_LOG="$HOME/packetLoss.log"
-
 # Global variables for total traffic
 TOTAL_DOWNLOAD_TRAFFIC_MB=0
 TOTAL_UPLOAD_TRAFFIC_MB=0
@@ -202,8 +199,8 @@ benchinit() {
             error_exit "Failed to install Speedtest CLI. Please check the log for details."
         else
             printf " Speedtest CLI installed successfully.\r" >/dev/tty
-            # Clear the line completely by printing spaces, without adding a newline
-            printf "%-80s" "" >/dev/tty # Removed \n here
+            # Clear the line completely by printing spaces and then a newline
+            printf "%-80s\n" "" >/dev/tty # Ensure the line is fully cleared in the terminal
         fi
     fi
 
@@ -255,16 +252,6 @@ convert_to_mb() {
     echo "$mb_value"
 }
 
-# New function to log raw JSON output for debugging packet loss
-log_speedtest_json_output() {
-    local json_data=$1
-    local node_name=$2
-    echo "--- Start Speedtest JSON Output for $node_name ($(date +%Y-%m-%d" "%H:%M:%S %Z")) ---" >> "$PACKET_LOSS_DEBUG_LOG"
-    echo "$json_data" >> "$PACKET_LOSS_DEBUG_LOG"
-    echo "--- End Speedtest JSON Output for $node_name ---" >> "$PACKET_LOSS_DEBUG_LOG"
-    echo "" >> "$PACKET_LOSS_DEBUG_LOG"
-}
-
 speed_test(){
     local nodeName=$2
     # Use --accept-license --accept-gdpr for the first run of the official Speedtest CLI
@@ -290,26 +277,15 @@ speed_test(){
         json_output=$($speedtest_cmd -s "$1" 2>&1)
     fi
 
-    # Log the raw JSON output to the debug file
-    log_speedtest_json_output "$json_output" "$nodeName"
-
     # Check if the output is valid JSON and contains expected data
     if echo "$json_output" | jq -e '.type == "result"' >/dev/null 2>&1; then
         # Parse JSON output
-        # Corrected jq paths to handle null/missing bandwidth values
-        REDownload_mbps=$(echo "$json_output" | jq -r '(.download.bandwidth // 0) / 125000') # Convert bytes/sec to Mbps
-        reupload_mbps=$(echo "$json_output" | jq -r '(.upload.bandwidth // 0) / 125000')   # Convert bytes/sec to Mbps
+        REDownload_mbps=$(echo "$json_output" | jq -r '.download.bandwidth / 125000') # Convert bytes/sec to Mbps
+        reupload_mbps=$(echo "$json_output" | jq -r '.upload.bandwidth / 125000')   # Convert bytes/sec to Mbps
         relatency=$(echo "$json_output" | jq -r '.ping.latency')
 
         # Handle packet loss: check if it's available and numeric
-        # Try to get packetLoss from the top level first
         packet_loss_raw=$(echo "$json_output" | jq -r '.packetLoss')
-        
-        # If not found at the top level (null or empty), try looking under .ping
-        if [[ "$packet_loss_raw" == "null" || -z "$packet_loss_raw" ]]; then
-            packet_loss_raw=$(echo "$json_output" | jq -r '.ping.packetLoss')
-        fi
-
         if [[ "$packet_loss_raw" == "null" || -z "$packet_loss_raw" ]]; then
             formatted_loss="N/A"
             # Do not accumulate for N/A values in TOTAL_PACKET_LOSS_SUM or SPEEDTEST_SUCCESS_COUNT
@@ -673,7 +649,6 @@ geekbench4() {
     echo "" | tee -a "$log"
     echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..."
 
-
     # Start steal time measurement
     local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
     local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
@@ -687,7 +662,6 @@ geekbench4() {
     GEEKBENCH_URL=$(echo "$GEEKBENCH_URL" | awk '{ print $1 }')
     sleep 20
     GEEKBENCH_SCORES=$(curl -s "$GEEKBENCH_URL" | grep "span class='score'")
-
     # Corrected parsing for single and multi-core scores
     GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES" | head -n 1 | awk -v FS="(>|<)" '{ print $3 }')
     GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | tail -n 1 | awk -v FS="(>|<)" '{ print $3 }')
@@ -751,7 +725,6 @@ geekbench5() {
     echo "" | tee -a "$log"
     echo -e " Performing Geekbench v5 CPU Benchmark test. Please wait..."
 
-
     # Start steal time measurement
     local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
     local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
@@ -771,7 +744,6 @@ geekbench5() {
     GEEKBENCH_URL=$(echo "$GEEKBENCH_URL" | awk '{ print $1 }')
     sleep 20
     GEEKBENCH_SCORES=$(curl -s "$GEEKBENCH_URL" | grep "div class='score'")
-
     # Corrected parsing for single and multi-core scores
     GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES" | head -n 1 | awk -v FS="(>|<)" '{ print $3 }')
     GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | tail -n 1 | awk -v FS="(>|<)" '{ print $3 }')
@@ -835,7 +807,6 @@ geekbench6() {
     echo "" | tee -a "$log"
     echo -e " Performing Geekbench v6 CPU Benchmark test. Please wait..."
 
-
     # Start steal time measurement
     local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
     local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
@@ -855,7 +826,6 @@ geekbench6() {
     GEEKBENCH_URL=$(echo "$GEEKBENCH_URL" | awk '{ print $1 }')
     sleep 15
     GEEKBENCH_SCORES=$(curl -s "$GEEKBENCH_URL" | grep "div class='score'")
-
     # Corrected parsing for single and multi-core scores
     GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES" | head -n 1 | awk -v FS="(>|<)" '{ print $3 }')
     GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | tail -n 1 | awk -v FS="(>|<)" '{ print $3 }')
@@ -1088,7 +1058,7 @@ virt_check(){
                 virtual="Xen"
             # Check for virtualization via /sys interface
             elif [[ -f /sys/class/dmi/id/product_name ]]; then
-                local product_name=$(cat /sys/class/dmi/id/product_name 2>/dev/null)
+                local product_name=$(cat /sys/class/dmi/id/product_name 2>"$NULL")
                 if [[ "$product_name" == *"Virtual"* || "$product_name" == *"VM"* || "$product_name" == *"Cloud"* ]]; then
                     virtual="VM"
                 else
@@ -1490,7 +1460,6 @@ cleanup() {
     rm -f ip_json.json;
     rm -f geekbench_claim.url;
     rm -rf geekbench;
-    # rm -f "$PACKET_LOSS_DEBUG_LOG" # This line is intentionally removed to keep the log file
 }
 
 bench_all(){
