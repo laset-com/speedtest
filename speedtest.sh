@@ -204,8 +204,7 @@ benchinit() {
             error_exit "Failed to install Speedtest CLI. Please check the log for details."
         else
             printf " Speedtest CLI installed successfully.\r" >/dev/tty
-            # Clear the line completely by printing spaces and then a newline
-            printf "%-80s\n" "" >/dev/tty # Ensure the line is fully cleared in the terminal
+            printf "%-80s" "" >/dev/tty # Ensure the line is fully cleared in the terminal
         fi
     fi
 
@@ -446,13 +445,13 @@ print_speedtest_in() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '29658' 'India, New Delhi (Tata Play)  '
-    speed_test '23647' 'India, Mumbai (Tata Play)     '
-    speed_test '25961' 'India, Nagpur (UCN Fiber)     '
-    speed_test '34084' 'India, Patna (SMARTCONNECT)   '
-    speed_test '12221' 'India, Kolkata (Alliance)     '
+    speed_test '29658' 'India, New Delhi (Tata Play)   '
+    speed_test '23647' 'India, Mumbai (Tata Play)      '
+    speed_test '25961' 'India, Nagpur (UCN Fiber)      '
+    speed_test '34084' 'India, Patna (SMARTCONNECT)    '
+    speed_test '12221' 'India, Kolkata (Alliance)      '
     speed_test '27524' 'India, Visakhapatnam (Alliance)'
-    speed_test '2679' 'India, Hyderabad (Airtel)     '
+    speed_test '2679' 'India, Hyderabad (Airtel)      '
     speed_test '10024' 'India, Madurai (Niss Broadband)'
 
     print_total_traffic # Print total traffic after all speed tests
@@ -556,7 +555,7 @@ print_speedtest_au() {
     speed_test '17109' 'Australia, Perth (Pentanet)   '
     speed_test '38177' 'NZ, Auckland (Sky Broadband)  '
     speed_test '11326' 'NZ, Wellington (Spark)        '
-    speed_test '4934' 'NZ, Christchurch (One NZ)      '
+    speed_test '4934' 'NZ, Christchurch (One NZ)     '
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -983,8 +982,6 @@ ip_info4(){
     #echo -e " Region       : $region" | tee -a $log
     echo -e " ASN & ISP    : $asn, $isp / $org" | tee -a "$log"
     #echo -e " Organization : $org" | tee -a $log
-
-    # Removed redundant rm -rf tools.py, it's handled in cleanup
 }
 
 machine_location(){
@@ -999,8 +996,6 @@ machine_location(){
 
     echo -e " Machine location: $country, $city ($region)"
     echo -e " ISP & ORG: $asn, $isp / $org"
-
-    # Removed redundant rm -rf tools.py, it's handled in cleanup
 }
 
 virt_check(){
@@ -1086,14 +1081,6 @@ power_time_check(){
 }
 
 freedisk() {
-    # Check available disk space
-    #spacename=$( df -m . | awk 'NR==2 {print $1}' )
-    #spacenamelength=$(echo ${spacename} | awk '{print length($0)}')
-    #if [[ $spacenamelength -gt 20 ]]; then
-       #	freespace=$( df -m . | awk 'NR==3 {print $3}' )
-    #else
-    #	freespace=$( df -m . | awk 'NR==2 {print $4}' )
-    #fi
     freespace=$( df -m . | awk 'NR==2 {print $4}' )
     if [[ $freespace == "" ]]; then
         freespace=$( df -m . | awk 'NR==3 {print $3}' )
