@@ -285,7 +285,7 @@ speed_test(){
         relatency=$(echo "$json_output" | jq -r '.ping.latency')
 
         # Handle packet loss: check if it's available and numeric
-        packet_loss_raw=$(echo "$json_output" | jq -r '.ping.packetLoss')
+        packet_loss_raw=$(echo "$json_output" | jq -r '.packetLoss')
         if [[ "$packet_loss_raw" == "null" || -z "$packet_loss_raw" ]]; then
             formatted_loss="N/A"
             # Do not accumulate for N/A values in TOTAL_PACKET_LOSS_SUM or SPEEDTEST_SUCCESS_COUNT
@@ -631,10 +631,10 @@ print_speedtest_china() {
     speed_test '5396' 'Suzhou (China Telecom 5G)     '
     speed_test '16204' 'Suzhou (JSQY)                 '
     speed_test '2444' 'Shanghai (China Unicom 5G)    '
-    speed_test '71313' 'Xuzhou (中国电信)              '
+    speed_test '71313' 'Xuzhou (中国电信)             '
     speed_test '36663' 'Zhenjiang (China Telecom 5G)  '
-    speed_test '59387' 'NingBo (浙江电信)              '
-    speed_test '59386' 'HangZhou (浙江电信)            '
+    speed_test '59387' 'NingBo (浙江电信)             '
+    speed_test '59386' 'HangZhou (浙江电信)           '
     speed_test '43752' 'Beijing (BJ Unicom)           '
 
     print_total_traffic # Print total traffic after all speed tests
