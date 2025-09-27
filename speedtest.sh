@@ -248,7 +248,8 @@ convert_to_mb() {
 }
 
 speed_test(){
-    local nodeName=$2
+    local server_id="$1" # Using server_id for clarity
+    local nodeName="$2"
     # Use --accept-license --accept-gdpr for the first run of the official Speedtest CLI
     # Use --format=json to get machine-readable output
     local speedtest_cmd="speedtest --accept-license --accept-gdpr --format=json"
@@ -264,75 +265,104 @@ speed_test(){
     local download_mb
     local upload_mb
 
-    if [[ $1 == '' ]]; then
-        # Default test (nearby server)
-        json_output=$($speedtest_cmd 2>&1)
-    else
-        # Server-specific test
-        json_output=$($speedtest_cmd -s "$1" 2>&1)
-    fi
+    local max_retries=3
+    local retry_count=0
+    local test_successful=false
 
-    # Check if the output is valid JSON and contains expected data
-    if echo "$json_output" | jq -e '.type == "result"' >/dev/null 2>&1; then
-        # Parse JSON output
-        REDownload_mbps=$(echo "$json_output" | jq -r '.download.bandwidth / 125000') # Convert bytes/sec to Mbps
-        reupload_mbps=$(echo "$json_output" | jq -r '.upload.bandwidth / 125000')   # Convert bytes/sec to Mbps
-        relatency=$(echo "$json_output" | jq -r '.ping.latency')
+    # Retry logic only for the "Nearby" server (when server_id is empty)
+    if [[ "$server_id" == '' ]]; then
+        while [ "$retry_count" -lt "$max_retries" ]; do
+            json_output=$($speedtest_cmd 2>&1)
 
-        # Handle packet loss: check if it's available and numeric
-        packet_loss_raw=$(echo "$json_output" | jq -r '.packetLoss')
-        if [[ "$packet_loss_raw" == "null" || -z "$packet_loss_raw" ]]; then
-            formatted_loss="N/A"
-            # Do not accumulate for N/A values in TOTAL_PACKET_LOSS_SUM or SPEEDTEST_SUCCESS_COUNT
-        else
-            # It's a numeric value, format it and accumulate
-            formatted_loss=$(printf "%.2f%%" "$packet_loss_raw")
-            TOTAL_PACKET_LOSS_SUM=$(awk "BEGIN {printf \"%.2f\", $TOTAL_PACKET_LOSS_SUM + $packet_loss_raw}")
-            SPEEDTEST_SUCCESS_COUNT=$((SPEEDTEST_SUCCESS_COUNT + 1))
-        fi
+            if echo "$json_output" | jq -e '.type == "result"' >/dev/null 2>&1; then
+                # Check download speed to ensure the test was successful
+                REDownload_mbps=$(echo "$json_output" | jq -r '.download.bandwidth / 125000')
+                if (( $(echo "$REDownload_mbps > 0" | bc -l) )); then
+                    test_successful=true
+                    break # Success, exit retry loop
+                fi
+            fi
+            
+            retry_count=$((retry_count + 1))
+            if [ "$retry_count" -lt "$max_retries" ]; then
+                echo "  ${nodeName} speed test failed, retrying... (Attempt $((retry_count))/$max_retries)" | tee -a "$log"
+                sleep 5 # Wait before retrying
+            fi
+        done
 
-        current_result_url=$(echo "$json_output" | jq -r '.result.url // ""') # Use // "" to handle null/missing URL
-
-        download_total_bytes=$(echo "$json_output" | jq -r '.download.bytes // 0')
-        upload_total_bytes=$(echo "$json_output" | jq -r '.upload.bytes // 0')
-
-        # Convert total bytes to MB (decimal)
-        download_mb=$(awk "BEGIN {printf \"%.2f\", $download_total_bytes / 1000000}")
-        upload_mb=$(awk "BEGIN {printf \"%.2f\", $upload_total_bytes / 1000000}")
-
-        # Accumulate in global variables for total traffic
-        TOTAL_DOWNLOAD_TRAFFIC_MB=$(awk "BEGIN {printf \"%.2f\", $TOTAL_DOWNLOAD_TRAFFIC_MB + $download_mb}")
-        TOTAL_UPLOAD_TRAFFIC_MB=$(awk "BEGIN {printf \"%.2f\", $TOTAL_UPLOAD_TRAFFIC_MB + $upload_mb}")
-
-        # Store the last result URL globally if it's a "Nearby" test (or the first one)
-        if [[ $1 == '' ]]; then
-            LAST_SPEEDTEST_URL="$current_result_url"
-        fi
-
-        # Format speeds and latency for display
-        local formatted_download=$(printf "%.2f Mbps" "$REDownload_mbps")
-        local formatted_upload=$(printf "%.2f Mbps" "$reupload_mbps")
-        local formatted_latency=$(printf "%.2f ms" "$relatency")
-        # formatted_loss is already set above
-
-        # Original script had a check for latency > 50 and adding an asterisk.
-        # Now, the asterisk is only for "Nearby" tests.
-        if [[ "$nodeName" == *"Nearby"* ]] && (( $(echo "$relatency > 50" | bc -l) )); then
-            formatted_latency="*"${formatted_latency}
-        fi
-
-        # Check if download speed is greater than 0 for printing
-        if (( $(echo "$REDownload_mbps > 0" | bc -l) )); then
-            printf "%-30s  %12s  %12s  %9s  %6s\n" " ${nodeName}" "${formatted_upload}" "${formatted_download}" "${formatted_latency}" "${formatted_loss}" | tee -a "$log"
-        else
-            # If download speed is 0 or less, it's likely an error or very poor connection
-            # Instead of printing ERROR, we just return to skip this server
-            return 0 # Exit the function for this server
+        if ! "$test_successful"; then
+            # If all retries for Nearby failed, simply skip this server without printing N/A
+            return 0 # Return 0 to indicate skipping
         fi
     else
-        # If the output is not valid JSON or doesn't contain expected data, skip this server
-        return 0 # Exit the function for this server
+        # For specific server tests, run only once
+        json_output=$($speedtest_cmd -s "$server_id" 2>&1)
+        if ! echo "$json_output" | jq -e '.type == "result"' >/dev/null 2>&1; then
+            # If JSON is invalid, simply skip this server
+            return 0 # Return 0 to indicate skipping
+        fi
+        REDownload_mbps=$(echo "$json_output" | jq -r '.download.bandwidth / 125000')
+        if ! (( $(echo "$REDownload_mbps > 0" | bc -l) )); then
+            # If download speed is 0 or less, simply skip this server
+            return 0 # Return 0 to indicate skipping
+        fi
     fi
+
+    # If we reached here, the test was successful (Nearby after retries or specific server on first try)
+    # Continue parsing and printing results.
+
+    REDownload_mbps=$(echo "$json_output" | jq -r '.download.bandwidth / 125000') # Convert bytes/sec to Mbps
+    reupload_mbps=$(echo "$json_output" | jq -r '.upload.bandwidth / 125000')   # Convert bytes/sec to Mbps
+    relatency=$(echo "$json_output" | jq -r '.ping.latency')
+
+    # Handle packet loss: check if it's available and numeric
+    packet_loss_raw=$(echo "$json_output" | jq -r '.packetLoss')
+    if [[ "$packet_loss_raw" == "null" || -z "$packet_loss_raw" ]]; then
+        formatted_loss="N/A"
+        # Do not accumulate for N/A values in TOTAL_PACKET_LOSS_SUM or SPEEDTEST_SUCCESS_COUNT
+    else
+        # It's a numeric value, format it
+        formatted_loss=$(printf "%.2f%%" "$packet_loss_raw")
+        # If the formatted loss is "0.00%", change it to "0%"
+        if [[ "$formatted_loss" == "0.00%" ]]; then
+            formatted_loss="0%"
+        fi
+        TOTAL_PACKET_LOSS_SUM=$(awk "BEGIN {printf \"%.2f\", $TOTAL_PACKET_LOSS_SUM + $packet_loss_raw}")
+        SPEEDTEST_SUCCESS_COUNT=$((SPEEDTEST_SUCCESS_COUNT + 1))
+    fi
+
+    current_result_url=$(echo "$json_output" | jq -r '.result.url // ""') # Use // "" to handle null/missing URL
+
+    download_total_bytes=$(echo "$json_output" | jq -r '.download.bytes // 0')
+    upload_total_bytes=$(echo "$json_output" | jq -r '.upload.bytes // 0')
+
+    # Convert total bytes to MB (decimal)
+    download_mb=$(awk "BEGIN {printf \"%.2f\", $download_total_bytes / 1000000}")
+    upload_mb=$(awk "BEGIN {printf \"%.2f\", $upload_total_bytes / 1000000}")
+
+    # Accumulate in global variables for total traffic
+    TOTAL_DOWNLOAD_TRAFFIC_MB=$(awk "BEGIN {printf \"%.2f\", $TOTAL_DOWNLOAD_TRAFFIC_MB + $download_mb}")
+    TOTAL_UPLOAD_TRAFFIC_MB=$(awk "BEGIN {printf \"%.2f\", $TOTAL_UPLOAD_TRAFFIC_MB + $upload_mb}")
+
+    # Store the last result URL globally if it's a "Nearby" test (or the first one)
+    if [[ "$server_id" == '' ]]; then
+        LAST_SPEEDTEST_URL="$current_result_url"
+    fi
+
+    # Format speeds and latency for display
+    local formatted_download=$(printf "%.2f Mbps" "$REDownload_mbps")
+    local formatted_upload=$(printf "%.2f Mbps" "$reupload_mbps")
+    local formatted_latency=$(printf "%.2f ms" "$relatency")
+    # formatted_loss is already set above
+
+    # Original script had a check for latency > 50 and adding an asterisk.
+    # Now, the asterisk is only for "Nearby" tests.
+    if [[ "$nodeName" == *"Nearby"* ]] && (( $(echo "$relatency > 50" | bc -l) )); then
+        formatted_latency="*"${formatted_latency}
+    fi
+
+    printf "%-30s  %12s  %12s  %9s  %6s\n" " ${nodeName}" "${formatted_upload}" "${formatted_download}" "${formatted_latency}" "${formatted_loss}" | tee -a "$log"
+    return 0 # Indicate success
 }
 
 # Function to print total traffic used
