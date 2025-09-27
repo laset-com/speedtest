@@ -379,12 +379,12 @@ print_speedtest() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '21016' 'USA, New York (Starry)        '
+    speed_test '28032' 'USA, New York (Uniti)         '
     speed_test '17384' 'USA, Chicago (Uniti)          '
     #speed_test '1763' 'USA, Houston (Comcast)        '
     #speed_test '14237' 'USA, Miami (Frontier)         '
     speed_test '18401' 'USA, Los Angeles (Uniti)      '
-    speed_test '11445' 'UK, London (Structured Com)   '
+    speed_test '43721' 'UK, London (Lit Fibre)        '
     #speed_test '27961' 'France, Paris (KEYYO)         '
     speed_test '44477' 'Germany, Frankfurt (TELE AG)  '
     #speed_test '21378' 'Spain, Madrid (MasMovil)      '
@@ -407,7 +407,7 @@ print_speedtest_usa() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '21016' 'USA, New York (Starry)        '
+    speed_test '28032' 'USA, New York (Uniti)         '
     #speed_test '1774' 'USA, Boston (Comcast)         '
     #speed_test '1775' 'USA, Baltimore, MD (Comcast)  '
     speed_test '17387' 'USA, Atlanta (Uniti)          '
@@ -462,8 +462,8 @@ print_speedtest_europe() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '11445' 'UK, London (Structured Com)   '
-    speed_test '29076' 'Netherlands, Amsterdam (XS News)'
+    speed_test '43721' 'UK, London (Lit Fibre)        '
+    speed_test '52365' 'Netherlands, Amsterdam (Odido)'
     speed_test '44477' 'Germany, Frankfurt (TELE AG)  '
     #speed_test '31470' 'Germany, Munich (Telekom)     '
     speed_test '26852' 'Sweden, Stockholm (SUNET)     '
@@ -634,9 +634,9 @@ print_speedtest_china() {
     speed_test '2444' 'Shanghai (China Unicom 5G)    '
     speed_test '71313' 'Xuzhou (中国电信)              '
     speed_test '36663' 'Zhenjiang (China Telecom 5G)  '
-    speed_test '59387' 'NingBo (浙江电信)             '
-    speed_test '59386' 'HangZhou (浙江电信)           '
-    speed_test '43752' 'Beijing (BJ Unicom)          '
+    speed_test '59387' 'NingBo (浙江电信)              '
+    speed_test '59386' 'HangZhou (浙江电信)            '
+    speed_test '43752' 'Beijing (BJ Unicom)           '
 
     print_total_traffic # Print total traffic after all speed tests
 }
