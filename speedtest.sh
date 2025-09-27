@@ -122,15 +122,6 @@ benchinit() {
     elif cat /proc/version | grep -Eqi "rocky"; then # Added Rocky Linux check for /proc/version
         release="rocky"
     fi
-
-    # check OS
-    #if [ "${release}" == "centos" ]; then
-    #                echo "Checking OS ... [ok]"
-    #else
-    #                echo "Error: This script must be run on CentOS!"
-    #		exit 1
-    #fi
-    #echo -ne "\e[1A"; echo -ne "\e[0K\r"
     
     # check root
     if [[ $EUID -ne 0 ]]; then
@@ -203,8 +194,8 @@ benchinit() {
             # Error message will be printed to terminal and logged
             error_exit "Failed to install Speedtest CLI. Please check the log for details."
         else
-            printf " Speedtest CLI installed successfully.\r" >/dev/tty
-            printf "%-80s" "" >/dev/tty # Ensure the line is fully cleared in the terminal
+            printf " Speedtest CLI installed successfully!" >/dev/tty
+            echo -ne "\e[1A"; echo -ne "\e[0K\r"
         fi
     fi
 
@@ -359,7 +350,7 @@ print_total_traffic() {
     echo "" | tee -a "$log"
     echostyle "## Statistics"
     echo "" | tee -a "$log"
-    echo -e " Total Sum        : ${total_sum_gb} GB (${total_sum_mb} MB)" | tee -a "$log"
+    echo -e " Total Traffic    : ${total_sum_gb} GB (${total_sum_mb} MB)" | tee -a "$log"
     echo -e " Total Downloaded : ${total_download_gb} GB (${TOTAL_DOWNLOAD_TRAFFIC_MB} MB)" | tee -a "$log"
     echo -e " Total Uploaded   : ${total_upload_gb} GB (${TOTAL_UPLOAD_TRAFFIC_MB} MB)" | tee -a "$log"
     echo "" | tee -a "$log"
@@ -389,7 +380,7 @@ print_speedtest() {
     speed_test '18401' 'USA, Los Angeles (Uniti)      '
     speed_test '43721' 'UK, London (Lit Fibre)        '
     #speed_test '27961' 'France, Paris (KEYYO)         '
-    speed_test '44477' 'Germany, Frankfurt (TELE AG)  '
+    speed_test '70635' 'Germany, Frankfurt (Plusnet)  '
     #speed_test '21378' 'Spain, Madrid (MasMovil)      '
     #speed_test '395' 'Italy, Rome (Unidata)         '
     speed_test '23647' 'India, Mumbai (Tata Play)     '
@@ -467,7 +458,7 @@ print_speedtest_europe() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '43721' 'UK, London (Lit Fibre)        '
     speed_test '52365' 'Netherlands, Amsterdam (Odido)'
-    speed_test '44477' 'Germany, Frankfurt (TELE AG)  '
+    speed_test '70635' 'Germany, Frankfurt (Plusnet)  '
     #speed_test '31470' 'Germany, Munich (Telekom)     '
     speed_test '26852' 'Sweden, Stockholm (SUNET)     '
     speed_test '8018' 'Norway, Oslo (NextGenTel)     '
@@ -520,20 +511,20 @@ print_speedtest_sa() {
     echo "" | tee -a "$log"
     printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-        speed_test '' 'Nearby                        '
+        speed_test '' 'Nearby                         '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '3068' 'Brazil, Sao Paulo (TIM)       '
-    #speed_test '11102' 'Brazil, Fortaleza (Connect)   '
-    #speed_test '18126' 'Brazil, Manaus (Claro)        '
-    speed_test '15018' 'Colombia, Bogota (Tigo)       '
-    #speed_test '31043' 'Ecuador, Ambato (EXTREME)     '
-    speed_test '5272' 'Peru, Lima (FIBERLUX)         '
-    speed_test '1053' 'Bolivia, La Paz (Nuevatel)    '
-    speed_test '6776' 'Paraguay, Asuncion (TEISA)    '
-    speed_test '21436' 'Chile, Santiago (Movistar)    '
+    speed_test '3068' 'Brazil, Sao Paulo (TIM)        '
+    #speed_test '11102' 'Brazil, Fortaleza (Connect)    '
+    #speed_test '18126' 'Brazil, Manaus (Claro)         '
+    speed_test '15018' 'Colombia, Bogota (Tigo)        '
+    #speed_test '31043' 'Ecuador, Ambato (EXTREME)      '
+    speed_test '5272' 'Peru, Lima (FIBERLUX)          '
+    speed_test '1053' 'Bolivia, La Paz (Nuevatel)     '
+    speed_test '6776' 'Paraguay, Asuncion (TEISA)     '
+    speed_test '21436' 'Chile, Santiago (Movistar)     '
     speed_test '5181' 'Argentina, Buenos Aires (Claro)'
-    #speed_test '31687' 'Argentina, Cordoba (Colsecor) '
-    speed_test '20212' 'Uruguay, Montevideo (Movistar)'
+    #speed_test '31687' 'Argentina, Cordoba (Colsecor)  '
+    speed_test '20212' 'Uruguay, Montevideo (Movistar) '
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -682,7 +673,7 @@ geekbench4() {
     if [[ $total_diff -gt 0 ]]; then
         STEAL_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
     else
-        STEAL_PERCENT="0.00"
+        STEAL_PERCENT="0"
     fi
     
     # Ensure scores are treated as numbers for comparison
@@ -764,7 +755,7 @@ geekbench5() {
     if [[ $total_diff -gt 0 ]]; then
         STEAL_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
     else
-        STEAL_PERCENT="0.00"
+        STEAL_PERCENT="0"
     fi
     
     # Ensure scores are treated as numbers for comparison
@@ -846,7 +837,7 @@ geekbench6() {
     if [[ $total_diff -gt 0 ]]; then
         STEAL_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
     else
-        STEAL_PERCENT="0.00"
+        STEAL_PERCENT="0"
     fi
     
     # Ensure scores are treated as numbers for comparison
@@ -1241,7 +1232,7 @@ measure_steal_time() {
         local steal_percent=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
         echo "$steal_percent"
     else
-        echo "0.00"
+        echo "0"
     fi
 }
 
@@ -1260,9 +1251,9 @@ cpubench() {
         steal_avg=$(awk "BEGIN {printf \"%.2f\", ($steal_before + $steal_after) / 2}")
         
         if [[ $io != *"."* ]]; then
-            printf " %4i %s (Steal: %s%%)" "${io% *}" "${io##* }" "$steal_avg"
+            printf "%4i %s (Steal: %s%%)" "${io% *}" "${io##* }" "$steal_avg"
         else
-            printf " %4i.%s (Steal: %s%%)" "${io%.*}" "${io#*.}" "$steal_avg"
+            printf "%4i.%s (Steal: %s%%)" "${io%.*}" "${io#*.}" "$steal_avg"
         fi
     else
         printf " %s not found on system." "$1"
@@ -1315,19 +1306,6 @@ iotest() {
     umount "$benchram"
     rm -rf "$benchram"
     echo "" | tee -a "$log"
-    
-    # Disk test
-    #echostyle "Disk Speed:"
-    #if [[ $writemb != "1" ]]; then
-    #	io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-    #	echo "   I/O Speed  :$io" | tee -a $log
-
-    #	io=$( ( dd bs=512K count=$writemb if=/dev/zero of=test oflag=direct; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
-    #	echo "   I/O Direct :$io" | tee -a $log
-    #else
-    #	echo "   Not enough space to test." | tee -a $log
-    #fi
-    #echo "" | tee -a $log
 }
 
 write_io() {
