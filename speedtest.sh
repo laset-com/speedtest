@@ -530,7 +530,7 @@ print_speedtest_asia() {
     speed_test '7582' 'Indonesia, Jakarta (Telekom)  '
     speed_test '7167' 'Philippines, Manila (PLDT)    '
     speed_test '44745' 'Hong Kong (Misaka Network)    '
-    speed_test '61136' 'Taiwan, Taipei (Pittqiao)     '
+    speed_test '18445' 'Taiwan, Taipei (Chunghwa)     '
     speed_test '69575' 'Japan, Tokyo (Nearoute)       '
 
     print_total_traffic # Print total traffic after all speed tests
@@ -633,14 +633,14 @@ print_speedtest_meast() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '31332' 'Cyprus, Nicosia (NetFlash)    '
+    speed_test '61329' 'Cyprus, Nicosia (GhoFi)       '
     speed_test '38212' 'Israel, Tel Aviv (Bezeq)      '
+    speed_test '48427' 'Libya, Tripoli (ALMADAR)      '
     speed_test '1689' 'Egypt, Cairo (Vodafone)       '
-    speed_test '9137' 'Lebanon, Tripoli (Be-Wise)    '
-    speed_test '17336' 'UAE, Dubai (e&amp; UAE)       '
+    speed_test '17336' 'UAE, Dubai (e& UAE)       '
     speed_test '24742' 'Qatar, Al Rayyan (Ooredoo)    '
-    speed_test '608' 'SA, Riyadh (STC)              '
-    #speed_test '1912' 'Bahrain, Manama (Zain)        '
+    speed_test '608' 'Saudi Arabia, Riyadh (STC)    '
+    speed_test '39247' 'Iraq, Baghdad (Al-Jazeera Tel)'
     speed_test '18512' 'Iran, Tehran (MCI)            '
 
     print_total_traffic # Print total traffic after all speed tests
