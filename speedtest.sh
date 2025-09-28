@@ -466,14 +466,14 @@ print_speedtest_in() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '29658' 'India, New Delhi (Tata Play)   '
-    speed_test '23647' 'India, Mumbai (Tata Play)      '
-    speed_test '25961' 'India, Nagpur (UCN Fiber)      '
-    speed_test '34084' 'India, Patna (SMARTCONNECT)    '
-    speed_test '12221' 'India, Kolkata (Alliance)      '
-    speed_test '27524' 'India, Visakhapatnam (Alliance)'
-    speed_test '2679' 'India, Hyderabad (Airtel)      '
-    speed_test '10024' 'India, Madurai (Niss Broadband)'
+    speed_test '29658' 'India, New Delhi (Tata Play)  '
+    speed_test '23647' 'India, Mumbai (Tata Play)     '
+    speed_test '25961' 'India, Nagpur (UCN Fiber)     '
+    speed_test '64572' 'India, Patna (Airtel)         '
+    speed_test '12221' 'India, Kolkata (Alliance)     '
+    speed_test '5991' 'India, Visakhapatnam (Vizag)  '
+    speed_test '67728' 'India, Hyderabad (Jio)        '
+    speed_test '10195' 'India, Madurai (Jio)          '
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -517,6 +517,7 @@ print_speedtest_asia() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '29658' 'India, New Delhi (Tata Play)  '
     speed_test '23647' 'India, Mumbai (Tata Play)     '
+    speed_test '6401' 'Pakistan, Karachi (Zong)      '
     speed_test '12329' 'Sri Lanka, Colombo (Mobitel)  '
     speed_test '31336' 'Bangladesh, Dhaka (Banglalink)'
     #speed_test '24514' 'Myanmar, Yangon (TrueNET)     '
@@ -528,7 +529,7 @@ print_speedtest_asia() {
     speed_test '5935' 'Singapore (MyRepublic)        '
     speed_test '7582' 'Indonesia, Jakarta (Telekom)  '
     speed_test '7167' 'Philippines, Manila (PLDT)    '
-    speed_test '37639' 'Hong Kong (CMHK Broadband)    '
+    speed_test '44745' 'Hong Kong (Misaka Network)    '
     speed_test '61136' 'Taiwan, Taipei (Pittqiao)     '
     speed_test '69575' 'Japan, Tokyo (Nearoute)       '
 
@@ -547,7 +548,7 @@ print_speedtest_sa() {
     #speed_test '11102' 'Brazil, Fortaleza (Connect)    '
     #speed_test '18126' 'Brazil, Manaus (Claro)         '
     speed_test '15018' 'Colombia, Bogota (Tigo)        '
-    #speed_test '31043' 'Ecuador, Ambato (EXTREME)      '
+    speed_test '18800' 'Ecuador, Quito (Netlife)       '
     speed_test '5272' 'Peru, Lima (FIBERLUX)          '
     speed_test '1053' 'Bolivia, La Paz (Nuevatel)     '
     speed_test '6776' 'Paraguay, Asuncion (TEISA)     '
@@ -570,7 +571,7 @@ print_speedtest_au() {
     speed_test '1267' 'Australia, Sydney (Optus)     '
     speed_test '25134' 'Australia, Melbourne (Leaptel)'
     speed_test '13276' 'Australia, Brisbane (Exetel)  '
-    #speed_test '18247' 'Australia, Adelaide (Vocus)   '
+    speed_test '15135' 'Australia, Adelaide (Aussie)  '
     speed_test '18712' 'Australia, Hobart (Telstra)   '
     speed_test '22036' 'Australia, Darwin (Telstra)   '
     speed_test '17109' 'Australia, Perth (Pentanet)   '
