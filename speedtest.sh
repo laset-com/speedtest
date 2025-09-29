@@ -1690,7 +1690,7 @@ true > "$log"
 
 case $1 in
     'info'|'i'|'-i'|'--i'|'-info'|'--info' )
-        about;sleep 3;next;get_system_info;print_system_info;ip_info4;next;cleanup;;
+        about;sleep 3;next;get_system_info;print_system_info;cleanup;;
     'version'|'v'|'-v'|'--v'|'-version'|'--version')
         next;about;next;cleanup;;
     'gb4'|'-gb4'|'--gb4'|'geek4'|'-geek4'|'--geek4' )
