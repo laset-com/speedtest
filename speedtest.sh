@@ -542,20 +542,20 @@ print_speedtest_sa() {
     echo "" | tee -a "$log"
     printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-        speed_test '' 'Nearby                         '
+        speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '3068' 'Brazil, Sao Paulo (TIM)        '
+    speed_test '3068' 'Brazil, Sao Paulo /TIM        '
     #speed_test '11102' 'Brazil, Fortaleza (Connect)    '
     #speed_test '18126' 'Brazil, Manaus (Claro)         '
-    speed_test '15018' 'Colombia, Bogota (Tigo)        '
-    speed_test '18800' 'Ecuador, Quito (Netlife)       '
-    speed_test '5272' 'Peru, Lima (FIBERLUX)          '
-    speed_test '1053' 'Bolivia, La Paz (Nuevatel)     '
-    speed_test '6776' 'Paraguay, Asuncion (TEISA)     '
-    speed_test '21436' 'Chile, Santiago (Movistar)     '
-    speed_test '5181' 'Argentina, Buenos Aires (Claro)'
+    speed_test '15018' 'Colombia, Bogota /Tigo        '
+    speed_test '18800' 'Ecuador, Quito /Netlife       '
+    speed_test '5272' 'Peru, Lima /FIBERLUX          '
+    speed_test '1053' 'Bolivia, La Paz /Nuevatel     '
+    speed_test '6776' 'Paraguay, Asuncion /TEISA     '
+    speed_test '21436' 'Chile, Santiago /Movistar     '
+    speed_test '5181' 'Argentina, Buenos Aires /Claro'
     #speed_test '31687' 'Argentina, Cordoba (Colsecor)  '
-    speed_test '20212' 'Uruguay, Montevideo (Movistar) '
+    speed_test '20212' 'Uruguay, Montevideo /Movistar '
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -637,11 +637,32 @@ print_speedtest_meast() {
     speed_test '38212' 'Israel, Tel Aviv (Bezeq)      '
     speed_test '48427' 'Libya, Tripoli (ALMADAR)      '
     speed_test '1689' 'Egypt, Cairo (Vodafone)       '
-    speed_test '17336' 'UAE, Dubai (e& UAE)       '
+    speed_test '17336' 'UAE, Dubai (e& UAE)           '
     speed_test '24742' 'Qatar, Al Rayyan (Ooredoo)    '
     speed_test '608' 'Saudi Arabia, Riyadh (STC)    '
     speed_test '39247' 'Iraq, Baghdad (Al-Jazeera Tel)'
     speed_test '18512' 'Iran, Tehran (MCI)            '
+
+    print_total_traffic # Print total traffic after all speed tests
+}
+
+print_speedtest_central_asia() {
+    echo "" | tee -a "$log"
+    echostyle "## Central Asia Speedtest.net"
+    echo "" | tee -a "$log"
+    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                        '
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    speed_test '2485' 'Kazakhstan, Almaty /KCell JSC '
+    speed_test '2802' 'Kazakhstan, Astana /KCell JSC '
+    speed_test '5689' 'Kyrgyzstan, Bishkek /Beeline  '
+    speed_test '3687' 'Uzbekistan, Tashkent /Ucell   '
+    speed_test '61050' 'Tajikistan, Dushanbe /Babilon '
+    speed_test '58140' 'Azerbaijan, Baku /Baktelecom  '
+    speed_test '58024' 'Georgia, Tbilisi /Cellfie     '
+    speed_test '63160' 'Armenia, Yerevan /Ucom CJSC   '
+    speed_test '44819' 'Mongolia, Ulaanbaatar /MobiCom'
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -1200,21 +1221,9 @@ get_system_info() {
     arch=$( uname -m )
     lbit=$( getconf LONG_BIT )
     kern=$( uname -r )
-    #ipv6=$( wget -qO- -t1 -T2 ipv6.icanhazip.com )
-    #disk_size1=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $2}' ))
-    #disk_size2=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|overlay|shm|udev|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $3}' ))
-    #disk_total_size=$( calc_disk ${disk_size1[@]} )
-    #disk_used_size=$( calc_disk ${disk_size2[@]} )
     hdd=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $2 }')
     hddused=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $3 }')
     hddfree=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $5 }')
-    #tcp congestion control
-    #tcpctrl=$( sysctl net.ipv4.tcp_congestion_control | awk -F ' ' '{print $3}' )
-
-    #tmp=$(python3 tools.py disk 0)
-    #disk_total_size=$(echo $tmp | sed s/G//)
-    #tmp=$(python3 tools.py disk 1)
-    #disk_used_size=$(echo $tmp | sed s/G//)
 
     virt_check
 }
@@ -1463,7 +1472,7 @@ bench_all(){
     geekbench;
     iotest;
     write_io;
-    print_speedtest; # This function now calls print_total_traffic internally
+    print_speedtest;
     next;
     print_end_time;
     cleanup;
@@ -1482,7 +1491,7 @@ usa_bench(){
     geekbench;
     iotest;
     write_io;
-    print_speedtest_usa; # This function now calls print_total_traffic internally
+    print_speedtest_usa;
     next;
     print_end_time;
     cleanup;
@@ -1501,7 +1510,7 @@ in_bench(){
     geekbench;
     iotest;
     write_io;
-    print_speedtest_in; # This function now calls print_total_traffic internally
+    print_speedtest_in;
     next;
     print_end_time;
     cleanup;
@@ -1520,7 +1529,7 @@ europe_bench(){
     geekbench;
     iotest;
     write_io;
-    print_speedtest_europe; # This function now calls print_total_traffic internally
+    print_speedtest_europe;
     next;
     print_end_time;
     cleanup;
@@ -1539,7 +1548,7 @@ asia_bench(){
     geekbench;
     iotest;
     write_io;
-    print_speedtest_asia; # This function now calls print_total_traffic internally
+    print_speedtest_asia;
     next;
     print_end_time;
     cleanup;
@@ -1558,7 +1567,7 @@ china_bench(){
     geekbench;
     iotest;
     write_io;
-    print_speedtest_china; # This function now calls print_total_traffic internally
+    print_speedtest_china;
     next;
     print_end_time;
     cleanup;
@@ -1577,7 +1586,7 @@ sa_bench(){
     geekbench;
     iotest;
     write_io;
-    print_speedtest_sa; # This function now calls print_total_traffic internally
+    print_speedtest_sa;
     next;
     print_end_time;
     cleanup;
@@ -1596,7 +1605,7 @@ au_bench(){
     geekbench;
     iotest;
     write_io;
-    print_speedtest_au; # This function now calls print_total_traffic internally
+    print_speedtest_au;
     next;
     print_end_time;
     cleanup;
@@ -1615,7 +1624,7 @@ ukraine_bench(){
     geekbench;
     iotest;
     write_io;
-    print_speedtest_ukraine; # This function now calls print_total_traffic internally
+    print_speedtest_ukraine;
     next;
     print_end_time;
     cleanup;
@@ -1633,7 +1642,7 @@ lviv_bench(){
     geekbench;
     iotest;
     write_io;
-    print_speedtest_lviv; # This function now calls print_total_traffic internally
+    print_speedtest_lviv;
     next;
     print_end_time;
     cleanup;
@@ -1651,7 +1660,25 @@ meast_bench(){
     geekbench;
     iotest;
     write_io;
-    print_speedtest_meast; # This function now calls print_total_traffic internally
+    print_speedtest_meast;
+    next;
+    print_end_time;
+    cleanup;
+    sharetest clbin;
+}
+casia_bench(){
+    region_name="Central-Asia"
+    print_intro;
+    benchinit;
+    next;
+    get_system_info;
+    print_system_info;
+    ip_info4;
+    next;
+    geekbench;
+    iotest;
+    write_io;
+    print_speedtest_central_asia;
     next;
     print_end_time;
     cleanup;
@@ -1663,14 +1690,14 @@ true > "$log"
 
 case $1 in
     'info'|'i'|'-i'|'--i'|'-info'|'--info' )
-        about;sleep 3;next;get_system_info;print_system_info;next;cleanup;;
+        about;sleep 3;next;get_system_info;print_system_info;ip_info4;next;cleanup;;
     'version'|'v'|'-v'|'--v'|'-version'|'--version')
         next;about;next;cleanup;;
-      'gb4'|'-gb4'|'--gb4'|'geek4'|'-geek4'|'--geek4' )
+    'gb4'|'-gb4'|'--gb4'|'geek4'|'-geek4'|'--geek4' )
         next;geekbench4;next;cleanup;;
-       'gb5'|'-gb5'|'--gb5'|'geek5'|'-geek5'|'--geek5' )
+    'gb5'|'-gb5'|'--gb5'|'geek5'|'-geek5'|'--geek5' )
         next;geekbench5;next;cleanup;;
-         'gb6'|'-gb6'|'--gb6'|'geek6'|'-geek6'|'--geek6' )
+    'gb6'|'-gb6'|'--gb6'|'geek6'|'-geek6'|'--geek6' )
         next;geekbench6;next;cleanup;;
     'gb'|'-gb'|'--gb'|'geek'|'-geek'|'--geek' )
         next;geekbench;next;cleanup;;
@@ -1690,6 +1717,8 @@ case $1 in
         about;benchinit;machine_location;print_speedtest_sa;next;cleanup;;
     'mes'|'-mes'|'mespeed'|'-mespeed' )
         about;benchinit;machine_location;print_speedtest_meast;next;cleanup;;
+    'cas'|'-cas'|'casiaspeed'|'-casiaspeed' )
+        about;benchinit;machine_location;print_speedtest_central_asia;next;cleanup;;
     'ins'|'-ins'|'inspeed'|'-inspeed' )
         about;benchinit;machine_location;print_speedtest_in;next;cleanup;;
     'cns'|'-cns'|'cnspeed'|'-cnspeed' )
@@ -1702,7 +1731,7 @@ case $1 in
         about;benchinit;next;ip_info4;next;cleanup;;
     'a'|'-a'|'about'|'-about'|'--about' )
         about;next;cleanup;;
-      'all'|'-all'|'bench'|'-bench'|'--bench'|'-Global' )
+    'all'|'-all'|'bench'|'-bench'|'--bench'|'-Global' )
         bench_all;;
     'usa'|'-usa'|'--usa'|'us'|'-us'|'--us'|'USA'|'-USA'|'--USA' )
         usa_bench;;
@@ -1724,6 +1753,8 @@ case $1 in
         lviv_bench;;
     'M-East'|'-M-East'|'--M-East'|'-m-east'|'--m-east'|'-meast'|'--meast'|'-Middle-East'|'-me' )
         meast_bench;;
+    'C-Asia'|'-C-Asia'|'--C-Asia'|'-c-asia'|'--c-asia'|'-casia'|'--casia'|'-Central-Asia' )
+        casia_bench;;
     '-s'|'--s'|'share'|'-share'|'--share' )
         bench_all;
         is_share="share"
