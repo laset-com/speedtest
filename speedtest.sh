@@ -658,7 +658,7 @@ print_speedtest_central_asia() {
     speed_test '2802' 'Kazakhstan, Astana /KCell JSC '
     speed_test '5689' 'Kyrgyzstan, Bishkek /Beeline  '
     speed_test '3687' 'Uzbekistan, Tashkent /Ucell   '
-    speed_test '61050' 'Tajikistan, Dushanbe /Babilon '
+    speed_test '35367' 'Tajikistan, Dushanbe /ZET-M   '
     speed_test '58140' 'Azerbaijan, Baku /Baktelecom  '
     speed_test '58024' 'Georgia, Tbilisi /Cellfie     '
     speed_test '63160' 'Armenia, Yerevan /Ucom CJSC   '
