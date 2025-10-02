@@ -194,7 +194,7 @@ benchinit() {
             # Error message will be printed to terminal and logged
             error_exit "Failed to install Speedtest CLI. Please check the log for details."
         else
-            printf " Speedtest CLI installed successfully!" >/dev/tty
+            printf " Speedtest CLI installed successfully!\r" >/dev/tty
             echo -ne "\e[1A"; echo -ne "\e[0K\r"
         fi
     fi
@@ -285,13 +285,17 @@ speed_test(){
             
             retry_count=$((retry_count + 1))
             if [ "$retry_count" -lt "$max_retries" ]; then
-                echo "  ${nodeName} speed test failed, retrying... (Attempt $((retry_count))/$max_retries)" | tee -a "$log"
+                # Print retry message to console, overwriting the current line.
+                # This message will NOT be logged to the file.
+                printf "\r  ${nodeName} speed test failed, retrying... (Attempt $((retry_count))/$max_retries)" >/dev/tty
                 sleep 5 # Wait before retrying
             fi
         done
 
         if ! "$test_successful"; then
-            # If all retries for Nearby failed, simply skip this server without printing N/A
+            # If all retries for Nearby failed, clear any retry message from console and skip this server.
+            local terminal_width=$(tput cols 2>/dev/null || echo 100) # Get terminal width or default to 100
+            printf "\r%*s\r" "$terminal_width" "" >/dev/tty # Clear the line on console
             return 0 # Return 0 to indicate skipping
         fi
     else
@@ -308,7 +312,11 @@ speed_test(){
         fi
     fi
 
-    # If we reached here, the test was successful (Nearby after retries or specific server on first try)
+    # If we reached here, the test was successful (Nearby after retries or specific server on first try).
+    # Clear any retry message from the console before printing the final result.
+    local terminal_width=$(tput cols 2>/dev/null || echo 100) # Get terminal width or default to 100
+    printf "\r%*s\r" "$terminal_width" "" >/dev/tty # Clear the line on console
+
     # Continue parsing and printing results.
 
     REDownload_mbps=$(echo "$json_output" | jq -r '.download.bandwidth / 125000') # Convert bytes/sec to Mbps
@@ -536,6 +544,30 @@ print_speedtest_asia() {
     print_total_traffic # Print total traffic after all speed tests
 }
 
+print_speedtest_na() {
+    echo "" | tee -a "$log"
+    echostyle "## North America Speedtest.net"
+    echo "" | tee -a "$log"
+    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+        speed_test '' 'Nearby                        '
+    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    speed_test '3068' 'Brazil, Sao Paulo /TIM        '
+    #speed_test '11102' 'Brazil, Fortaleza (Connect)    '
+    #speed_test '18126' 'Brazil, Manaus (Claro)         '
+    speed_test '15018' 'Colombia, Bogota /Tigo        '
+    speed_test '18800' 'Ecuador, Quito /Netlife       '
+    speed_test '5272' 'Peru, Lima /FIBERLUX          '
+    speed_test '1053' 'Bolivia, La Paz /Nuevatel     '
+    speed_test '6776' 'Paraguay, Asuncion /TEISA     '
+    speed_test '21436' 'Chile, Santiago /Movistar     '
+    speed_test '5181' 'Argentina, Buenos Aires /Claro'
+    #speed_test '31687' 'Argentina, Cordoba (Colsecor)  '
+    speed_test '20212' 'Uruguay, Montevideo /Movistar '
+
+    print_total_traffic # Print total traffic after all speed tests
+}
+
 print_speedtest_sa() {
     echo "" | tee -a "$log"
     echostyle "## South America Speedtest.net"
@@ -620,7 +652,7 @@ print_speedtest_lviv() {
     speed_test '29259' 'Ukraine, Lviv (KyivStar)      '
     speed_test '2445' 'Ukraine, Lviv (KOMiTEX)       '
     speed_test '12786' 'Ukraine, Lviv (ASTRA)         '
-    #speed_test '1204' 'Ukraine, Lviv (Network)       '
+    speed_test '1204' 'Ukraine, Lviv (Network)       '
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -658,7 +690,7 @@ print_speedtest_central_asia() {
     speed_test '2802' 'Kazakhstan, Astana /KCell JSC '
     speed_test '5689' 'Kyrgyzstan, Bishkek /Beeline  '
     speed_test '3687' 'Uzbekistan, Tashkent /Ucell   '
-    speed_test '35367' 'Tajikistan, Dushanbe /ZET-M   '
+    speed_test '47558' 'Tajikistan, Dushanbe /BabilonТ'
     speed_test '58140' 'Azerbaijan, Baku /Baktelecom  '
     speed_test '58024' 'Georgia, Tbilisi /Cellfie     '
     speed_test '63160' 'Armenia, Yerevan /Ucom CJSC   '
@@ -1289,30 +1321,31 @@ measure_steal_time() {
 }
 
 cpubench() {
-    if hash "$1" 2>"$NULL"; then
-        # Measure steal time before the test
+    local command_name="$1"
+    local count_value="$2"
+
+    if hash "$command_name" 2>"$NULL"; then
         local steal_before=$(measure_steal_time 1)
         
-        # Run performance test
-        io=$( ( dd if=/dev/zero bs=512K count="$2" | "$1" ) 2>&1 | grep 'copied' | awk -F, '{io=$NF} END {print io}' )
-        
-        # Measure steal time after the test
+        # Run performance test and capture raw output, stripping leading/trailing whitespace.
+        # The 'io_raw' variable will now contain the exact speed string like "1.9 GB/s" or "935 MB/s".
+        local io_raw=$( ( dd if=/dev/zero bs=512K count="$count_value" | "$command_name" ) 2>&1 | grep 'copied' | awk -F, '{io=$NF} END {print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
         local steal_after=$(measure_steal_time 1)
-        
-        # Save average steal time value
-        steal_avg=$(awk "BEGIN {printf \"%.2f\", ($steal_before + $steal_after) / 2}")
-        # Convert "0.00" to "0" for display
+        local steal_avg=$(awk "BEGIN {printf \"%.2f\", ($steal_before + $steal_after) / 2}")
         if [[ "$steal_avg" == "0.00" ]]; then
             steal_avg="0"
         fi
         
-        if [[ $io != *"."* ]]; then
-            printf "%4i %s (Steal: %s%%)" "${io% *}" "${io##* }" "$steal_avg"
-        else
-            printf "%4i.%s (Steal: %s%%)" "${io%.*}" "${io#*.}" "$steal_avg"
-        fi
+        # Extract numeric part and unit from the raw speed string.
+        local numeric_part=$(echo "$io_raw" | awk '{print $1}')
+        local unit_part=$(echo "$io_raw" | awk '{print $2}')
+
+        # Return numeric part, unit, and steal time, separated by a delimiter.
+        printf "%s|%s|%s" "$numeric_part" "$unit_part" "$steal_avg"
     else
-        printf " %s not found on system." "$1"
+        # Return placeholders if command not found, matching the structure: numeric_part|unit_part|steal_avg.
+        # This is crucial for consistent parsing in iotest().
+        printf "N/A|N/A|0"
     fi
 }
 
@@ -1320,7 +1353,7 @@ iotest() {
     echostyle "## IO Test"
     echo "" | tee -a "$log"
 
-    # start testing
+    # Start testing
     writemb=$(freedisk)
     if [[ $writemb -gt 512 ]]; then
         writemb_size="$(( writemb / 2 / 2 ))MB"
@@ -1332,9 +1365,60 @@ iotest() {
 
     # CPU Speed test
     echostyle "CPU Speed:"
-    echo "    bzip2     :$( cpubench bzip2 "$writemb_cpu" )" | tee -a "$log" 
-    echo "   sha256     :$( cpubench sha256sum "$writemb_cpu" )" | tee -a "$log"
-    echo "   md5sum     :$( cpubench md5sum "$writemb_cpu" )" | tee -a "$log"
+    
+    # Get raw output from cpubench for each test
+    local bzip2_result=$(cpubench bzip2 "$writemb_cpu")
+    local sha256_result=$(cpubench sha256sum "$writemb_cpu")
+    local md5sum_result=$(cpubench md5sum "$writemb_cpu")
+
+    # Parse speed numeric part, unit, and steal time from the results
+    local bzip2_speed_num=$(echo "$bzip2_result" | cut -d'|' -f1)
+    local bzip2_speed_unit=$(echo "$bzip2_result" | cut -d'|' -f2)
+    local bzip2_steal=$(echo "$bzip2_result" | cut -d'|' -f3)
+
+    local sha256_speed_num=$(echo "$sha256_result" | cut -d'|' -f1)
+    local sha256_speed_unit=$(echo "$sha256_result" | cut -d'|' -f2)
+    local sha256_steal=$(echo "$sha256_result" | cut -d'|' -f3)
+
+    local md5sum_speed_num=$(echo "$md5sum_result" | cut -d'|' -f1)
+    local md5sum_speed_unit=$(echo "$md5sum_result" | cut -d'|' -f2)
+    local md5sum_steal=$(echo "$md5sum_result" | cut -d'|' -f3)
+
+    # Function to calculate the number of spaces needed after the colon
+    # based on the length of the numeric part of the speed.
+    # This ensures the numeric part aligns as requested:
+    # 3 chars (e.g., "1.9", "935") -> 1 space after colon
+    # 2 chars (e.g., "36") -> 2 spaces after colon
+    # 1 char (e.g., "5") -> 3 spaces after colon
+    calculate_post_colon_padding() {
+        local speed_num_len=$1
+        if [[ "$speed_num_len" -eq 3 ]]; then
+            echo "1"
+        elif [[ "$speed_num_len" -eq 2 ]]; then
+            echo "2"
+        elif [[ "$speed_num_len" -eq 1 ]]; then
+            echo "3"
+        else # Default for "N/A" or unexpected lengths, assume 3 chars for padding 1
+            echo "1"
+        fi
+    }
+
+    # Calculate padding for each speed
+    local bzip2_num_len=${#bzip2_speed_num}
+    local bzip2_post_colon_padding=$(calculate_post_colon_padding "$bzip2_num_len")
+
+    local sha256_num_len=${#sha256_speed_num}
+    local sha256_post_colon_padding=$(calculate_post_colon_padding "$sha256_num_len")
+
+    local md5sum_num_len=${#md5sum_speed_num}
+    local md5sum_post_colon_padding=$(calculate_post_colon_padding "$md5sum_num_len")
+
+    # Print with consistent alignment:
+    # The command name is fixed, then a colon, then the calculated number of spaces,
+    # then the numeric speed, a space, the unit, and finally the steal time.
+    printf "    bzip2     :%*s%s %s (Steal: %s%%)\n" "$bzip2_post_colon_padding" "" "$bzip2_speed_num" "$bzip2_speed_unit" "$bzip2_steal" | tee -a "$log"
+    printf "   sha256     :%*s%s %s (Steal: %s%%)\n" "$sha256_post_colon_padding" "" "$sha256_speed_num" "$sha256_speed_unit" "$sha256_steal" | tee -a "$log"
+    printf "   md5sum     :%*s%s %s (Steal: %s%%)\n" "$md5sum_post_colon_padding" "" "$md5sum_speed_num" "$md5sum_speed_unit" "$md5sum_steal" | tee -a "$log"
     echo "" | tee -a "$log"
 
     # RAM Speed test
