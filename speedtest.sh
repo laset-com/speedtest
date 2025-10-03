@@ -412,7 +412,7 @@ print_speedtest() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '28032' 'USA, New York (Uniti)         '
+    speed_test '30514' 'USA, New York (Optimum)       '
     speed_test '17384' 'USA, Chicago (Uniti)          '
     #speed_test '1763' 'USA, Houston (Comcast)        '
     #speed_test '14237' 'USA, Miami (Frontier)         '
@@ -440,7 +440,7 @@ print_speedtest_usa() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '28032' 'USA, New York (Uniti)         '
+    speed_test '30514' 'USA, New York (Optimum)       '
     #speed_test '1774' 'USA, Boston (Comcast)         '
     #speed_test '1775' 'USA, Baltimore, MD (Comcast)  '
     speed_test '17387' 'USA, Atlanta (Uniti)          '
