@@ -195,7 +195,6 @@ benchinit() {
             error_exit "Failed to install Speedtest CLI. Please check the log for details."
         else
             printf " Speedtest CLI installed successfully!\r" >/dev/tty
-            echo -ne "\e[1A"; echo -ne "\e[0K\r"
         fi
     fi
 
