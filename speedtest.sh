@@ -288,6 +288,8 @@ speed_test(){
                 # Print retry message to console, overwriting the current line.
                 # This message will NOT be logged to the file.
                 printf "\r  ${nodeName} speed test failed, retrying... (Attempt $((retry_count))/$max_retries)" >/dev/tty
+                # The following line was removed to stop logging retry messages:
+                # echo "  ${nodeName} speed test failed, retrying... (Attempt $((retry_count))/$max_retries)" >> "$log"
                 sleep 5 # Wait before retrying
             fi
         done
