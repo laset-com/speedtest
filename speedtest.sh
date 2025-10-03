@@ -416,7 +416,7 @@ print_speedtest() {
     #speed_test '1763' 'USA, Houston (Comcast)        '
     #speed_test '14237' 'USA, Miami (Frontier)         '
     speed_test '18401' 'USA, Los Angeles (Uniti)      '
-    speed_test '43721' 'UK, London (Lit Fibre)        '
+    speed_test '14679' 'UK, London (Hyperoptic)       '
     #speed_test '27961' 'France, Paris (KEYYO)         '
     speed_test '70635' 'Germany, Frankfurt (Plusnet)  '
     #speed_test '21378' 'Spain, Madrid (MasMovil)      '
@@ -494,7 +494,7 @@ print_speedtest_europe() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '43721' 'UK, London (Lit Fibre)        '
+    speed_test '14679' 'UK, London (Hyperoptic)       '
     speed_test '52365' 'Netherlands, Amsterdam (Odido)'
     speed_test '70635' 'Germany, Frankfurt (Plusnet)  '
     #speed_test '31470' 'Germany, Munich (Telekom)     '
@@ -552,18 +552,16 @@ print_speedtest_na() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '3068' 'Brazil, Sao Paulo /TIM        '
-    #speed_test '11102' 'Brazil, Fortaleza (Connect)    '
-    #speed_test '18126' 'Brazil, Manaus (Claro)         '
-    speed_test '15018' 'Colombia, Bogota /Tigo        '
-    speed_test '18800' 'Ecuador, Quito /Netlife       '
-    speed_test '5272' 'Peru, Lima /FIBERLUX          '
-    speed_test '1053' 'Bolivia, La Paz /Nuevatel     '
-    speed_test '6776' 'Paraguay, Asuncion /TEISA     '
-    speed_test '21436' 'Chile, Santiago /Movistar     '
-    speed_test '5181' 'Argentina, Buenos Aires /Claro'
-    #speed_test '31687' 'Argentina, Cordoba (Colsecor)  '
-    speed_test '20212' 'Uruguay, Montevideo /Movistar '
+    speed_test '16753' 'Canada, Toronto /Bell        '
+    speed_test '46407' 'Canada, Calgary /Rogers      '
+    speed_test '17402' 'Canada, Vancouver /Bell      '
+    speed_test '8150' 'Mexico, Mexico /Totalplay    '
+    speed_test '55275' 'Mexico, Monterrey /INFINITUM '
+    speed_test '252' 'Guatemala, Guatemala /Tigo   '
+    speed_test '6258' 'Honduras, Tegucigalpa /Color '
+    speed_test '29762' 'Nicaragua, Managua /Claro    '
+    speed_test '14859' 'Costa Rica, San José /Liberty'
+    speed_test '37761' 'Panama, Panama City /Metrocom'
 
     print_total_traffic # Print total traffic after all speed tests
 }
@@ -690,7 +688,7 @@ print_speedtest_central_asia() {
     speed_test '2802' 'Kazakhstan, Astana /KCell JSC '
     speed_test '5689' 'Kyrgyzstan, Bishkek /Beeline  '
     speed_test '3687' 'Uzbekistan, Tashkent /Ucell   '
-    speed_test '47558' 'Tajikistan, Dushanbe /BabilonТ'
+    speed_test '47558' 'Tajikistan, Dushanbe /BabilonT'
     speed_test '58140' 'Azerbaijan, Baku /Baktelecom  '
     speed_test '58024' 'Georgia, Tbilisi /Cellfie     '
     speed_test '63160' 'Armenia, Yerevan /Ucom CJSC   '
@@ -975,9 +973,9 @@ geekbench6() {
 
 geekbench() {
     totalram="$( free -m | grep Mem | awk 'NR=1 {print $2}' )"
-    if [[ $totalram -le 1000 ]]; then
+    if [[ $totalram -le 950 ]]; then
         geekbench4
-    elif [[ $totalram -ge 1000 && $totalram -le 2000 ]]; then
+    elif [[ $totalram -ge 950 && $totalram -le 1950 ]]; then
         geekbench5
     else
         geekbench6
@@ -1658,6 +1656,25 @@ china_bench(){
     sharetest clbin;
 }
 
+na_bench(){
+    region_name="North-America"
+    print_intro;
+    benchinit;
+    next;
+    get_system_info;
+    print_system_info;
+    ip_info4;
+    next;
+    geekbench;
+    iotest;
+    write_io;
+    print_speedtest_na;
+    next;
+    print_end_time;
+    cleanup;
+    sharetest clbin;
+}
+
 sa_bench(){
     region_name="South-America"
     print_intro;
@@ -1797,6 +1814,8 @@ case $1 in
         about;benchinit;machine_location;print_speedtest_asia;next;cleanup;;
     'aus'|'-aus'|'auspeed'|'-auspeed' )
         about;benchinit;machine_location;print_speedtest_au;next;cleanup;;
+    'nas'|'-nas'|'naspeed'|'-naspeed' )
+        about;benchinit;machine_location;print_speedtest_na;next;cleanup;;
     'sas'|'-sas'|'saspeed'|'-saspeed' )
         about;benchinit;machine_location;print_speedtest_sa;next;cleanup;;
     'mes'|'-mes'|'mespeed'|'-mespeed' )
@@ -1829,6 +1848,8 @@ case $1 in
         china_bench;;
     'au'|'-au'|'nz'|'-nz'|'AU'|'-AU'|'NZ'|'-NZ'|'-AU-NZ' )
         au_bench;;
+    'na'|'-na'|'--na'|'-North-America' )
+        sa_bench;;
     'sa'|'-sa'|'--sa'|'-South-America' )
         sa_bench;;
     'ukraine'|'-ukraine'|'--ukraine'|'ua'|'-ua'|'--ua'|'ukr'|'-ukr'|'--ukr'|'Ukraine'|'-Ukraine'|'--Ukraine' )
