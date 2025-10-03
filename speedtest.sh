@@ -1849,7 +1849,7 @@ case $1 in
     'au'|'-au'|'nz'|'-nz'|'AU'|'-AU'|'NZ'|'-NZ'|'-AU-NZ' )
         au_bench;;
     'na'|'-na'|'--na'|'-North-America' )
-        sa_bench;;
+        na_bench;;
     'sa'|'-sa'|'--sa'|'-South-America' )
         sa_bench;;
     'ukraine'|'-ukraine'|'--ukraine'|'ua'|'-ua'|'--ua'|'ukr'|'-ukr'|'--ukr'|'Ukraine'|'-Ukraine'|'--Ukraine' )
