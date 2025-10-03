@@ -554,16 +554,16 @@ print_speedtest_na() {
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '16753' 'Canada, Toronto /Bell        '
-    speed_test '46407' 'Canada, Calgary /Rogers      '
-    speed_test '17402' 'Canada, Vancouver /Bell      '
-    speed_test '8150' 'Mexico, Mexico /Totalplay    '
-    speed_test '55275' 'Mexico, Monterrey /INFINITUM '
-    speed_test '252' 'Guatemala, Guatemala /Tigo   '
-    speed_test '6258' 'Honduras, Tegucigalpa /Color '
-    speed_test '29762' 'Nicaragua, Managua /Claro    '
-    speed_test '14859' 'Costa Rica, San José /Liberty'
-    speed_test '37761' 'Panama, Panama City /Metrocom'
+    speed_test '16753' 'Canada, Toronto /Bell         '
+    speed_test '46407' 'Canada, Calgary /Rogers       '
+    speed_test '17402' 'Canada, Vancouver /Bell       '
+    speed_test '8150' 'Mexico, Mexico /Totalplay     '
+    speed_test '55275' 'Mexico, Monterrey /INFINITUM  '
+    speed_test '252' 'Guatemala, Guatemala /Tigo    '
+    speed_test '6258' 'Honduras, Tegucigalpa /Color  '
+    speed_test '29762' 'Nicaragua, Managua /Claro     '
+    speed_test '14859' 'Costa Rica, San José /Liberty '
+    speed_test '37761' 'Panama, Panama City /Metrocom '
 
     print_total_traffic # Print total traffic after all speed tests
 }
