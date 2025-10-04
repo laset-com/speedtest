@@ -389,9 +389,9 @@ print_total_traffic() {
     echo "" | tee -a "$log"
     echostyle "## Statistics"
     echo "" | tee -a "$log"
-    echo -e " Total Traffic    : ${total_sum_gb} GB (${total_sum_mb} MB)" | tee -a "$log"
-    echo -e " Total Downloaded : ${total_download_gb} GB (${TOTAL_DOWNLOAD_TRAFFIC_MB} MB)" | tee -a "$log"
-    echo -e " Total Uploaded   : ${total_upload_gb} GB (${TOTAL_UPLOAD_TRAFFIC_MB} MB)" | tee -a "$log"
+    echo -e " Total Traffic    : ${total_sum_gb} GB" | tee -a "$log"
+    echo -e " Total Downloaded : ${total_download_gb} GB" | tee -a "$log"
+    echo -e " Total Uploaded   : ${total_upload_gb} GB" | tee -a "$log"
     echo "" | tee -a "$log"
     echo -e " Average Loss     : ${avg_packet_loss} %" | tee -a "$log"
     echo "" | tee -a "$log"
@@ -728,7 +728,7 @@ geekbench4() {
     echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..."
 
     # Start steal time measurement
-    local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
+    local steal_start=$(grep '^cpu ' /proc/stat | awk '{if (NF > 8) print $9; else print 0}')
     local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
     
     GEEKBENCH_PATH=$HOME/geekbench
@@ -745,7 +745,7 @@ geekbench4() {
     GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | tail -n 1 | awk -v FS="(>|<)" '{ print $3 }')
     
     # End steal time measurement
-    local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
+    local steal_end=$(grep '^cpu ' /proc/stat | awk '{if (NF > 8) print $9; else print 0}')
     local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
     
     # Calculate steal time
@@ -808,7 +808,7 @@ geekbench5() {
     echo -e " Performing Geekbench v5 CPU Benchmark test. Please wait..."
 
     # Start steal time measurement
-    local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
+    local steal_start=$(grep '^cpu ' /proc/stat | awk '{if (NF > 8) print $9; else print 0}')
     local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
 
     GEEKBENCH_PATH=$HOME/geekbench
@@ -831,7 +831,7 @@ geekbench5() {
     GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | tail -n 1 | awk -v FS="(>|<)" '{ print $3 }')
 
     # End steal time measurement
-    local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
+    local steal_end=$(grep '^cpu ' /proc/stat | awk '{if (NF > 8) print $9; else print 0}')
     local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
     
     # Calculate steal time
@@ -894,7 +894,7 @@ geekbench6() {
     echo -e " Performing Geekbench v6 CPU Benchmark test. Please wait..."
 
     # Start steal time measurement
-    local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
+    local steal_start=$(grep '^cpu ' /proc/stat | awk '{if (NF > 8) print $9; else print 0}')
     local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
 
     GEEKBENCH_PATH=$HOME/geekbench
@@ -917,7 +917,7 @@ geekbench6() {
     GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | tail -n 1 | awk -v FS="(>|<)" '{ print $3 }')
 
     # End steal time measurement
-    local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
+    local steal_end=$(grep '^cpu ' /proc/stat | awk '{if (NF > 8) print $9; else print 0}')
     local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
     
     # Calculate steal time
@@ -1299,12 +1299,12 @@ averageio() {
 measure_steal_time() {
     # Measure CPU steal time for the specified period
     local duration=$1
-    local steal_start=$(grep 'steal' /proc/stat | awk '{print $2}')
+    local steal_start=$(grep '^cpu ' /proc/stat | awk '{if (NF > 8) print $9; else print 0}')
     local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
     
     sleep "$duration"
     
-    local steal_end=$(grep 'steal' /proc/stat | awk '{print $2}')
+    local steal_end=$(grep '^cpu ' /proc/stat | awk '{if (NF > 8) print $9; else print 0}')
     local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
     
     local steal_diff=$((steal_end - steal_start))
