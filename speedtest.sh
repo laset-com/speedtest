@@ -1324,27 +1324,19 @@ cpubench() {
     local count_value="$2"
 
     if hash "$command_name" 2>"$NULL"; then
-        local steal_before=$(measure_steal_time 1)
-        
         # Run performance test and capture raw output, stripping leading/trailing whitespace.
         # The 'io_raw' variable will now contain the exact speed string like "1.9 GB/s" or "935 MB/s".
         local io_raw=$( ( dd if=/dev/zero bs=512K count="$count_value" | "$command_name" ) 2>&1 | grep 'copied' | awk -F, '{io=$NF} END {print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
-        local steal_after=$(measure_steal_time 1)
-        local steal_avg=$(awk "BEGIN {printf \"%.2f\", ($steal_before + $steal_after) / 2}")
-        if [[ "$steal_avg" == "0.00" ]]; then
-            steal_avg="0"
-        fi
         
         # Extract numeric part and unit from the raw speed string.
         local numeric_part=$(echo "$io_raw" | awk '{print $1}')
         local unit_part=$(echo "$io_raw" | awk '{print $2}')
 
-        # Return numeric part, unit, and steal time, separated by a delimiter.
-        printf "%s|%s|%s" "$numeric_part" "$unit_part" "$steal_avg"
+        # Return numeric part and unit, separated by a delimiter.
+        printf "%s|%s" "$numeric_part" "$unit_part"
     else
-        # Return placeholders if command not found, matching the structure: numeric_part|unit_part|steal_avg.
-        # This is crucial for consistent parsing in iotest().
-        printf "N/A|N/A|0"
+        # Return placeholders if command not found, matching the structure: numeric_part|unit_part.
+        printf "N/A|N/A"
     fi
 }
 
@@ -1365,23 +1357,44 @@ iotest() {
     # CPU Speed test
     echostyle "CPU Speed:"
     
+    # Start steal time measurement
+    local steal_start=$(grep '^cpu ' /proc/stat | awk '{if (NF > 8) print $9; else print 0}')
+    local total_start=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
+
     # Get raw output from cpubench for each test
     local bzip2_result=$(cpubench bzip2 "$writemb_cpu")
     local sha256_result=$(cpubench sha256sum "$writemb_cpu")
     local md5sum_result=$(cpubench md5sum "$writemb_cpu")
 
-    # Parse speed numeric part, unit, and steal time from the results
+    # End steal time measurement
+    local steal_end=$(grep '^cpu ' /proc/stat | awk '{if (NF > 8) print $9; else print 0}')
+    local total_end=$(grep '^cpu ' /proc/stat | awk '{sum=0; for(i=2;i<=NF;i++) sum+=$i; print sum}')
+    
+    # Calculate steal time
+    local steal_diff=$((steal_end - steal_start))
+    local total_diff=$((total_end - total_start))
+    
+    # Calculate steal time percentage
+    local total_steal_percent
+    if [[ $total_diff -gt 0 ]]; then
+        total_steal_percent=$(awk "BEGIN {printf \"%.2f\", ($steal_diff * 100) / $total_diff}")
+    else
+        total_steal_percent="0"
+    fi
+    # Convert "0.00" to "0" for display
+    if [[ "$total_steal_percent" == "0.00" ]]; then
+        total_steal_percent="0"
+    fi
+
+    # Parse speed numeric part and unit from the results
     local bzip2_speed_num=$(echo "$bzip2_result" | cut -d'|' -f1)
     local bzip2_speed_unit=$(echo "$bzip2_result" | cut -d'|' -f2)
-    local bzip2_steal=$(echo "$bzip2_result" | cut -d'|' -f3)
 
     local sha256_speed_num=$(echo "$sha256_result" | cut -d'|' -f1)
     local sha256_speed_unit=$(echo "$sha256_result" | cut -d'|' -f2)
-    local sha256_steal=$(echo "$sha256_result" | cut -d'|' -f3)
 
     local md5sum_speed_num=$(echo "$md5sum_result" | cut -d'|' -f1)
     local md5sum_speed_unit=$(echo "$md5sum_result" | cut -d'|' -f2)
-    local md5sum_steal=$(echo "$md5sum_result" | cut -d'|' -f3)
 
     # Function to calculate the number of spaces needed after the colon
     # based on the length of the numeric part of the speed.
@@ -1415,9 +1428,10 @@ iotest() {
     # Print with consistent alignment:
     # The command name is fixed, then a colon, then the calculated number of spaces,
     # then the numeric speed, a space, the unit, and finally the steal time.
-    printf "    bzip2     :%*s%s %s (Steal: %s%%)\n" "$bzip2_post_colon_padding" "" "$bzip2_speed_num" "$bzip2_speed_unit" "$bzip2_steal" | tee -a "$log"
-    printf "   sha256     :%*s%s %s (Steal: %s%%)\n" "$sha256_post_colon_padding" "" "$sha256_speed_num" "$sha256_speed_unit" "$sha256_steal" | tee -a "$log"
-    printf "   md5sum     :%*s%s %s (Steal: %s%%)\n" "$md5sum_post_colon_padding" "" "$md5sum_speed_num" "$md5sum_speed_unit" "$md5sum_steal" | tee -a "$log"
+    printf "    bzip2     :%*s%s %s\n" "$bzip2_post_colon_padding" "" "$bzip2_speed_num" "$bzip2_speed_unit" | tee -a "$log"
+    printf "   sha256     :%*s%s %s\n" "$sha256_post_colon_padding" "" "$sha256_speed_num" "$sha256_speed_unit" | tee -a "$log"
+    printf "   md5sum     :%*s%s %s\n" "$md5sum_post_colon_padding" "" "$md5sum_speed_num" "$md5sum_speed_unit" | tee -a "$log"
+    printf "    Steal     : %s%%\n" "$total_steal_percent" | tee -a "$log"
     echo "" | tee -a "$log"
 
     # RAM Speed test
