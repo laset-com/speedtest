@@ -6,8 +6,8 @@ about() {
     echo ""
     echo " ========================================================= "
     echo " \            Speedtest https://bench.laset.com          / "
-    echo " \    System info, Geekbench, I/O test and speedtest     / "
-    echo " \                  $bench_v    $bench_d                 / "
+    echo "    System info, Geekbench, I/O test and speedtest     / "
+    echo "                  $bench_v    $bench_d                 / "
     echo " ========================================================= "
     echo ""
 }
@@ -89,80 +89,96 @@ echostyle(){
     fi
 }
 
-benchinit() {
-    # check release
-    if [ -f /etc/redhat-release ]; then
-        if grep -q "AlmaLinux" /etc/redhat-release; then
+# Moved from benchinit() to global scope for reuse
+detect_release() {
+    if [[ -z "$release" ]]; then
+        if [ -f /etc/redhat-release ]; then
+            if grep -q "AlmaLinux" /etc/redhat-release;
+ then
+                release="almalinux"
+            elif grep -q "Rocky Linux" /etc/redhat-release;
+ then
+                release="rocky"
+            else
+                release="centos"
+            fi
+        elif [ -f /etc/almalinux-release ]; then
             release="almalinux"
-        elif grep -q "Rocky Linux" /etc/redhat-release; then # Added Rocky Linux check
-            release="rocky"
-        else
+        elif cat /etc/issue | grep -Eqi "debian"; then
+            release="debian"
+        elif cat /etc/issue | grep -Eqi "ubuntu"; then
+            release="ubuntu"
+        elif cat /etc/issue | grep -Eqi "centos|red hat|redhat"; then
             release="centos"
+        elif cat /etc/issue | grep -Eqi "almalinux"; then
+            release="almalinux"
+        elif cat /etc/issue | grep -Eqi "rocky"; then
+            release="rocky"
+        elif cat /proc/version | grep -Eqi "debian"; then
+            release="debian"
+        elif cat /proc/version | grep -Eqi "ubuntu"; then
+            release="ubuntu"
+        elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
+            release="centos"
+        elif cat /proc/version | grep -Eqi "almalinux"; then
+            release="almalinux"
+        elif cat /proc/version | grep -Eqi "rocky"; then
+            release="rocky"
         fi
-    elif [ -f /etc/almalinux-release ]; then
-        release="almalinux"
-    elif cat /etc/issue | grep -Eqi "debian"; then
-        release="debian"
-    elif cat /etc/issue | grep -Eqi "ubuntu"; then
-        release="ubuntu"
-    elif cat /etc/issue | grep -Eqi "centos|red hat|redhat"; then
-        release="centos"
-    elif cat /etc/issue | grep -Eqi "almalinux"; then
-        release="almalinux"
-    elif cat /etc/issue | grep -Eqi "rocky"; then # Added Rocky Linux check for /etc/issue
-        release="rocky"
-    elif cat /proc/version | grep -Eqi "debian"; then
-        release="debian"
-    elif cat /proc/version | grep -Eqi "ubuntu"; then
-        release="ubuntu"
-    elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
-        release="centos"
-    elif cat /proc/version | grep -Eqi "almalinux"; then
-        release="almalinux"
-    elif cat /proc/version | grep -Eqi "rocky"; then # Added Rocky Linux check for /proc/version
-        release="rocky"
     fi
+}
+
+# Moved from benchinit() to global scope for reuse
+install_package() {
+    local package_name=$1
+    local command_name=$2
+    [[ -z "$command_name" ]] && command_name=$package_name
+
+    if ! command -v "$command_name" &> /dev/null; then
+        detect_release
+        echo " Installing $package_name ..."
+        if [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" ]]; then
+            dnf -y install "$package_name" > /dev/null 2>&1 || yum -y install "$package_name" > /dev/null 2>&1
+        elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
+            apt-get update -y > /dev/null 2>&1
+            apt-get -y install "$package_name" > /dev/null 2>&1
+        else
+            echo " Unknown distribution, trying apt-get and yum..."
+            apt-get -y install "$package_name" > /dev/null 2>&1 || yum -y install "$package_name" > /dev/null 2>&1
+        fi
+        echo -ne "\e[1A"; echo -ne "\e[0K\r"
+    fi
+}
+
+# New function for core dependencies
+install_core_deps() {
+    install_package "bc"
+    install_package "jq"
+}
+
+
+benchinit() {
+    detect_release
     
     # check root
     if [[ $EUID -ne 0 ]]; then
         error_exit "This script must be run as root!"
     fi
     
-
-    # Function to install packages based on distribution
-    install_package() {
-        local package_name=$1
-        local package_path=$2
-        
-        if [ ! -e "$package_path" ]; then
-            echo " Installing $package_name ..."
-            if [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" ]]; then # Added rocky
-                dnf -y install "$package_name" > /dev/null 2>&1 || yum -y install "$package_name" > /dev/null 2>&1
-            elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
-                apt-get update -y > /dev/null 2>&1
-                apt-get -y install "$package_name" > /dev/null 2>&1
-            else
-                echo " Unknown distribution, trying apt-get and yum..."
-                apt-get -y install "$package_name" > /dev/null 2>&1 || yum -y install "$package_name" > /dev/null 2>&1
-            fi
-            echo -ne "\e[1A"; echo -ne "\e[0K\r"
-        fi
-    }
-
     # Check and install required packages
-    install_package "python3" "/usr/bin/python3"
-    install_package "jq" "/usr/bin/jq" # Install jq for JSON parsing
-    install_package "bc" "/usr/bin/bc" # Install bc for floating point arithmetic
+    install_package "python3"
+    install_package "jq"
+    install_package "bc"
     
     # Set python3 as default if needed (for RHEL-based systems)
     if [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" ]] && [ -e '/usr/bin/python3' ]; then # Added rocky
         alternatives --set python3 /usr/bin/python3 > /dev/null 2>&1 || true
     fi
     
-    install_package "curl" "/usr/bin/curl"
-    install_package "wget" "/usr/bin/wget"
-    install_package "bzip2" "/usr/bin/bzip2"
-    install_package "tar" "/usr/bin/tar"
+    install_package "curl"
+    install_package "wget"
+    install_package "bzip2"
+    install_package "tar"
 
     # Install official Speedtest CLI
     if ! command -v speedtest &> /dev/null; then
@@ -190,7 +206,8 @@ benchinit() {
         fi
 
         # Verify installation
-        if ! command -v speedtest &> /dev/null; then
+        if ! command -v speedtest &> /dev/null;
+ then
             # Error message will be printed to terminal and logged
             error_exit "Failed to install Speedtest CLI. Please check the log for details."
         else
@@ -215,14 +232,14 @@ benchinit() {
 get_opsy() {
     [ -f /etc/redhat-release ] && awk '{print ($1,$3~/^[0-9]/?$3:$4)}' /etc/redhat-release && return
     [ -f /etc/os-release ] && awk -F'[= "]' '/PRETTY_NAME/{print $3,$4,$5}' /etc/os-release && return
-    [ -f /etc/lsb-release ] && awk -F'[="]+' '/DESCRIPTION/{print $2}' /etc/lsb-release && return
+    [ -f /etc/lsb-release ] && awk -F'[="+]' '/DESCRIPTION/{print $2}' /etc/lsb-release && return
 }
 
 next() {
-    printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
 }
 next2() {
-    printf "%-57s\n" "-" | sed 's/\s/-/g'
+    printf "% -57s\n" "-" | sed 's/\s/-/g'
 }
 
 delete() {
@@ -273,7 +290,8 @@ speed_test(){
         while [ "$retry_count" -lt "$max_retries" ]; do
             json_output=$($speedtest_cmd 2>&1)
 
-            if echo "$json_output" | jq -e '.type == "result"' >/dev/null 2>&1; then
+            if echo "$json_output" | jq -e '.type == "result"' >/dev/null 2>&1;
+ then
                 # Check download speed to ensure the test was successful
                 REDownload_mbps=$(echo "$json_output" | jq -r '(.download.bandwidth // 0) / 125000')
                 if (( $(echo "$REDownload_mbps > 0" | bc -l) )); then
@@ -302,7 +320,8 @@ speed_test(){
     else
         # For specific server tests, run only once
         json_output=$($speedtest_cmd -s "$server_id" 2>&1)
-        if ! echo "$json_output" | jq -e '.type == "result"' >/dev/null 2>&1; then
+        if ! echo "$json_output" | jq -e '.type == "result"' >/dev/null 2>&1;
+ then
             # If JSON is invalid, simply skip this server
             return 0 # Return 0 to indicate skipping
         fi
@@ -370,7 +389,7 @@ speed_test(){
         formatted_latency="*"${formatted_latency}
     fi
 
-    printf "%-30s  %12s  %12s  %9s  %6s\n" " ${nodeName}" "${formatted_upload}" "${formatted_download}" "${formatted_latency}" "${formatted_loss}" | tee -a "$log"
+    printf "% -30s  %12s  %12s  %9s  %6s\n" " ${nodeName}" "${formatted_upload}" "${formatted_download}" "${formatted_latency}" "${formatted_loss}" | tee -a "$log"
     return 0 # Indicate success
 }
 
@@ -408,10 +427,10 @@ print_speedtest() {
     echo "" | tee -a "$log"
     echostyle "## Global Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '30514' 'USA, New York (Optimum)       '
     speed_test '17384' 'USA, Chicago (Uniti)          '
     #speed_test '1763' 'USA, Houston (Comcast)        '
@@ -436,10 +455,10 @@ print_speedtest_usa() {
     echo "" | tee -a "$log"
     echostyle "## USA Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '30514' 'USA, New York (Optimum)       '
     #speed_test '1774' 'USA, Boston (Comcast)         '
     #speed_test '1775' 'USA, Baltimore, MD (Comcast)  '
@@ -471,10 +490,10 @@ print_speedtest_in() {
     echo "" | tee -a "$log"
     echostyle "## India Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '29658' 'India, New Delhi (Tata Play)  '
     speed_test '23647' 'India, Mumbai (Tata Play)     '
     speed_test '25961' 'India, Nagpur (UCN Fiber)     '
@@ -491,10 +510,10 @@ print_speedtest_europe() {
     echo "" | tee -a "$log"
     echostyle "## Europe Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '14679' 'UK, London (Hyperoptic)       '
     speed_test '52365' 'Netherlands, Amsterdam (Odido)'
     speed_test '70635' 'Germany, Frankfurt (Plusnet)  '
@@ -520,10 +539,10 @@ print_speedtest_asia() {
     echo "" | tee -a "$log"
     echostyle "## Asia Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '29658' 'India, New Delhi (Tata Play)  '
     speed_test '23647' 'India, Mumbai (Tata Play)     '
     speed_test '6401' 'Pakistan, Karachi (Zong)      '
@@ -549,10 +568,10 @@ print_speedtest_na() {
     echo "" | tee -a "$log"
     echostyle "## North America Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '16753' 'Canada, Toronto /Bell         '
     speed_test '46407' 'Canada, Calgary /Rogers       '
     speed_test '17402' 'Canada, Vancouver /Bell       '
@@ -571,10 +590,10 @@ print_speedtest_sa() {
     echo "" | tee -a "$log"
     echostyle "## South America Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '3068' 'Brazil, Sao Paulo /TIM        '
     #speed_test '11102' 'Brazil, Fortaleza (Connect)    '
     #speed_test '18126' 'Brazil, Manaus (Claro)         '
@@ -595,10 +614,10 @@ print_speedtest_au() {
     echo "" | tee -a "$log"
     echostyle "## Australia & New Zealand Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '1267' 'Australia, Sydney (Optus)     '
     speed_test '25134' 'Australia, Melbourne (Leaptel)'
     speed_test '13276' 'Australia, Brisbane (Exetel)  '
@@ -617,10 +636,10 @@ print_speedtest_ukraine() {
     echo "" | tee -a "$log"
     echostyle "## Ukraine Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     #speed_test '29112' 'Ukraine, Kyiv (Datagroup)     '
     speed_test '30813' 'Ukraine, Kyiv (KyivStar)      '
     speed_test '14887' 'Ukraine, Lviv (UARNet)        '
@@ -643,10 +662,10 @@ print_speedtest_lviv() {
     echo "" | tee -a "$log"
     echostyle "## Lviv Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '14887' 'Ukraine, Lviv (UARNet)        '
     speed_test '29259' 'Ukraine, Lviv (KyivStar)      '
     speed_test '2445' 'Ukraine, Lviv (KOMiTEX)       '
@@ -660,10 +679,10 @@ print_speedtest_meast() {
     echo "" | tee -a "$log"
     echostyle "## Middle East Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '61329' 'Cyprus, Nicosia (GhoFi)       '
     speed_test '38212' 'Israel, Tel Aviv (Bezeq)      '
     speed_test '48427' 'Libya, Tripoli (ALMADAR)      '
@@ -681,10 +700,10 @@ print_speedtest_central_asia() {
     echo "" | tee -a "$log"
     echostyle "## Central Asia Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '2485' 'Kazakhstan, Almaty /KCell JSC '
     speed_test '2802' 'Kazakhstan, Astana /KCell JSC '
     speed_test '5689' 'Kyrgyzstan, Bishkek /Beeline  '
@@ -702,10 +721,10 @@ print_speedtest_china() {
     echo "" | tee -a "$log"
     echostyle "## China Speedtest.net"
     echo "" | tee -a "$log"
-    printf "%-30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -30s  %12s  %12s  %9s  %6s\n" " Location" "Upload" "Download" "Ping" "Loss" | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
-    printf "%-79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
     speed_test '5396' 'Suzhou (China Telecom 5G)     '
     speed_test '16204' 'Suzhou (JSQY)                 '
     speed_test '2444' 'Shanghai (China Unicom 5G)    '
@@ -1078,7 +1097,7 @@ machine_location(){
     country=$(python3 tools.py geoip country)
     city=$(python3 tools.py geoip city)
     #countryCode=$(python3 tools.py geoip countryCode)
-    region=$(python3 tools.py geoip regionName)	
+    region=$(python3 tools.py geoip regionName)    
 
     echo -e " Machine location: $country, $city ($region)"
     echo -e " ISP & ORG: $asn, $isp / $org"
@@ -1105,11 +1124,14 @@ virt_check(){
         local virtualx=$(dmesg) 2>"$NULL"
         
         # Check for containers
-        if grep docker /proc/1/cgroup -qa; then
+        if grep docker /proc/1/cgroup -qa;
+ then
             virtual="Docker"
-        elif grep lxc /proc/1/cgroup -qa; then
+        elif grep lxc /proc/1/cgroup -qa;
+ then
             virtual="Lxc"
-        elif grep -qa container=lxc /proc/1/environ; then
+        elif grep -qa container=lxc /proc/1/environ;
+ then
             virtual="Lxc"
         elif [[ -f /proc/user_beancounters ]]; then
             virtual="OpenVZ"
@@ -1128,7 +1150,7 @@ virt_check(){
             virtual="Xen"
         elif [[ "$sys_manu" == *"Microsoft Corporation"* ]]; then
             if [[ "$sys_product" == *"Virtual Machine"* ]]; then
-                if [[ "$sys_ver" == *"7.0"* || "$sys_ver" == *"Hyper-V" ]]; then
+                if [[ "$sys_ver" == *"7.0"* || "$sys_ver" == *"Hyper-V"* ]]; then
                     virtual="Hyper-V"
                 else
                     virtual="Microsoft Virtual Machine"
@@ -1198,18 +1220,18 @@ print_system_info() {
     [[ -z "$IPV6_CHECK" ]] && ONLINE+="\xE2\x9D\x8C Offline" || ONLINE+="\xE2\x9C\x94 Online"
     echo -e " IPv4/IPv6    : $ONLINE" | tee -a "$log"
     echo -e " Uptime       : $up" | tee -a "$log"
-    printf "%-75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
+    printf "% -75s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
 }
 
 get_system_info() {
     # Detect CPU model with ARM64 support
     if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
         # Try to get CPU model for ARM64
-        cname=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
+        cname=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ 	]*//;s/[ 	]*$//')
         
         # If model is not defined, try other fields
         if [[ -z "$cname" ]]; then
-            cname=$(awk -F: '/Hardware/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
+            cname=$(awk -F: '/Hardware/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ 	]*//;s/[ 	]*$//')
         fi
         
         # If still not defined, try other sources
@@ -1225,7 +1247,7 @@ get_system_info() {
         fi
     else
         # Standard detection for x86_64
-        cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+        cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ 	]*//;s/[ 	]*$//' )
     fi
     
     # Detect number of cores with ARM64 support
@@ -1235,8 +1257,8 @@ get_system_info() {
         cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
     fi
     
-    freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
-    corescache=$( awk -F: '/cache size/ {cache=$2} END {print cache}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
+    freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | sed 's/^[ 	]*//;s/[ 	]*$//' )
+    corescache=$( awk -F: '/cache size/ {cache=$2} END {print cache}' /proc/cpuinfo | sed 's/^[ 	]*//;s/[ 	]*$//' )
     cpu_aes=$(cat /proc/cpuinfo | grep aes)
     [[ -z "$cpu_aes" ]] && cpu_aes="AES-NI Disabled" || cpu_aes="AES-NI Enabled"
     cpu_virt=$(cat /proc/cpuinfo | grep 'vmx\|svm')
@@ -1247,7 +1269,7 @@ get_system_info() {
     swap=$( free -m | awk '/Swap/ {print $2}' )
     uswap=$( free -m | awk '/Swap/ {print $3}' )
     up=$( awk '{a=$1/86400;b=($1%86400)/3600;c=($1%3600)/60} {printf("%d days %d:%d\n",a,b,c)}' /proc/uptime )
-    load=$( w | head -1 | awk -F'load average:' '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
+    load=$( w | head -1 | awk -F'load average:' '{print $2}' | sed 's/^[ 	]*//;s/[ 	]*$//' )
     opsy=$( get_opsy )
     arch=$( uname -m )
     lbit=$( getconf LONG_BIT )
@@ -1260,7 +1282,7 @@ get_system_info() {
 }
 
 write_test() {
-    (LANG=C dd if=/dev/zero of=test_file_$$ bs=512K count=$1 conv=fdatasync && rm -f test_file_$$ ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
+    (LANG=C dd if=/dev/zero of=test_file_$$ bs=512K count=$1 conv=fdatasync && rm -f test_file_$$ ) 2>&1 | awk -F, '{io=$NF} END { print io}' | sed 's/^[ 	]*//;s/[ 	]*$//'
 }
 
 averageio() {
@@ -1326,7 +1348,7 @@ cpubench() {
     if hash "$command_name" 2>"$NULL"; then
         # Run performance test and capture raw output, stripping leading/trailing whitespace.
         # The 'io_raw' variable will now contain the exact speed string like "1.9 GB/s" or "935 MB/s".
-        local io_raw=$( ( dd if=/dev/zero bs=512K count="$count_value" | "$command_name" ) 2>&1 | grep 'copied' | awk -F, '{io=$NF} END {print io}' | sed 's/^[ \t]*//;s/[ \t]*$//' )
+        local io_raw=$( ( dd if=/dev/zero bs=512K count="$count_value" | "$command_name" ) 2>&1 | grep 'copied' | awk -F, '{io=$NF} END {print io}' | sed 's/^[ 	]*//;s/[ 	]*$//' )
         
         # Extract numeric part and unit from the raw speed string.
         local numeric_part=$(echo "$io_raw" | awk '{print $1}')
@@ -1509,7 +1531,7 @@ print_end_time() {
 }
 
 print_intro() {
-    printf "%-75s\n" "-" | sed 's/\s/-/g'
+    printf "% -75s\n" "-" | sed 's/\s/-/g'
     printf ' Region: %s  https://bench.laset.com %s %s \n' "$region_name" "$bench_v" "$bench_d" | tee -a "$log"
     printf " Usage : curl -sL bench.laset.com | bash -s -- -%s\n" "$region_name" | tee -a "$log"
 }
@@ -1528,7 +1550,7 @@ sharetest() {
     # #	share_link=$( curl -X POST -s -d "$(cat $log)" https://hastebin.com/documents | awk -F '"' '{print "https://hastebin.com/"$4}' );;
     # # 'clbin' )
     # 	#share_link=$( curl -sF 'clbin=<-' https://clbin.com < $log );;
-    # 	#sprunge_link=$(curl -sF 'sprunge=<-' https://sprunge.us < $log);;
+    # 	sprunge_link=$(curl -sF 'sprunge=<-' https://sprunge.us < $log);;
     # esac
 
     # Replace "http://" with "https://"
@@ -1552,8 +1574,8 @@ log_preupload() {
 get_ip_whois_org_name(){
     #ip=$(curl -s ip.sb)
     result=$(curl -s https://rest.db.ripe.net/search.json?query-string=$(curl -s ip.sb))
-    #org_name=$(echo "$result" | jq '.objects.object.[1].attributes.attribute.[1].value' | sed 's/\"//g')
-    org_name=$(echo "$result" | jq '.objects.object[1].attributes.attribute[1]' | sed 's/\"//g')
+    #org_name=$(echo "$result" | jq '.objects.object.[1].attributes.attribute.[1].value' | sed 's/"//g')
+    org_name=$(echo "$result" | jq '.objects.object[1].attributes.attribute[1]' | sed 's/"//g')
     echo "$org_name";
 }
 
@@ -1614,7 +1636,7 @@ in_bench(){
     sharetest clbin;
 }
 
-europe_bench(){
+ europe_bench(){
     region_name="Europe"
     print_intro;
     benchinit;
@@ -1810,15 +1832,15 @@ case $1 in
     'version'|'v'|'-v'|'--v'|'-version'|'--version')
         next;about;next;cleanup;;
     'gb4'|'-gb4'|'--gb4'|'geek4'|'-geek4'|'--geek4' )
-        next;geekbench4;next;cleanup;;
+        install_core_deps;next;geekbench4;next;cleanup;;
     'gb5'|'-gb5'|'--gb5'|'geek5'|'-geek5'|'--geek5' )
-        next;geekbench5;next;cleanup;;
+        install_core_deps;next;geekbench5;next;cleanup;;
     'gb6'|'-gb6'|'--gb6'|'geek6'|'-geek6'|'--geek6' )
-        next;geekbench6;next;cleanup;;
+        install_core_deps;next;geekbench6;next;cleanup;;
     'gb'|'-gb'|'--gb'|'geek'|'-geek'|'--geek' )
-        next;geekbench;next;cleanup;;
+        install_core_deps;next;geekbench;next;cleanup;;
     'io'|'-io'|'--io'|'ioping'|'-ioping'|'--ioping' )
-        next;iotest;write_io;next;cleanup;;
+        install_core_deps;next;iotest;write_io;next;cleanup;;
     'speed'|'-speed'|'--speed'|'-speedtest'|'--speedtest'|'-speedcheck'|'--speedcheck' )
         about;benchinit;machine_location;print_speedtest;next;cleanup;;
     'usas'|'-usas'|'uss'|'-uss'|'uspeed'|'-uspeed' )
@@ -1894,12 +1916,12 @@ esac
 
 if [[  ! $is_share == "share" ]]; then
     case $2 in
-        'share'|'-s'|'--s'|'-share'|'--share' )
+        'share'|'-s'|'--s'|'-share'|'--share' ) 
             if [[ $3 == '' ]]; then
                 sharetest clbin;
             else
                 sharetest "$3";
             fi
-            ;;
+            ;; 
     esac
 fi
