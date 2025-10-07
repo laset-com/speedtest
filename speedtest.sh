@@ -361,7 +361,7 @@ speed_test(){
     relatency=$(echo "$json_output" | jq -r '(.ping.latency // 0)' | tr -d '\n')
 
     # Handle packet loss: check if it's available and numeric
-    packet_loss_raw=$(echo "$json_output" | jq -r '.packetLoss' | tr -d '\n')
+    packet_loss_raw=$(echo "$json_output" | jq -r '(.packetLoss // "")' | tr -d '\n')
     if [[ "$packet_loss_raw" == "null" || -z "$packet_loss_raw" ]]; then
         formatted_loss="N/A"
         # Do not accumulate for N/A values in TOTAL_PACKET_LOSS_SUM or SPEEDTEST_SUCCESS_COUNT
