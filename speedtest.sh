@@ -305,7 +305,7 @@ speed_test(){
             if echo "$json_output" | jq -e '.type == "result"' >/dev/null 2>&1; then
                 # Check download speed to ensure the test was successful
                 REDownload_mbps=$(echo "$json_output" | jq -r '(.download.bandwidth // 0) / 125000' | tr -d '\n')
-                if (( $(echo "${REDownload_mbps:-0}" > 0 | bc -l) )); then
+                if (( $(echo "${REDownload_mbps:-0} > 0" | bc -l) )); then
                     test_successful=true
                     break # Success, exit retry loop
                 fi
@@ -343,7 +343,7 @@ speed_test(){
             return 0 # Return 0 to indicate skipping
         fi
         REDownload_mbps=$(echo "$json_output" | jq -r '(.download.bandwidth // 0) / 125000' | tr -d '\n')
-        if ! (( $(echo "${REDownload_mbps:-0}" > 0 | bc -l) )); then
+        if ! (( $(echo "${REDownload_mbps:-0} > 0" | bc -l) )); then
             # If download speed is 0 or less, simply skip this server
             return 0 # Return 0 to indicate skipping
         fi
@@ -402,7 +402,7 @@ speed_test(){
 
     # Original script had a check for latency > 50 and adding an asterisk.
     # Now, the asterisk is only for "Nearby" tests.
-    if [[ "$nodeName" == *"Nearby"* ]] && (( $(echo "${relatency:-0}" > 50 | bc -l) )); then
+    if [[ "$nodeName" == *"Nearby"* ]] && (( $(echo "${relatency:-0} > 50" | bc -l) )); then
         formatted_latency="*"${formatted_latency}
     fi
 
