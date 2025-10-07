@@ -334,7 +334,7 @@ speed_test(){
 
         if echo "$json_output" | grep -q "Limit reached"; then
             SPEEDTEST_LIMIT_REACHED="true"
-            printf "% -30s  Too many requests, please try again later.\n" " ${nodeName}" | tee -a "$log"
+            printf "% -30s  Speedtest limit reached, try again in 1 hour\n" " ${nodeName}" | tee -a "$log"
             return 0
         fi
 
