@@ -462,7 +462,7 @@ print_speedtest() {
     speed_test '23647' 'India, Mumbai (Tata Play)     '
     speed_test '5935' 'Singapore (MyRepublic)        '
     speed_test '69575' 'Japan, Tokyo (Nearoute)       '
-    speed_test '1267' 'Australia, Sydney (Optus)     '
+    speed_test '68924' 'Australia, Sydney (Neptune)   '
     #speed_test '15722' 'RSA, Randburg (MTN SA)        '
     speed_test '3068' 'Brazil, Sao Paulo (TIM)       '
 
@@ -636,7 +636,7 @@ print_speedtest_au() {
     printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
         speed_test '' 'Nearby                        '
     printf "% -79s\n" "-" | sed 's/\s/-/g' | tee -a "$log"
-    speed_test '1267' 'Australia, Sydney (Optus)     '
+    speed_test '68924' 'Australia, Sydney (Neptune)   '
     speed_test '25134' 'Australia, Melbourne (Leaptel)'
     speed_test '13276' 'Australia, Brisbane (Exetel)  '
     speed_test '15135' 'Australia, Adelaide (Aussie)  '
