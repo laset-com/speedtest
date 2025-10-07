@@ -6,8 +6,8 @@ about() {
     echo ""
     echo " ========================================================= "
     echo " \            Speedtest https://bench.laset.com          / "
-    echo "    System info, Geekbench, I/O test and speedtest     / "
-    echo "                  $bench_v    $bench_d                 / "
+    echo " \    System info, Geekbench, I/O test and speedtest     / "
+    echo " \                 $bench_v    $bench_d                  / "
     echo " ========================================================= "
     echo ""
 }
@@ -290,10 +290,9 @@ speed_test(){
         while [ "$retry_count" -lt "$max_retries" ]; do
             json_output=$($speedtest_cmd 2>&1)
 
-            if echo "$json_output" | jq -e '.type == "result"' >/dev/null 2>&1;
- then
+            if echo "$json_output" | jq -e '.type == "result"' >/dev/null 2>&1; then
                 # Check download speed to ensure the test was successful
-                REDownload_mbps=$(echo "$json_output" | jq -r '(.download.bandwidth // 0) / 125000')
+                REDownload_mbps=$(echo "$json_output" | jq -r '(.download.bandwidth // 0) / 125000' | tr -d '\n')
                 if (( $(echo "$REDownload_mbps > 0" | bc -l) )); then
                     test_successful=true
                     break # Success, exit retry loop
@@ -320,12 +319,11 @@ speed_test(){
     else
         # For specific server tests, run only once
         json_output=$($speedtest_cmd -s "$server_id" 2>&1)
-        if ! echo "$json_output" | jq -e '.type == "result"' >/dev/null 2>&1;
- then
+        if ! echo "$json_output" | jq -e '.type == "result"' >/dev/null 2>&1; then
             # If JSON is invalid, simply skip this server
             return 0 # Return 0 to indicate skipping
         fi
-        REDownload_mbps=$(echo "$json_output" | jq -r '(.download.bandwidth // 0) / 125000')
+        REDownload_mbps=$(echo "$json_output" | jq -r '(.download.bandwidth // 0) / 125000' | tr -d '\n')
         if ! (( $(echo "$REDownload_mbps > 0" | bc -l) )); then
             # If download speed is 0 or less, simply skip this server
             return 0 # Return 0 to indicate skipping
@@ -339,7 +337,7 @@ speed_test(){
 
     # Continue parsing and printing results.
 
-    REDownload_mbps=$(echo "$json_output" | jq -r '(.download.bandwidth // 0) / 125000') # Convert bytes/sec to Mbps
+    REDownload_mbps=$(echo "$json_output" | jq -r '(.download.bandwidth // 0) / 125000' | tr -d '\n') # Convert bytes/sec to Mbps
     reupload_mbps=$(echo "$json_output" | jq -r '(.upload.bandwidth // 0) / 125000')   # Convert bytes/sec to Mbps
     relatency=$(echo "$json_output" | jq -r '(.ping.latency // 0)')
 
