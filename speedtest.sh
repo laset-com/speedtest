@@ -407,6 +407,7 @@ speed_test(){
     fi
 
     printf "% -30s  %12s  %12s  %9s  %6s\n" " ${nodeName}" "${formatted_upload}" "${formatted_download}" "${formatted_latency}" "${formatted_loss}" | tee -a "$log"
+    sleep 5
     return 0 # Indicate success
 }
 
