@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-bench_v="v1.8.4"
-bench_d="2025-09-27"
+bench_v="v1.8.5"
+bench_d="2025-10-20"
 about() {
     echo ""
     echo " ========================================================= "
@@ -1123,7 +1123,7 @@ machine_location(){
 
 virt_check(){
     if hash ifconfig 2>"$NULL"; then
-        local eth=$(ifconfig)
+        local eth=$(ifconfig 2>/dev/null)
     fi
 
     # Use systemd-detect-virt if available for more reliable detection
@@ -1287,14 +1287,14 @@ get_system_info() {
     swap=$( free -m | awk '/Swap/ {print $2}' )
     uswap=$( free -m | awk '/Swap/ {print $3}' )
     up=$( awk '{a=$1/86400;b=($1%86400)/3600;c=($1%3600)/60} {printf("%d days %d:%d\n",a,b,c)}' /proc/uptime )
-    load=$( w | head -1 | awk -F'load average:' '{print $2}' | sed 's/^[ 	]*//;s/[ 	]*$//' )
+    load=$( w 2>/dev/null | head -1 | awk -F'load average:' '{print $2}' | sed 's/^[ 	]*//;s/[ 	]*$//' )
     opsy=$( get_opsy )
     arch=$( uname -m )
     lbit=$( getconf LONG_BIT )
     kern=$( uname -r )
-    hdd=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $2 }')
-    hddused=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $3 }')
-    hddfree=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h | grep total | awk '{ print $5 }')
+    hdd=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h 2>/dev/null | grep total | awk '{ print $2 }')
+    hddused=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h 2>/dev/null | grep total | awk '{ print $3 }')
+    hddfree=$(df -t simfs -t ext2 -t ext3 -t ext4 -t btrfs -t xfs -t vfat -t ntfs -t swap --total -h 2>/dev/null | grep total | awk '{ print $5 }')
 
     virt_check
 }
@@ -1485,7 +1485,7 @@ iotest() {
         sbcount=$tram_mb
     fi
     [[ -d $benchram ]] || mkdir "$benchram"
-    mount -t tmpfs -o size="$sbram" tmpfs "$benchram"/
+    mount -t tmpfs -o size="$sbram" tmpfs "$benchram"/ 2>/dev/null
     echostyle "RAM Speed:"
     iow1=$( ( dd if=/dev/zero of="$benchram"/zero bs=512K count="$sbcount" ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
     ior1=$( ( dd if="$benchram"/zero of="$NULL" bs=512K count="$sbcount"; rm -f test ) 2>&1 | awk -F, '{io=$NF} END { print io}' )
@@ -1496,7 +1496,7 @@ iotest() {
     echo "   Avg. write : $(averageio "$iow1" "$iow2" "$iow3") MB/s" | tee -a "$log"
     echo "   Avg. read  : $(averageio "$ior1" "$ior2" "$ior3") MB/s" | tee -a "$log"
     rm "$benchram"/zero
-    umount "$benchram"
+    umount "$benchram" 2>/dev/null
     rm -rf "$benchram"
     echo "" | tee -a "$log"
 }
