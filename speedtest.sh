@@ -155,6 +155,9 @@ install_package() {
 install_core_deps() {
     install_package "bc"
     install_package "jq"
+    install_package "bzip2"
+    install_package "curl"
+    install_package "tar"
 }
 
 
@@ -1925,7 +1928,7 @@ case $1 in
         fi
         ;;
     'debug'|'-d'|'--d'|'-debug'|'--debug' )
-        get_ip_whois_org_name;;
+        install_core_deps;get_ip_whois_org_name;;
 *)
     bench_all;;
 esac
