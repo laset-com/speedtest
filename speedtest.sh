@@ -807,13 +807,13 @@ geekbench4() {
     local single_score_num=$(echo "$GEEKBENCH_SCORES_SINGLE" | tr -cd '0-9.')
     if [[ -z "$single_score_num" ]]; then single_score_num=0; fi # Default to 0 if empty
 
-    if (( $(echo "$single_score_num <= 1700" | bc -l) )); then
+    if (( $(echo "$single_score_num <= 2000" | bc -l) )); then
         grank="(POOR)"
-    elif (( $(echo "$single_score_num >= 1700 && $single_score_num <= 2500" | bc -l) )); then
+    elif (( $(echo "$single_score_num >= 2000 && $single_score_num <= 2700" | bc -l) )); then
         grank="(FAIR)"
-    elif (( $(echo "$single_score_num >= 2500 && $single_score_num <= 3500" | bc -l) )); then
+    elif (( $(echo "$single_score_num >= 2700 && $single_score_num <= 3700" | bc -l) )); then
         grank="(GOOD)"
-    elif (( $(echo "$single_score_num >= 3500 && $single_score_num <= 4500" | bc -l) )); then
+    elif (( $(echo "$single_score_num >= 3700 && $single_score_num <= 4500" | bc -l) )); then
         grank="(VERY GOOD)"
     elif (( $(echo "$single_score_num >= 4500 && $single_score_num <= 6000" | bc -l) )); then
         grank="(EXCELLENT)"
@@ -895,15 +895,15 @@ geekbench5() {
 
     if (( $(echo "$single_score_num <= 300" | bc -l) )); then
         grank="(POOR)"
-    elif (( $(echo "$single_score_num >= 300 && $single_score_num <= 500" | bc -l) )); then
+    elif (( $(echo "$single_score_num >= 300 && $single_score_num <= 600" | bc -l) )); then
         grank="(FAIR)"
-    elif (( $(echo "$single_score_num >= 500 && $single_score_num <= 700" | bc -l) )); then
+    elif (( $(echo "$single_score_num >= 600 && $single_score_num <= 900" | bc -l) )); then
         grank="(GOOD)"
-    elif (( $(echo "$single_score_num >= 700 && $single_score_num <= 1000" | bc -l) )); then
+    elif (( $(echo "$single_score_num >= 900 && $single_score_num <= 1200" | bc -l) )); then
         grank="(VERY GOOD)"
-    elif (( $(echo "$single_score_num >= 1000 && $single_score_num <= 1500" | bc -l) )); then
+    elif (( $(echo "$single_score_num >= 1200 && $single_score_num <= 1700" | bc -l) )); then
         grank="(EXCELLENT)"
-    elif (( $(echo "$single_score_num >= 1500 && $single_score_num <= 2000" | bc -l) )); then
+    elif (( $(echo "$single_score_num >= 1700 && $single_score_num <= 2200" | bc -l) )); then
         grank="(THE BEAST)"
     else
         grank="(MONSTER)"
@@ -981,15 +981,15 @@ geekbench6() {
 
     if (( $(echo "$single_score_num <= 400" | bc -l) )); then
         grank="(POOR)"
-    elif (( $(echo "$single_score_num >= 400 && $single_score_num <= 660" | bc -l) )); then
+    elif (( $(echo "$single_score_num >= 400 && $single_score_num <= 700" | bc -l) )); then
         grank="(FAIR)"
-    elif (( $(echo "$single_score_num >= 660 && $single_score_num <= 925" | bc -l) )); then
+    elif (( $(echo "$single_score_num >= 700 && $single_score_num <= 1000" | bc -l) )); then
         grank="(GOOD)"
-    elif (( $(echo "$single_score_num >= 925 && $single_score_num <= 1350" | bc -l) )); then
+    elif (( $(echo "$single_score_num >= 1000 && $single_score_num <= 1500" | bc -l) )); then
         grank="(VERY GOOD)"
-    elif (( $(echo "$single_score_num >= 1350 && $single_score_num <= 2000" | bc -l) )); then
+    elif (( $(echo "$single_score_num >= 1500 && $single_score_num <= 2200" | bc -l) )); then
         grank="(EXCELLENT)"
-    elif (( $(echo "$single_score_num >= 2000 && $single_score_num <= 2600" | bc -l) )); then
+    elif (( $(echo "$single_score_num >= 2200 && $single_score_num <= 3000" | bc -l) )); then
         grank="(THE BEAST)"
     else
         grank="(MONSTER)"
