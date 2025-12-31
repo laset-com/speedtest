@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-bench_v="v1.8.5"
-bench_d="2025-10-20"
+bench_v="v1.8.6"
+bench_d="2025-12-31"
 about() {
     echo ""
     echo " ========================================================= "
@@ -1072,8 +1072,20 @@ install_smart() {
 
 # test if the host has IPv4/IPv6 connectivity
 [[ ! -z $LOCAL_CURL ]] && IP_CHECK_CMD="curl -s -m 4" || IP_CHECK_CMD="wget -qO- -T 4"
-IPV4_CHECK=$((ping -4 -c 1 -W 4 ipv4.google.com >/dev/null 2>&1 && echo true) || $IP_CHECK_CMD -4 icanhazip.com 2> /dev/null)
-IPV6_CHECK=$((ping -6 -c 1 -W 4 ipv6.google.com >/dev/null 2>&1 && echo true) || $IP_CHECK_CMD -6 icanhazip.com 2> /dev/null)
+# Prefer the HTTP check (curl/wget with a timeout) first; fallback to a short ping
+# This avoids hanging on systems where raw IPv6 ping can block.
+IPV4_CHECK=""
+if $IP_CHECK_CMD -4 icanhazip.com >/dev/null 2>&1; then
+    IPV4_CHECK=true
+elif ping -4 -c 1 -W 1 ipv4.google.com >/dev/null 2>&1; then
+    IPV4_CHECK=true
+fi
+IPV6_CHECK=""
+if $IP_CHECK_CMD -6 icanhazip.com >/dev/null 2>&1; then
+    IPV6_CHECK=true
+elif ping -6 -c 1 -W 1 ipv6.google.com >/dev/null 2>&1; then
+    IPV6_CHECK=true
+fi
 if [[ -z "$IPV4_CHECK" && -z "$IPV6_CHECK" ]]; then
     echo -e
     echo -e "Warning: Both IPv4 AND IPv6 connectivity were not detected. Check for DNS issues..."
