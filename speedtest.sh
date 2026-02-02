@@ -313,6 +313,7 @@ benchinit() {
             error_exit "Failed to install Speedtest CLI. Please check the log for details."
         else
             printf " Speedtest CLI installed successfully!\r" >/dev/tty
+            delete
         fi
     fi
 
@@ -862,7 +863,7 @@ geekbench4() {
     echo -e "\nGeekbench 4 is not compatible with ARM64 architectures. Skipping the test"
     else
     echo "" | tee -a "$log"
-    echo -e " Performing Geekbench v4 CPU Benchmark test. Please wait..."
+    printf " Performing Geekbench v4 CPU Benchmark test. Please wait...\r" >/dev/tty
 
     # Start steal time measurement
     local steal_start=$(grep '^cpu ' /proc/stat | awk '{if (NF > 8) print $9; else print 0}')
