@@ -140,7 +140,7 @@ install_package() {
         printf " Installing $package_name ...\r" >/dev/tty
         if [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" ]]; then
             dnf -y install "$package_name" > /dev/null 2>&1 || yum -y install "$package_name" > /dev/null 2>&1
-            printf "\r\e[0K" >/dev/tty
+            printf "\r\033[0K" >/dev/tty
         elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
             apt-get update -y > /dev/null 2>&1
             apt-get -y install "$package_name" > /dev/null 2>&1
@@ -188,26 +188,28 @@ install_speedtest_cli() {
                     sed -i 's/noble/jammy/g' "$OOKLA_LIST"
                     apt-get update -y > /dev/null 2>&1
                     if apt-get -y install speedtest > /dev/null 2>&1; then
-                        printf "\r\e[0K" >/dev/tty
+                        printf "\r\033[0K" >/dev/tty
                         return 0
                     fi
                     # If jammy workaround failed, restore and try standard apt install
-                    delete
+
+                    printf "\r\033[0K" >/dev/tty
                     printf "  Noble workaround failed, attempting standard apt...\r" >/dev/tty
                     mv -v "$OOKLA_LIST.bak" "$OOKLA_LIST" > /dev/null 2>&1 || true
                     apt-get update -y > /dev/null 2>&1
                     if apt-get -y install speedtest > /dev/null 2>&1; then
-                        printf "\r\e[0K" >/dev/tty
+                        printf "\r\033[0K" >/dev/tty
                         return 0
                     fi
-                    delete
+
+                    printf "\r\033[0K" >/dev/tty
                     printf "  Ubuntu apt installation failed, trying other methods...\r" >/dev/tty
                 elif [ -f "$OOKLA_LIST" ]; then
                     # Repository exists but no noble, try standard apt
                     printf "  Installing via apt...\r" >/dev/tty
                     apt-get update -y > /dev/null 2>&1
                     if apt-get -y install speedtest > /dev/null 2>&1; then
-                        printf "\r\e[0K" >/dev/tty
+                        printf "\r\033[0K" >/dev/tty
                         return 0
                     fi
                     delete
@@ -225,10 +227,10 @@ install_speedtest_cli() {
             apt-get update -y > /dev/null 2>&1
             printf "  Installing speedtest package...\r" >/dev/tty
             if apt-get -y install speedtest > /dev/null 2>&1; then
-                printf "\r\e[0K" >/dev/tty
+                printf "\r\033[0K" >/dev/tty
                 return 0
             else
-                delete
+                printf "\r\033[0K" >/dev/tty
                 printf "  Debian/Ubuntu installation failed, trying other methods...\r" >/dev/tty
             fi
         fi
@@ -239,42 +241,42 @@ install_speedtest_cli() {
         dnf update -y > /dev/null 2>&1 || yum update -y > /dev/null 2>&1
         printf "  Installing speedtest package...\r" >/dev/tty
         if dnf -y install speedtest > /dev/null 2>&1 || yum -y install speedtest > /dev/null 2>&1; then
-            printf "\r\e[0K" >/dev/tty
+            printf "\r\033[0K" >/dev/tty
             return 0
         else
-            delete
+            printf "\r\033[0K" >/dev/tty
             printf "  RHEL-based installation failed, trying other methods...\r" >/dev/tty
         fi
     else
         # Fallback for other distributions using the generic script
         printf "  Attempting generic Speedtest CLI installation...\r" >/dev/tty
         if ! curl -s https://install.speedtest.net/app/cli/install.sh | bash > /dev/null 2>&1; then
-            delete
+            printf "\r\033[0K" >/dev/tty
             printf "  Generic installation failed, falling back to manual download...\r" >/dev/tty
         else
-            printf "\r\e[0K" >/dev/tty
+            printf "\r\033[0K" >/dev/tty
             return 0
         fi
     fi
 
     # Fallback to manual download and install if apt/yum/generic script failed
-    delete
+    printf "\r\033[0K" >/dev/tty
     printf "  Falling back to manual download and install...\r" >/dev/tty
     local TMP_TGZ="/tmp/speedtest.tgz"
     local TMP_DIR="/tmp/speedtest_install.$$"
     local SPEEDTEST_URL
     SPEEDTEST_URL=$(get_speedtest_url) || {
-        delete
+        printf "\r\033[0K" >/dev/tty
         error_exit "Unsupported architecture for Speedtest CLI: $ARCH"
     }
     [ -z "$SPEEDTEST_URL" ] && {
-        delete
+        printf "\r\033[0K" >/dev/tty
         error_exit "Failed to generate Speedtest URL"
     }
 
     mkdir -p "$TMP_DIR"
     if ! curl -fsSL -o "$TMP_TGZ" "$SPEEDTEST_URL"; then
-        delete
+        printf "\r\033[0K" >/dev/tty
         error_exit "Failed to download Speedtest CLI"
     fi
     tar -xzf "$TMP_TGZ" -C "$TMP_DIR"
@@ -286,7 +288,7 @@ install_speedtest_cli() {
     fi
 
     if [ -z "$BIN_PATH" ]; then
-        delete
+        printf "\r\033[0K" >/dev/tty
         error_exit "Could not locate speedtest binary in archive"
     fi
 
@@ -297,10 +299,10 @@ install_speedtest_cli() {
     rm -rf "$TMP_DIR" "$TMP_TGZ"
 
     if command -v speedtest >/dev/null 2>&1; then
-        printf "\r\e[0K" >/dev/tty
+        printf "\r\033[0K" >/dev/tty
         return 0
     else
-        delete
+        printf "\r\033[0K" >/dev/tty
         error_exit "Manual Speedtest installation failed"
     fi
 }
@@ -343,7 +345,7 @@ benchinit() {
     if  [ ! -e 'tools.py' ]; then
         echo " Installing tools.py ..."
         wget --no-check-certificate https://raw.githubusercontent.com/laset-com/speedtest/master/tools.py > /dev/null 2>&1
-        echo -ne "\e[1A"; echo -ne "\e[0K\r"
+        echo -ne "\033[1A"; echo -ne "\033[0K\r"
     fi
     chmod a+rx tools.py
 
