@@ -137,17 +137,16 @@ install_package() {
 
     if ! command -v "$command_name" &> /dev/null; then
         detect_release
-        echo " Installing $package_name ..."
+        printf " Installing $package_name ...\r" >/dev/tty
         if [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" ]]; then
             dnf -y install "$package_name" > /dev/null 2>&1 || yum -y install "$package_name" > /dev/null 2>&1
         elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
             apt-get update -y > /dev/null 2>&1
             apt-get -y install "$package_name" > /dev/null 2>&1
         else
-            echo " Unknown distribution, trying apt-get and yum..."
+            printf " Unknown distribution, trying apt-get and yum...\r" >/dev/tty
             apt-get -y install "$package_name" > /dev/null 2>&1 || yum -y install "$package_name" > /dev/null 2>&1
         fi
-        echo -ne "\e[1A"; echo -ne "\e[0K\r"
     fi
 }
 
@@ -191,7 +190,6 @@ install_speedtest_cli() {
                     sed -i 's/noble/jammy/g' "$OOKLA_LIST"
                     apt-get update -y > /dev/null 2>&1
                     if apt-get -y install speedtest > /dev/null 2>&1; then
-                        delete
                         return 0
                     else
                         delete
@@ -202,7 +200,6 @@ install_speedtest_cli() {
                     # Try normal apt install anyway
                     apt-get update -y > /dev/null 2>&1
                     if apt-get -y install speedtest > /dev/null 2>&1; then
-                        delete
                         return 0
                     fi
                 fi
@@ -215,7 +212,6 @@ install_speedtest_cli() {
             apt-get update -y > /dev/null 2>&1
             printf "  Installing speedtest package...\r" >/dev/tty
             if apt-get -y install speedtest > /dev/null 2>&1; then
-                delete
                 return 0
             fi
         fi
@@ -226,14 +222,12 @@ install_speedtest_cli() {
         dnf update -y > /dev/null 2>&1 || yum update -y > /dev/null 2>&1
         printf "  Installing speedtest package...\r" >/dev/tty
         if dnf -y install speedtest > /dev/null 2>&1 || yum -y install speedtest > /dev/null 2>&1; then
-            delete
             return 0
         fi
     else
         # Fallback for other distributions using the generic script
         printf "  Attempting generic Speedtest CLI installation...\r" >/dev/tty
         if curl -s https://install.speedtest.net/app/cli/install.sh | bash > /dev/null 2>&1; then
-            delete
             return 0
         fi
     fi
@@ -274,7 +268,6 @@ install_speedtest_cli() {
     rm -rf "$TMP_DIR" "$TMP_TGZ"
 
     if command -v speedtest >/dev/null 2>&1; then
-        delete
         return 0
     else
         delete
@@ -308,7 +301,7 @@ benchinit() {
     # Install official Speedtest CLI
     if ! command -v speedtest &> /dev/null; then
         printf " Installing official Speedtest CLI ...\r" >/dev/tty
-        install_speedtest_cli
+        install_speedtest_cli > /dev/null 2>&1
         if ! command -v speedtest &> /dev/null; then
             error_exit "Failed to install Speedtest CLI. Please check the log for details."
         else
@@ -863,7 +856,7 @@ geekbench4() {
     echo -e "\nGeekbench 4 is not compatible with ARM64 architectures. Skipping the test"
     else
     echo "" | tee -a "$log"
-    echo " Performing Geekbench v4 CPU Benchmark test. Please wait..."
+    printf " Performing Geekbench v4 CPU Benchmark test. Please wait...\r" >/dev/tty
 
     # Start steal time measurement
     local steal_start=$(grep '^cpu ' /proc/stat | awk '{if (NF > 8) print $9; else print 0}')
