@@ -180,10 +180,7 @@ install_speedtest_cli() {
         if [[ "$ubuntu_codename" == "noble" ]]; then
             printf "  Detected Ubuntu 24.04 (Noble Numbat)...\r" >/dev/tty
             # Attempt to add the repo first, then modify if noble is present
-            if ! curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash > /dev/null 2>&1; then
-                delete
-                # Proceed to manual install if repo addition fails
-            else
+            if curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash > /dev/null 2>&1; then
                 if [ -f "$OOKLA_LIST" ] && grep -q "noble" "$OOKLA_LIST"; then
                     printf "  Applying noble->jammy workaround...\r" >/dev/tty
                     cp -v "$OOKLA_LIST" "$OOKLA_LIST.bak" > /dev/null 2>&1
@@ -191,19 +188,31 @@ install_speedtest_cli() {
                     apt-get update -y > /dev/null 2>&1
                     if apt-get -y install speedtest > /dev/null 2>&1; then
                         return 0
-                    else
-                        delete
-                        mv -v "$OOKLA_LIST.bak" "$OOKLA_LIST" > /dev/null 2>&1 || true
                     fi
-                elif [ -f "$OOKLA_LIST" ]; then
-                    printf "  Installing via apt (no noble override needed)...\r" >/dev/tty
-                    # Try normal apt install anyway
+                    # If jammy workaround failed, restore and try standard apt install
+                    delete
+                    printf "  Noble workaround failed, attempting standard apt...\r" >/dev/tty
+                    mv -v "$OOKLA_LIST.bak" "$OOKLA_LIST" > /dev/null 2>&1 || true
                     apt-get update -y > /dev/null 2>&1
                     if apt-get -y install speedtest > /dev/null 2>&1; then
                         return 0
                     fi
+                    delete
+                    printf "  Ubuntu apt installation failed, trying other methods...\r" >/dev/tty
+                elif [ -f "$OOKLA_LIST" ]; then
+                    # Repository exists but no noble, try standard apt
+                    printf "  Installing via apt...\r" >/dev/tty
+                    apt-get update -y > /dev/null 2>&1
+                    if apt-get -y install speedtest > /dev/null 2>&1; then
+                        return 0
+                    fi
+                    delete
+                    printf "  Ubuntu apt installation failed, trying other methods...\r" >/dev/tty
                 fi
+            else
+                printf "  Repository addition failed, trying other methods...\r" >/dev/tty
             fi
+            # Fall through to try other installation methods
         else
             # Non-noble Ubuntu/Debian, proceed with standard apt install
             printf "  Adding Speedtest CLI repository for Debian/Ubuntu...\r" >/dev/tty
@@ -213,6 +222,9 @@ install_speedtest_cli() {
             printf "  Installing speedtest package...\r" >/dev/tty
             if apt-get -y install speedtest > /dev/null 2>&1; then
                 return 0
+            else
+                delete
+                printf "  Debian/Ubuntu installation failed, trying other methods...\r" >/dev/tty
             fi
         fi
     elif [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" || "${release}" == "fedora" ]]; then
@@ -223,11 +235,17 @@ install_speedtest_cli() {
         printf "  Installing speedtest package...\r" >/dev/tty
         if dnf -y install speedtest > /dev/null 2>&1 || yum -y install speedtest > /dev/null 2>&1; then
             return 0
+        else
+            delete
+            printf "  RHEL-based installation failed, trying other methods...\r" >/dev/tty
         fi
     else
         # Fallback for other distributions using the generic script
         printf "  Attempting generic Speedtest CLI installation...\r" >/dev/tty
-        if curl -s https://install.speedtest.net/app/cli/install.sh | bash > /dev/null 2>&1; then
+        if ! curl -s https://install.speedtest.net/app/cli/install.sh | bash > /dev/null 2>&1; then
+            delete
+            printf "  Generic installation failed, falling back to manual download...\r" >/dev/tty
+        else
             return 0
         fi
     fi
@@ -237,11 +255,14 @@ install_speedtest_cli() {
     local TMP_TGZ="/tmp/speedtest.tgz"
     local TMP_DIR="/tmp/speedtest_install.$$"
     local SPEEDTEST_URL
-    SPEEDTEST_URL=$(get_speedtest_url)
-    if [ $? -ne 0 ] || [ -z "$SPEEDTEST_URL" ]; then
+    SPEEDTEST_URL=$(get_speedtest_url) || {
         delete
         error_exit "Unsupported architecture for Speedtest CLI: $ARCH"
-    fi
+    }
+    [ -z "$SPEEDTEST_URL" ] && {
+        delete
+        error_exit "Failed to generate Speedtest URL"
+    }
 
     mkdir -p "$TMP_DIR"
     if ! curl -fSL -o "$TMP_TGZ" "$SPEEDTEST_URL"; then
