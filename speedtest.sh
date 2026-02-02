@@ -313,15 +313,13 @@ benchinit() {
             error_exit "Failed to install Speedtest CLI. Please check the log for details."
         else
             printf " Speedtest CLI installed successfully!\r" >/dev/tty
-            delete
         fi
     fi
 
     # install tools.py
     if  [ ! -e 'tools.py' ]; then
-        echo " Installing tools.py ..."
+        printf " Installing tools.py ...\r" >/dev/tty
         wget --no-check-certificate https://raw.githubusercontent.com/laset-com/speedtest/master/tools.py > /dev/null 2>&1
-        echo -ne "\e[1A"; echo -ne "\e[0K\r"
     fi
     chmod a+rx tools.py
 
