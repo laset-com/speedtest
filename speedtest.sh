@@ -861,7 +861,7 @@ geekbench4() {
     echo -e "\nGeekbench 4 is not compatible with ARM64 architectures. Skipping the test"
     else
     echo "" | tee -a "$log"
-    printf " Performing Geekbench v4 CPU Benchmark test. Please wait...\r" >/dev/tty
+    echo " Performing Geekbench v4 CPU Benchmark test. Please wait..."
 
     # Start steal time measurement
     local steal_start=$(grep '^cpu ' /proc/stat | awk '{if (NF > 8) print $9; else print 0}')
