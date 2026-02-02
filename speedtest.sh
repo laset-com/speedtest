@@ -301,7 +301,7 @@ benchinit() {
     # Install official Speedtest CLI
     if ! command -v speedtest &> /dev/null; then
         printf " Installing official Speedtest CLI ...\r" >/dev/tty
-        install_speedtest_cli > /dev/null 2>&1
+        install_speedtest_cli
         if ! command -v speedtest &> /dev/null; then
             error_exit "Failed to install Speedtest CLI. Please check the log for details."
         else
