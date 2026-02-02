@@ -140,6 +140,7 @@ install_package() {
         printf " Installing $package_name ...\r" >/dev/tty
         if [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" ]]; then
             dnf -y install "$package_name" > /dev/null 2>&1 || yum -y install "$package_name" > /dev/null 2>&1
+            printf "\r\e[0K" >/dev/tty
         elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
             apt-get update -y > /dev/null 2>&1
             apt-get -y install "$package_name" > /dev/null 2>&1
@@ -187,6 +188,7 @@ install_speedtest_cli() {
                     sed -i 's/noble/jammy/g' "$OOKLA_LIST"
                     apt-get update -y > /dev/null 2>&1
                     if apt-get -y install speedtest > /dev/null 2>&1; then
+                        printf "\r\e[0K" >/dev/tty
                         return 0
                     fi
                     # If jammy workaround failed, restore and try standard apt install
@@ -195,6 +197,7 @@ install_speedtest_cli() {
                     mv -v "$OOKLA_LIST.bak" "$OOKLA_LIST" > /dev/null 2>&1 || true
                     apt-get update -y > /dev/null 2>&1
                     if apt-get -y install speedtest > /dev/null 2>&1; then
+                        printf "\r\e[0K" >/dev/tty
                         return 0
                     fi
                     delete
@@ -204,6 +207,7 @@ install_speedtest_cli() {
                     printf "  Installing via apt...\r" >/dev/tty
                     apt-get update -y > /dev/null 2>&1
                     if apt-get -y install speedtest > /dev/null 2>&1; then
+                        printf "\r\e[0K" >/dev/tty
                         return 0
                     fi
                     delete
@@ -221,6 +225,7 @@ install_speedtest_cli() {
             apt-get update -y > /dev/null 2>&1
             printf "  Installing speedtest package...\r" >/dev/tty
             if apt-get -y install speedtest > /dev/null 2>&1; then
+                printf "\r\e[0K" >/dev/tty
                 return 0
             else
                 delete
@@ -234,6 +239,7 @@ install_speedtest_cli() {
         dnf update -y > /dev/null 2>&1 || yum update -y > /dev/null 2>&1
         printf "  Installing speedtest package...\r" >/dev/tty
         if dnf -y install speedtest > /dev/null 2>&1 || yum -y install speedtest > /dev/null 2>&1; then
+            printf "\r\e[0K" >/dev/tty
             return 0
         else
             delete
@@ -246,11 +252,13 @@ install_speedtest_cli() {
             delete
             printf "  Generic installation failed, falling back to manual download...\r" >/dev/tty
         else
+            printf "\r\e[0K" >/dev/tty
             return 0
         fi
     fi
 
     # Fallback to manual download and install if apt/yum/generic script failed
+    delete
     printf "  Falling back to manual download and install...\r" >/dev/tty
     local TMP_TGZ="/tmp/speedtest.tgz"
     local TMP_DIR="/tmp/speedtest_install.$$"
@@ -289,6 +297,7 @@ install_speedtest_cli() {
     rm -rf "$TMP_DIR" "$TMP_TGZ"
 
     if command -v speedtest >/dev/null 2>&1; then
+        printf "\r\e[0K" >/dev/tty
         return 0
     else
         delete
