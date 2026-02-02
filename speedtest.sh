@@ -265,7 +265,7 @@ install_speedtest_cli() {
     }
 
     mkdir -p "$TMP_DIR"
-    if ! curl -fSL -o "$TMP_TGZ" "$SPEEDTEST_URL"; then
+    if ! curl -fsSL -o "$TMP_TGZ" "$SPEEDTEST_URL"; then
         delete
         error_exit "Failed to download Speedtest CLI"
     fi
