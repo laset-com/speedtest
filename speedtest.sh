@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-bench_v="v1.8.6"
-bench_d="2025-12-31"
+bench_v="v1.8.7"
+bench_d="2026-02-02"
 about() {
     echo ""
     echo " ========================================================= "
@@ -151,7 +151,6 @@ install_package() {
     fi
 }
 
-# New function for core dependencies
 install_core_deps() {
     install_package "bc"
     install_package "jq"
@@ -160,6 +159,128 @@ install_core_deps() {
     install_package "tar"
 }
 
+get_speedtest_url() {
+    local arch_for_url=""
+    case "$ARCH" in
+        "x64") arch_for_url="x86_64" ;;
+        "arm64") arch_for_url="aarch64" ;;
+        # Add other architectures if needed, though Ookla primarily supports x86_64 and aarch64
+        *)
+            return 1  # Return error exit code for unsupported architecture
+            ;;
+    esac
+    echo "https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-${arch_for_url}.tgz"
+    return 0
+}
+
+install_speedtest_cli() {
+    local OOKLA_LIST="/etc/apt/sources.list.d/ookla_speedtest-cli.list"
+
+    if [[ "${release}" == "ubuntu" ]]; then
+        local ubuntu_codename=$(lsb_release -cs 2>/dev/null || cat /etc/os-release | grep -Po 'VERSION_CODENAME=\K[^\n]+')
+        if [[ "$ubuntu_codename" == "noble" ]]; then
+            printf "  Detected Ubuntu 24.04 (Noble Numbat)...\r" >/dev/tty
+            # Attempt to add the repo first, then modify if noble is present
+            if ! curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash > /dev/null 2>&1; then
+                delete
+                # Proceed to manual install if repo addition fails
+            else
+                if [ -f "$OOKLA_LIST" ] && grep -q "noble" "$OOKLA_LIST"; then
+                    printf "  Applying noble->jammy workaround...\r" >/dev/tty
+                    cp -v "$OOKLA_LIST" "$OOKLA_LIST.bak" > /dev/null 2>&1
+                    sed -i 's/noble/jammy/g' "$OOKLA_LIST"
+                    apt-get update -y > /dev/null 2>&1
+                    if apt-get -y install speedtest > /dev/null 2>&1; then
+                        delete
+                        return 0
+                    else
+                        delete
+                        mv -v "$OOKLA_LIST.bak" "$OOKLA_LIST" > /dev/null 2>&1 || true
+                    fi
+                elif [ -f "$OOKLA_LIST" ]; then
+                    printf "  Installing via apt (no noble override needed)...\r" >/dev/tty
+                    # Try normal apt install anyway
+                    apt-get update -y > /dev/null 2>&1
+                    if apt-get -y install speedtest > /dev/null 2>&1; then
+                        delete
+                        return 0
+                    fi
+                fi
+            fi
+        else
+            # Non-noble Ubuntu/Debian, proceed with standard apt install
+            printf "  Adding Speedtest CLI repository for Debian/Ubuntu...\r" >/dev/tty
+            curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash > /dev/null 2>&1
+            printf "  Updating package lists...\r" >/dev/tty
+            apt-get update -y > /dev/null 2>&1
+            printf "  Installing speedtest package...\r" >/dev/tty
+            if apt-get -y install speedtest > /dev/null 2>&1; then
+                delete
+                return 0
+            fi
+        fi
+    elif [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" || "${release}" == "fedora" ]]; then
+        printf "  Adding Speedtest CLI repository for RHEL-based systems...\r" >/dev/tty
+        curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.rpm.sh | bash > /dev/null 2>&1
+        printf "  Updating package lists...\r" >/dev/tty
+        dnf update -y > /dev/null 2>&1 || yum update -y > /dev/null 2>&1
+        printf "  Installing speedtest package...\r" >/dev/tty
+        if dnf -y install speedtest > /dev/null 2>&1 || yum -y install speedtest > /dev/null 2>&1; then
+            delete
+            return 0
+        fi
+    else
+        # Fallback for other distributions using the generic script
+        printf "  Attempting generic Speedtest CLI installation...\r" >/dev/tty
+        if curl -s https://install.speedtest.net/app/cli/install.sh | bash > /dev/null 2>&1; then
+            delete
+            return 0
+        fi
+    fi
+
+    # Fallback to manual download and install if apt/yum/generic script failed
+    printf "  Falling back to manual download and install...\r" >/dev/tty
+    local TMP_TGZ="/tmp/speedtest.tgz"
+    local TMP_DIR="/tmp/speedtest_install.$$"
+    local SPEEDTEST_URL
+    SPEEDTEST_URL=$(get_speedtest_url)
+    if [ $? -ne 0 ] || [ -z "$SPEEDTEST_URL" ]; then
+        delete
+        error_exit "Unsupported architecture for Speedtest CLI: $ARCH"
+    fi
+
+    mkdir -p "$TMP_DIR"
+    if ! curl -fSL -o "$TMP_TGZ" "$SPEEDTEST_URL"; then
+        delete
+        error_exit "Failed to download Speedtest CLI"
+    fi
+    tar -xzf "$TMP_TGZ" -C "$TMP_DIR"
+
+    local BIN_PATH=""
+    BIN_PATH=$(find "$TMP_DIR" -type f -name 'speedtest' -perm /u+x 2>/dev/null | head -n1 || true)
+    if [ -z "$BIN_PATH" ]; then
+        BIN_PATH=$(find "$TMP_DIR" -type f -name 'speedtest' 2>/dev/null | head -n1 || true)
+    fi
+
+    if [ -z "$BIN_PATH" ]; then
+        delete
+        error_exit "Could not locate speedtest binary in archive"
+    fi
+
+    cp -v "$BIN_PATH" /usr/local/bin/speedtest > /dev/null 2>&1
+    chmod +x /usr/local/bin/speedtest
+
+    # clean up
+    rm -rf "$TMP_DIR" "$TMP_TGZ"
+
+    if command -v speedtest >/dev/null 2>&1; then
+        delete
+        return 0
+    else
+        delete
+        error_exit "Manual Speedtest installation failed"
+    fi
+}
 
 benchinit() {
     detect_release
@@ -186,33 +307,9 @@ benchinit() {
 
     # Install official Speedtest CLI
     if ! command -v speedtest &> /dev/null; then
-        # Display a temporary message in the terminal, not in the log
         printf " Installing official Speedtest CLI ...\r" >/dev/tty
-
-        if [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
-            printf "  Adding Speedtest CLI repository for Debian/Ubuntu...\r" >/dev/tty
-            curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash > /dev/null 2>&1
-            printf "  Updating package lists...\r" >/dev/tty
-            apt-get update -y > /dev/null 2>&1
-            printf "  Installing speedtest package...\r" >/dev/tty
-            apt-get -y install speedtest > /dev/null 2>&1
-        elif [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" || "${release}" == "fedora" ]]; then
-            printf "  Adding Speedtest CLI repository for RHEL-based systems...\r" >/dev/tty
-            curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.rpm.sh | bash > /dev/null 2>&1
-            printf "  Updating package lists...\r" >/dev/tty
-            dnf update -y > /dev/null 2>&1 || yum update -y > /dev/null 2>&1
-            printf "  Installing speedtest package...\r" >/dev/tty
-            dnf -y install speedtest > /dev/null 2>&1 || yum -y install speedtest > /dev/null 2>&1
-        else
-            # Fallback for other distributions using the generic script
-            printf "  Attempting generic Speedtest CLI installation for unknown distribution...\r" >/dev/tty
-            curl -s https://install.speedtest.net/app/cli/install.sh | bash > /dev/null 2>&1
-        fi
-
-        # Verify installation
-        if ! command -v speedtest &> /dev/null;
- then
-            # Error message will be printed to terminal and logged
+        install_speedtest_cli
+        if ! command -v speedtest &> /dev/null; then
             error_exit "Failed to install Speedtest CLI. Please check the log for details."
         else
             printf " Speedtest CLI installed successfully!\r" >/dev/tty
