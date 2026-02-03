@@ -221,10 +221,13 @@ install_speedtest_cli() {
             # Fall through to try other installation methods
         else
             # Non-noble Ubuntu/Debian, proceed with standard apt install
+            printf "\r\033[0K" >/dev/tty
             printf "  Adding Speedtest CLI repository for Debian/Ubuntu...\r" >/dev/tty
             curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash > /dev/null 2>&1
+            printf "\r\033[0K" >/dev/tty
             printf "  Updating package lists...\r" >/dev/tty
             apt-get update -y > /dev/null 2>&1
+            printf "\r\033[0K" >/dev/tty
             printf "  Installing speedtest package...\r" >/dev/tty
             if apt-get -y install speedtest > /dev/null 2>&1; then
                 printf "\r\033[0K" >/dev/tty
@@ -237,8 +240,10 @@ install_speedtest_cli() {
     elif [[ "${release}" == "centos" || "${release}" == "almalinux" || "${release}" == "rocky" || "${release}" == "fedora" ]]; then
         printf "  Adding Speedtest CLI repository for RHEL-based systems...\r" >/dev/tty
         curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.rpm.sh | bash > /dev/null 2>&1
+        printf "\r\033[0K" >/dev/tty
         printf "  Updating package lists...\r" >/dev/tty
         dnf update -y > /dev/null 2>&1 || yum update -y > /dev/null 2>&1
+        printf "\r\033[0K" >/dev/tty
         printf "  Installing speedtest package...\r" >/dev/tty
         if dnf -y install speedtest > /dev/null 2>&1 || yum -y install speedtest > /dev/null 2>&1; then
             printf "\r\033[0K" >/dev/tty
