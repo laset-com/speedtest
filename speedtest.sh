@@ -1058,7 +1058,7 @@ geekbench6() {
     echo -e "\nGeekbench 6 cannot run on 32-bit architectures. Skipping the test"
     else
     echo "" | tee -a "$log"
-    echo -e " Performing Geekbench v6 CPU Benchmark test. Please wait..."
+    echo -e " Performing Geekbench v6.7.1 CPU Benchmark test. Please wait..."
 
     # Start steal time measurement
     local steal_start=$(grep '^cpu ' /proc/stat | awk '{if (NF > 8) print $9; else print 0}')
@@ -1067,11 +1067,11 @@ geekbench6() {
     GEEKBENCH_PATH=$HOME/geekbench
     mkdir -p "$GEEKBENCH_PATH"
     if [[ $(uname -m) == "aarch64" || $(uname -m) == "arm64" ]]; then
-        curl -s https://cdn.geekbench.com/Geekbench-6.5.0-LinuxARMPreview.tar.gz | tar xz --strip-components=1 -C "$GEEKBENCH_PATH" &>/dev/null
+        curl -s https://cdn.geekbench.com/Geekbench-6.7.1-LinuxARMPreview.tar.gz | tar xz --strip-components=1 -C "$GEEKBENCH_PATH" &>/dev/null
     elif [[ $(uname -m) == "riscv64" ]]; then
-        curl -s https://cdn.geekbench.com/Geekbench-6.5.0-LinuxRISCVPreview.tar.gz | tar xz --strip-components=1 -C "$GEEKBENCH_PATH" &>/dev/null
+        curl -s https://cdn.geekbench.com/Geekbench-6.7.1-LinuxRISCVPreview.tar.gz | tar xz --strip-components=1 -C "$GEEKBENCH_PATH" &>/dev/null
     else
-        curl -s https://cdn.geekbench.com/Geekbench-6.5.0-Linux.tar.gz | tar xz --strip-components=1 -C "$GEEKBENCH_PATH" &>/dev/null
+        curl -s https://cdn.geekbench.com/Geekbench-6.7.1-Linux.tar.gz | tar xz --strip-components=1 -C "$GEEKBENCH_PATH" &>/dev/null
     fi
     GEEKBENCH_TEST=$("$GEEKBENCH_PATH"/geekbench6 2>/dev/null | grep "https://browser")
     GEEKBENCH_URL=$(echo -e "$GEEKBENCH_TEST" | head -1)
@@ -1123,7 +1123,7 @@ geekbench6() {
     fi
     
     echo -ne "\e[1A"; echo -ne "\033[0K\r"
-    echostyle "## Geekbench v6 CPU Benchmark:"
+    echostyle "## Geekbench v6.7.1 CPU Benchmark:"
     echo "" | tee -a "$log"
     echo -e "  Single Core : $GEEKBENCH_SCORES_SINGLE  $grank" | tee -a "$log"
     echo -e "   Multi Core : $GEEKBENCH_SCORES_MULTI" | tee -a "$log"
