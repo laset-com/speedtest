@@ -992,10 +992,10 @@ geekbench5() {
     GEEKBENCH_URL_CLAIM=$(echo "$GEEKBENCH_URL" | awk '{ print $2 }')
     GEEKBENCH_URL=$(echo "$GEEKBENCH_URL" | awk '{ print $1 }')
     sleep 20
-    GEEKBENCH_SCORES=$(curl -s "$GEEKBENCH_URL" | grep "div class='score'")
+    GEEKBENCH_SCORES=$(curl -s "$GEEKBENCH_URL" | grep -A 1 "div class='score'")
     # Corrected parsing for single and multi-core scores
-    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES" | head -n 1 | awk -v FS="(>|<)" '{ print $3 }')
-    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | tail -n 1 | awk -v FS="(>|<)" '{ print $3 }')
+    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES" | head -n 1 | awk -F'>|<' '/score/{print $3}')
+    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | tail -n 1 | awk -F'>|<' '/score/{print $3}')
 
     # End steal time measurement
     local steal_end=$(grep '^cpu ' /proc/stat | awk '{if (NF > 8) print $9; else print 0}')
@@ -1078,10 +1078,10 @@ geekbench6() {
     GEEKBENCH_URL_CLAIM=$(echo "$GEEKBENCH_URL" | awk '{ print $2 }')
     GEEKBENCH_URL=$(echo "$GEEKBENCH_URL" | awk '{ print $1 }')
     sleep 15
-    GEEKBENCH_SCORES=$(curl -s "$GEEKBENCH_URL" | grep "div class='score'")
+    GEEKBENCH_SCORES=$(curl -s "$GEEKBENCH_URL" | grep -A 1 "div class='score'")
     # Corrected parsing for single and multi-core scores
-    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES" | head -n 1 | awk -v FS="(>|<)" '{ print $3 }')
-    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | tail -n 1 | awk -v FS="(>|<)" '{ print $3 }')
+    GEEKBENCH_SCORES_SINGLE=$(echo "$GEEKBENCH_SCORES" | head -n 1 | awk -F'>|<' '/score/{print $3}')
+    GEEKBENCH_SCORES_MULTI=$(echo "$GEEKBENCH_SCORES" | tail -n 1 | awk -F'>|<' '/score/{print $3}')
 
     # End steal time measurement
     local steal_end=$(grep '^cpu ' /proc/stat | awk '{if (NF > 8) print $9; else print 0}')
